@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../src/hooks/useTheme';
 import { layout, spacing, radius } from '../../src/theme/spacing';
 import { typeScale } from '../../src/theme/typography';
-import { springConfigs } from '../../src/theme/animations';
+import { springPresets } from '../../src/theme/animations';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -31,9 +31,9 @@ const TabBarIcon: React.FC<TabBarIconProps> = ({ name, color, focused }) => {
   
   React.useEffect(() => {
     if (focused) {
-      scale.value = withSpring(1.15, springConfigs.tabSelect);
+      scale.value = withSpring(1.15, springPresets.snappy);
       setTimeout(() => {
-        scale.value = withSpring(1, springConfigs.tabSelect);
+        scale.value = withSpring(1, springPresets.snappy);
       }, 150);
     }
   }, [focused]);
@@ -71,8 +71,8 @@ export default function TabsLayout() {
           paddingTop: spacing[2],
           ...shadow('md'),
         },
-        tabBarActiveTintColor: colors.primary.main,
-        tabBarInactiveTintColor: colors.text.muted,
+        tabBarActiveTintColor: colors.primary.default,
+        tabBarInactiveTintColor: colors.text.secondary,
         tabBarLabelStyle: {
           ...typeScale.labelSmall,
           marginTop: spacing[1],
@@ -109,7 +109,7 @@ export default function TabsLayout() {
                 onPress={handleQuickAdd}
                 style={[
                   styles.quickAddButton,
-                  { backgroundColor: colors.primary.main },
+                  { backgroundColor: colors.primary.default },
                   shadow('lg'),
                 ]}
               >

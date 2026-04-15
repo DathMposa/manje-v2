@@ -1,161 +1,132 @@
 /**
  * Manje Design System - Typography Tokens
  * Version: 2.0 Hybrid Premium Edition
- * 
- * Font families: Syne (display/headlines), Work Sans (body/UI)
- * All sizes use the 4px base unit system.
  */
+import { Platform, TextStyle } from 'react-native';
 
-// Font Families
-export const fontFamilies = {
-  display: 'Syne',
-  displayBold: 'Syne-Bold',
-  displaySemiBold: 'Syne-SemiBold',
-  body: 'WorkSans',
-  bodyMedium: 'WorkSans-Medium',
-  bodySemiBold: 'WorkSans-SemiBold',
-  bodyBold: 'WorkSans-Bold',
-} as const;
+export const fonts = {
+  syne: {
+    regular: 'Syne_400Regular',
+    semiBold: 'Syne_600SemiBold',
+    bold: 'Syne_700Bold',
+    extraBold: 'Syne_800ExtraBold',
+  },
+  workSans: {
+    regular: 'WorkSans_400Regular',
+    medium: 'WorkSans_500Medium',
+    semiBold: 'WorkSans_600SemiBold',
+    bold: 'WorkSans_700Bold',
+  },
+};
 
-// Font Weights (for reference - actual weight applied via font family)
-export const fontWeights = {
-  regular: '400',
-  medium: '500',
-  semiBold: '600',
-  bold: '700',
-} as const;
-
-// Type Scale
-export const typeScale = {
-  // Display styles (Syne)
-  displayLarge: {
-    fontFamily: fontFamilies.displayBold,
+export const typeScale: Record<string, TextStyle> = {
+  'display.lg': {
+    fontFamily: fonts.syne.extraBold,
     fontSize: 36,
-    lineHeight: 43.2, // 1.2×
-    letterSpacing: -0.5,
+    lineHeight: 36 * 1.1,
   },
-  displayMedium: {
-    fontFamily: fontFamilies.displaySemiBold,
+  'display.md': {
+    fontFamily: fonts.syne.bold,
     fontSize: 30,
-    lineHeight: 36, // 1.2×
-    letterSpacing: -0.5,
+    lineHeight: 30 * 1.15,
   },
-  displaySmall: {
-    fontFamily: fontFamilies.displaySemiBold,
+  'display.sm': {
+    fontFamily: fonts.syne.bold,
     fontSize: 24,
-    lineHeight: 30, // 1.25×
-    letterSpacing: 0,
+    lineHeight: 24 * 1.2,
   },
-  
-  // Headline styles (Work Sans)
-  headlineLarge: {
-    fontFamily: fontFamilies.bodySemiBold,
+  'headline.lg': {
+    fontFamily: fonts.workSans.semiBold,
     fontSize: 20,
-    lineHeight: 25, // 1.25×
-    letterSpacing: 0,
+    lineHeight: 20 * 1.3,
   },
-  headlineMedium: {
-    fontFamily: fontFamilies.bodySemiBold,
+  'headline.md': {
+    fontFamily: fonts.workSans.semiBold,
     fontSize: 18,
-    lineHeight: 25.2, // 1.4×
-    letterSpacing: 0,
+    lineHeight: 18 * 1.3,
   },
-  headlineSmall: {
-    fontFamily: fontFamilies.bodyMedium,
+  'headline.sm': {
+    fontFamily: fonts.workSans.semiBold,
     fontSize: 16,
-    lineHeight: 24, // 1.5×
-    letterSpacing: 0,
+    lineHeight: 16 * 1.4,
   },
-  
-  // Body styles (Work Sans)
-  bodyLarge: {
-    fontFamily: fontFamilies.body,
+  'body.lg': {
+    fontFamily: fonts.workSans.regular,
     fontSize: 18,
-    lineHeight: 27, // 1.5×
-    letterSpacing: 0,
+    lineHeight: 18 * 1.5,
   },
-  bodyMedium: {
-    fontFamily: fontFamilies.body,
+  'body.md': {
+    fontFamily: fonts.workSans.regular,
     fontSize: 16,
-    lineHeight: 24, // 1.5×
-    letterSpacing: 0,
+    lineHeight: 16 * 1.5,
   },
-  bodySmall: {
-    fontFamily: fontFamilies.body,
+  'body.sm': {
+    fontFamily: fonts.workSans.regular,
     fontSize: 14,
-    lineHeight: 21, // 1.5×
-    letterSpacing: 0,
+    lineHeight: 14 * 1.5,
   },
-  
-  // Label styles (Work Sans Medium)
-  labelLarge: {
-    fontFamily: fontFamilies.bodyMedium,
+  'label.lg': {
+    fontFamily: fonts.workSans.medium,
     fontSize: 16,
-    lineHeight: 20, // 1.25×
-    letterSpacing: 0.5,
+    lineHeight: 16 * 1.4,
   },
-  labelMedium: {
-    fontFamily: fontFamilies.bodyMedium,
+  'label.md': {
+    fontFamily: fonts.workSans.medium,
     fontSize: 14,
-    lineHeight: 17.5, // 1.25×
-    letterSpacing: 0.5,
+    lineHeight: 14 * 1.3,
   },
-  labelSmall: {
-    fontFamily: fontFamilies.bodyMedium,
+  'label.sm': {
+    fontFamily: fonts.workSans.medium,
     fontSize: 12,
-    lineHeight: 15, // 1.25×
-    letterSpacing: 1,
+    lineHeight: 12 * 1.3,
   },
-  
-  // Financial number styles (Syne)
-  heroMetric: {
-    fontFamily: fontFamilies.displayBold,
+  'financial.hero': {
+    fontFamily: fonts.syne.extraBold,
     fontSize: 52,
-    lineHeight: 57.2, // 1.1×
-    letterSpacing: -1.5,
+    lineHeight: 52 * 1.0,
+    fontVariant: ['tabular-nums'],
   },
-  currencyLarge: {
-    fontFamily: fontFamilies.displayBold,
+  'financial.lg': {
+    fontFamily: fonts.syne.bold,
     fontSize: 48,
-    lineHeight: 52.8, // 1.1×
-    letterSpacing: -1,
+    lineHeight: 48 * 1.0,
+    fontVariant: ['tabular-nums'],
   },
-  currencyMedium: {
-    fontFamily: fontFamilies.displaySemiBold,
+  'financial.md': {
+    fontFamily: fonts.syne.bold,
     fontSize: 30,
-    lineHeight: 36, // 1.2×
-    letterSpacing: -0.5,
+    lineHeight: 30 * 1.1,
+    fontVariant: ['tabular-nums'],
   },
-  currencySmall: {
-    fontFamily: fontFamilies.bodySemiBold,
+  'financial.sm': {
+    fontFamily: fonts.workSans.semiBold,
     fontSize: 20,
-    lineHeight: 25, // 1.25×
-    letterSpacing: 0,
+    lineHeight: 20 * 1.2,
+    fontVariant: ['tabular-nums'],
   },
-} as const;
+};
 
-// Font files to load (for expo-font)
-// NOTE: Add font files to assets/fonts/ and uncomment the requires below
-// For now, using system fonts as fallback
-export const fontsToLoad = {
-  // 'Syne': require('../../assets/fonts/Syne-Regular.ttf'),
-  // 'Syne-Bold': require('../../assets/fonts/Syne-Bold.ttf'),
-  // 'Syne-SemiBold': require('../../assets/fonts/Syne-SemiBold.ttf'),
-  // 'WorkSans': require('../../assets/fonts/WorkSans-Regular.ttf'),
-  // 'WorkSans-Medium': require('../../assets/fonts/WorkSans-Medium.ttf'),
-  // 'WorkSans-SemiBold': require('../../assets/fonts/WorkSans-SemiBold.ttf'),
-  // 'WorkSans-Bold': require('../../assets/fonts/WorkSans-Bold.ttf'),
-} as const;
+export type TypographyVariant = keyof typeof typeScale;
 
-// System font fallbacks (used until custom fonts are loaded)
-export const systemFonts = {
-  display: 'System',
-  displayBold: 'System',
-  displaySemiBold: 'System',
-  body: 'System',
-  bodyMedium: 'System',
-  bodySemiBold: 'System',
-  bodyBold: 'System',
-} as const;
-
-export type TypeStyle = keyof typeof typeScale;
+/**
+ * Format amount as MWK currency according to Design Guide rules
+ */
+export const formatMWK = (amount: number, condensed: boolean = false): string => {
+  const isNegative = amount < 0;
+  const absAmount = Math.abs(amount);
+  
+  let formattedValue = '';
+  
+  if (condensed && absAmount >= 1000000) {
+    // 1.2M format
+    formattedValue = (absAmount / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  } else if (condensed && absAmount >= 1000) {
+    // 1.2k format
+    formattedValue = (absAmount / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+  } else {
+    // standard comma separated
+    formattedValue = absAmount.toLocaleString('en-MW');
+  }
+  
+  return `${isNegative ? '-' : ''}MWK ${formattedValue}`;
+};

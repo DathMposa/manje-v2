@@ -3,10 +3,12 @@
  * Provides theme colors and utilities based on system/user preference.
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 import { lightColors, darkColors, ColorTheme } from '../theme/colors';
-import { getShadow, getGlowShadow, ShadowSize, GlowType } from '../theme/shadows';
+import { createShadows, ShadowLevel } from '../theme/shadows';
+
+type Shadows = ReturnType<typeof createShadows>;
 
 interface ThemeContextType {
   isDark: boolean;
@@ -14,8 +16,8 @@ interface ThemeContextType {
   toggleTheme: () => void;
   setTheme: (mode: 'light' | 'dark' | 'system') => void;
   themeMode: 'light' | 'dark' | 'system';
-  shadow: (size: ShadowSize) => ReturnType<typeof getShadow>;
-  glow: (type: GlowType) => ReturnType<typeof getGlowShadow>;
+  shadow: (level: 'xs' | 'sm' | 'md' | 'lg' | 'xl') => any;
+  glow: (type: keyof Shadows['glow']) => any;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -26,35 +28,27 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const systemColorScheme = useColorScheme();
-  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('system');
+  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('light');
   
-  const isDark = themeMode === 'system' 
-    ? systemColorScheme === 'dark'
-    : themeMode === 'dark';
+  const isDark = false;
   
-  const colors = isDark ? darkColors : lightColors;
+  const colors = lightColors;
+  const currentShadows = createShadows(false);
   
   const toggleTheme = () => {
-    setThemeMode(prev => {
-      if (prev === 'system') return 'light';
-      if (prev === 'light') return 'dark';
-      return 'system';
-    });
+    // Theme toggling disabled for now - defaulting to light mode
+    console.log('Theme toggling is currently disabled.');
   };
   
-  const setTheme = (mode: 'light' | 'dark' | 'system') => {
-    setThemeMode(mode);
-  };
-  
-  const shadow = (size: ShadowSize) => getShadow(size, isDark);
-  const glow = (type: GlowType) => getGlowShadow(type, isDark);
+  const shadow = (level: keyof Omit<Shadows, 'glow'>) => currentShadows[level];
+  const glow = (type: keyof Shadows['glow']) => currentShadows.glow[type];
   
   return (
     <ThemeContext.Provider value={{
       isDark,
       colors,
       toggleTheme,
-      setTheme,
+      setTheme: setThemeMode,
       themeMode,
       shadow,
       glow,

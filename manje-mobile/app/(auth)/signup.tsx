@@ -124,7 +124,7 @@ export default function SignUpScreen() {
           {/* Form */}
           <Animated.View entering={FadeInDown.delay(200).duration(400)}>
             {/* General Error */}
-            {errors.general && (
+            {!!errors.general && (
               <ClayCard variant="subtle" style={{ ...styles.errorCard, backgroundColor: colors.status.dangerBg }}>
                 <Text style={[typeScale.bodySmall, { color: colors.status.danger }]}>
                   {errors.general}
@@ -139,7 +139,7 @@ export default function SignUpScreen() {
               error={errors.name}
               autoCapitalize="words"
               autoComplete="name"
-              leftIcon={<Feather name="user" size={20} color={colors.text.muted} />}
+              leftIcon={<Feather name="user" size={20} color={colors.text.secondary} />}
             />
             
             <Input
@@ -150,7 +150,7 @@ export default function SignUpScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
-              leftIcon={<Feather name="mail" size={20} color={colors.text.muted} />}
+              leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
             />
             
             <Input
@@ -161,13 +161,13 @@ export default function SignUpScreen() {
               secureTextEntry={!showPassword}
               autoCapitalize="none"
               autoComplete="password-new"
-              leftIcon={<Feather name="lock" size={20} color={colors.text.muted} />}
+              leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
               rightIcon={
                 <Pressable onPress={() => setShowPassword(!showPassword)}>
                   <Feather 
                     name={showPassword ? 'eye-off' : 'eye'} 
                     size={20} 
-                    color={colors.text.muted} 
+                    color={colors.text.secondary} 
                   />
                 </Pressable>
               }
@@ -181,7 +181,7 @@ export default function SignUpScreen() {
               secureTextEntry={!showPassword}
               autoCapitalize="none"
               autoComplete="password-new"
-              leftIcon={<Feather name="lock" size={20} color={colors.text.muted} />}
+              leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
             />
             
             {/* Terms Checkbox */}
@@ -192,22 +192,22 @@ export default function SignUpScreen() {
               <View style={[
                 styles.checkbox,
                 { 
-                  borderColor: errors.terms ? colors.status.danger : colors.border.medium,
-                  backgroundColor: agreeToTerms ? colors.primary.main : 'transparent',
+                  borderColor: errors.terms ? colors.status.danger : colors.border.light,
+                  backgroundColor: agreeToTerms ? colors.primary.default : 'transparent',
                 }
               ]}>
-                {agreeToTerms && (
+                {!!agreeToTerms && (
                   <Feather name="check" size={14} color={colors.text.inverse} />
                 )}
               </View>
               <Text style={[styles.termsText, typeScale.bodySmall, { color: colors.text.secondary }]}>
                 I agree to the{' '}
-                <Text style={{ color: colors.primary.main }}>Terms of Service</Text>
+                <Text style={{ color: colors.primary.default }}>Terms of Service</Text>
                 {' '}and{' '}
-                <Text style={{ color: colors.primary.main }}>Privacy Policy</Text>
+                <Text style={{ color: colors.primary.default }}>Privacy Policy</Text>
               </Text>
             </Pressable>
-            {errors.terms && (
+            {!!errors.terms && (
               <Text style={[styles.termsError, typeScale.bodySmall, { color: colors.status.danger }]}>
                 {errors.terms}
               </Text>
@@ -228,7 +228,7 @@ export default function SignUpScreen() {
             {/* Divider */}
             <View style={styles.divider}>
               <View style={[styles.dividerLine, { backgroundColor: colors.border.light }]} />
-              <Text style={[styles.dividerText, typeScale.labelSmall, { color: colors.text.muted }]}>
+              <Text style={[styles.dividerText, typeScale.labelSmall, { color: colors.text.secondary }]}>
                 or
               </Text>
               <View style={[styles.dividerLine, { backgroundColor: colors.border.light }]} />
@@ -251,7 +251,7 @@ export default function SignUpScreen() {
               Already have an account?{' '}
             </Text>
             <Pressable onPress={() => router.push('/(auth)/signin')}>
-              <Text style={[typeScale.labelLarge, { color: colors.primary.main }]}>
+              <Text style={[typeScale.labelLarge, { color: colors.primary.default }]}>
                 Sign In
               </Text>
             </Pressable>

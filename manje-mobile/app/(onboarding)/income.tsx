@@ -64,7 +64,7 @@ export default function IncomeScreen() {
         title="Monthly Income" 
         rightAction={
           <Pressable onPress={handleSkip}>
-            <Text style={[typeScale.labelMedium, { color: colors.text.muted }]}>Skip</Text>
+            <Text style={[typeScale.labelMedium, { color: colors.text.secondary }]}>Skip</Text>
           </Pressable>
         }
       />
@@ -99,14 +99,14 @@ export default function IncomeScreen() {
                   style={[
                     styles.rangeItem,
                     {
-                      backgroundColor: isSelected ? colors.primary.light : colors.bg.card,
-                      borderColor: isSelected ? colors.primary.main : colors.border.light,
+                      backgroundColor: isSelected ? colors.primary.subtle : colors.bg.card,
+                      borderColor: isSelected ? colors.primary.default : colors.border.light,
                     },
                     shadow('sm'),
                   ]}
                 >
                   <View style={styles.rangeContent}>
-                    <Text style={[styles.currencySymbol, typeScale.labelMedium, { color: colors.text.muted }]}>
+                    <Text style={[styles.currencySymbol, typeScale.labelMedium, { color: colors.text.secondary }]}>
                       {currencySymbol}
                     </Text>
                     <Text style={[styles.rangeLabel, typeScale.labelLarge, { color: colors.text.primary }]}>
@@ -116,10 +116,10 @@ export default function IncomeScreen() {
                   
                   <View style={[
                     styles.radioOuter,
-                    { borderColor: isSelected ? colors.primary.main : colors.border.medium }
+                    { borderColor: isSelected ? colors.primary.default : colors.border.light }
                   ]}>
                     {isSelected && (
-                      <View style={[styles.radioInner, { backgroundColor: colors.primary.main }]} />
+                      <View style={[styles.radioInner, { backgroundColor: colors.primary.default }]} />
                     )}
                   </View>
                 </Pressable>
@@ -133,8 +133,8 @@ export default function IncomeScreen() {
           entering={FadeInUp.delay(500).duration(400)}
           style={styles.privacyNote}
         >
-          <Feather name="lock" size={16} color={colors.text.muted} />
-          <Text style={[styles.privacyText, typeScale.bodySmall, { color: colors.text.muted }]}>
+          <Feather name="lock" size={16} color={colors.text.secondary} />
+          <Text style={[styles.privacyText, typeScale.bodySmall, { color: colors.text.secondary }]}>
             Your income data stays on your device and is never shared
           </Text>
         </Animated.View>

@@ -101,8 +101,8 @@ export default function CurrencyScreen() {
           style={[
             styles.currencyItem,
             {
-              backgroundColor: isSelected ? colors.primary.light : colors.bg.card,
-              borderColor: isSelected ? colors.primary.main : colors.border.light,
+              backgroundColor: isSelected ? colors.primary.subtle : colors.bg.card,
+              borderColor: isSelected ? colors.primary.default : colors.border.light,
             },
             shadow('sm'),
           ]}
@@ -125,12 +125,12 @@ export default function CurrencyScreen() {
                 </View>
               )}
             </View>
-            <Text style={[typeScale.bodySmall, { color: colors.text.muted }]}>
+            <Text style={[typeScale.bodySmall, { color: colors.text.secondary }]}>
               {item.name}
             </Text>
           </View>
           {isSelected && (
-            <View style={[styles.checkmark, { backgroundColor: colors.primary.main }]}>
+            <View style={[styles.checkmark, { backgroundColor: colors.primary.default }]}>
               <Feather name="check" size={14} color={colors.text.inverse} />
             </View>
           )}
@@ -161,14 +161,14 @@ export default function CurrencyScreen() {
             styles.searchContainer,
             { 
               backgroundColor: colors.bg.sunken,
-              borderColor: colors.border.medium,
+              borderColor: colors.border.light,
             }
           ]}>
-            <Feather name="search" size={20} color={colors.text.muted} />
+            <Feather name="search" size={20} color={colors.text.secondary} />
             <TextInput
               style={[styles.searchInput, typeScale.bodyMedium, { color: colors.text.primary }]}
               placeholder="Search currencies..."
-              placeholderTextColor={colors.text.muted}
+              placeholderTextColor={colors.text.secondary}
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoCapitalize="none"
@@ -176,7 +176,7 @@ export default function CurrencyScreen() {
             />
             {searchQuery.length > 0 && (
               <Pressable onPress={() => setSearchQuery('')}>
-                <Feather name="x" size={20} color={colors.text.muted} />
+                <Feather name="x" size={20} color={colors.text.secondary} />
               </Pressable>
             )}
           </View>

@@ -5,14 +5,47 @@
 
 import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 
-interface User {
+const setItemAsync = async (key: string, value: string) => {
+  if (Platform.OS === 'web') {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {}
+  } else {
+    await SecureStore.setItemAsync(key, value);
+  }
+};
+
+const getItemAsync = async (key: string) => {
+  if (Platform.OS === 'web') {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  } else {
+    return await SecureStore.getItemAsync(key);
+  }
+};
+
+const deleteItemAsync = async (key: string) => {
+  if (Platform.OS === 'web') {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {}
+  } else {
+    await SecureStore.deleteItemAsync(key);
+  }
+};
+
+export interface User {
   id: string;
   email: string;
   displayName: string | null;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isOnboarded: boolean;
@@ -40,7 +73,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
   
   setOnboarded: async (value) => {
-    await SecureStore.setItemAsync(ONBOARDED_KEY, value ? 'true' : 'false');
+    await setItemAsync(ONBOARDED_KEY, value ? 'true' : 'false');
     set({ isOnboarded: value });
   },
   
@@ -49,7 +82,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
   
   signOut: async () => {
-    await SecureStore.deleteItemAsync(AUTH_TOKEN_KEY);
+    await deleteItemAsync(AUTH_TOKEN_KEY);
     set({ user: null, isAuthenticated: false });
   },
   
@@ -58,11 +91,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ isLoading: true });
       
       // Check if user has completed onboarding
-      const onboarded = await SecureStore.getItemAsync(ONBOARDED_KEY);
+      const onboarded = await getItemAsync(ONBOARDED_KEY);
       
       // For now, we'll simulate auth check
       // In production, this would verify Firebase auth state
-      const token = await SecureStore.getItemAsync(AUTH_TOKEN_KEY);
+      const token = await getItemAsync(AUTH_TOKEN_KEY);
       
       set({
         isOnboarded: onboarded === 'true',

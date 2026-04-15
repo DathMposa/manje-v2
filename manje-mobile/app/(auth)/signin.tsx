@@ -118,7 +118,7 @@ export default function SignInScreen() {
           {/* Form */}
           <Animated.View entering={FadeInDown.delay(200).duration(400)}>
             {/* General Error */}
-            {errors.general && (
+            {!!errors.general && (
               <ClayCard variant="subtle" style={{ ...styles.errorCard, backgroundColor: colors.status.dangerBg }}>
                 <Text style={[typeScale.bodySmall, { color: colors.status.danger }]}>
                   {errors.general}
@@ -134,7 +134,7 @@ export default function SignInScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
-              leftIcon={<Feather name="mail" size={20} color={colors.text.muted} />}
+              leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
             />
             
             <Input
@@ -145,13 +145,13 @@ export default function SignInScreen() {
               secureTextEntry={!showPassword}
               autoCapitalize="none"
               autoComplete="password"
-              leftIcon={<Feather name="lock" size={20} color={colors.text.muted} />}
+              leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
               rightIcon={
                 <Pressable onPress={() => setShowPassword(!showPassword)}>
                   <Feather 
                     name={showPassword ? 'eye-off' : 'eye'} 
                     size={20} 
-                    color={colors.text.muted} 
+                    color={colors.text.secondary} 
                   />
                 </Pressable>
               }
@@ -159,7 +159,7 @@ export default function SignInScreen() {
             
             {/* Forgot Password */}
             <Pressable onPress={handleForgotPassword} style={styles.forgotPassword}>
-              <Text style={[typeScale.labelMedium, { color: colors.primary.main }]}>
+              <Text style={[typeScale.labelMedium, { color: colors.primary.default }]}>
                 Forgot Password?
               </Text>
             </Pressable>
@@ -179,7 +179,7 @@ export default function SignInScreen() {
             {/* Divider */}
             <View style={styles.divider}>
               <View style={[styles.dividerLine, { backgroundColor: colors.border.light }]} />
-              <Text style={[styles.dividerText, typeScale.labelSmall, { color: colors.text.muted }]}>
+              <Text style={[styles.dividerText, typeScale.labelSmall, { color: colors.text.secondary }]}>
                 or
               </Text>
               <View style={[styles.dividerLine, { backgroundColor: colors.border.light }]} />
@@ -202,7 +202,7 @@ export default function SignInScreen() {
               Don't have an account?{' '}
             </Text>
             <Pressable onPress={() => router.push('/(auth)/signup')}>
-              <Text style={[typeScale.labelLarge, { color: colors.primary.main }]}>
+              <Text style={[typeScale.labelLarge, { color: colors.primary.default }]}>
                 Sign Up
               </Text>
             </Pressable>

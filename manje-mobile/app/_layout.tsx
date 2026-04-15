@@ -9,6 +9,8 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import { useFonts, Syne_400Regular, Syne_600SemiBold, Syne_700Bold, Syne_800ExtraBold } from '@expo-google-fonts/syne';
+import { WorkSans_400Regular, WorkSans_500Medium, WorkSans_600SemiBold, WorkSans_700Bold } from '@expo-google-fonts/work-sans';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from '../src/hooks/useTheme';
 import { useAuthStore } from '../src/stores/authStore';
@@ -64,7 +66,7 @@ function RootLayoutNav() {
   if (isLoading) {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: colors.bg.base }]}>
-        <ActivityIndicator size="large" color={colors.primary.main} />
+        <ActivityIndicator size="large" color={colors.primary.default} />
       </View>
     );
   }
@@ -88,23 +90,25 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [fontsLoaded] = useFonts({
+    Syne_400Regular,
+    Syne_600SemiBold,
+    Syne_700Bold,
+    Syne_800ExtraBold,
+    WorkSans_400Regular,
+    WorkSans_500Medium,
+    WorkSans_600SemiBold,
+    WorkSans_700Bold,
+  });
   
   useEffect(() => {
     async function prepare() {
-      try {
-        await loadFonts();
-        setFontsLoaded(true);
-      } catch (e) {
-        console.warn('Error loading fonts:', e);
-        setFontsLoaded(true); // Continue anyway with system fonts
-      } finally {
+      if (fontsLoaded) {
         await SplashScreen.hideAsync();
       }
     }
-    
     prepare();
-  }, []);
+  }, [fontsLoaded]);
   
   if (!fontsLoaded) {
     return null;

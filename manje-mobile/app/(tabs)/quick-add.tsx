@@ -29,7 +29,7 @@ import { Button, ClayCard, Input } from '../../src/components/common';
 import { ManjeCharacter } from '../../src/components/character';
 import { typeScale } from '../../src/theme/typography';
 import { spacing, layout, radius } from '../../src/theme/spacing';
-import { categories } from '../../src/theme/colors';
+import { categoryColors } from '../../src/theme/colors';
 
 type TransactionType = 'expense' | 'income' | 'transfer';
 
@@ -40,26 +40,26 @@ interface Category {
   color: string;
 }
 
-const EXPENSE_CATEGORIES: Category[] = [
-  { id: 'groceries', name: 'Groceries', icon: 'shopping-cart', color: categories.groceries },
-  { id: 'dining', name: 'Dining', icon: 'coffee', color: categories.dining },
-  { id: 'transport', name: 'Transport', icon: 'truck', color: categories.transport },
-  { id: 'utilities', name: 'Utilities', icon: 'zap', color: categories.utilities },
-  { id: 'entertainment', name: 'Entertainment', icon: 'film', color: categories.entertainment },
-  { id: 'healthcare', name: 'Healthcare', icon: 'heart', color: categories.healthcare },
-  { id: 'shopping', name: 'Shopping', icon: 'shopping-bag', color: categories.shopping },
-  { id: 'bills', name: 'Bills', icon: 'file-text', color: categories.bills },
-  { id: 'education', name: 'Education', icon: 'book', color: categories.education },
-  { id: 'other', name: 'Other', icon: 'more-horizontal', color: categories.other },
+const EXPENSE_categoryColors: Category[] = [
+  { id: 'groceries', name: 'Groceries', icon: 'shopping-cart', color: categoryColors.food.bg },
+  { id: 'dining', name: 'Dining', icon: 'coffee', color: categoryColors.food.bg },
+  { id: 'transport', name: 'Transport', icon: 'truck', color: categoryColors.transport.bg },
+  { id: 'utilities', name: 'Utilities', icon: 'zap', color: categoryColors.utilities.bg },
+  { id: 'entertainment', name: 'Entertainment', icon: 'film', color: categoryColors.entertainment.bg },
+  { id: 'healthcare', name: 'Healthcare', icon: 'heart', color: categoryColors.healthcare.bg },
+  { id: 'shopping', name: 'Shopping', icon: 'shopping-bag', color: categoryColors.shopping.bg },
+  { id: 'bills', name: 'Bills', icon: 'file-text', color: categoryColors.bills.bg },
+  { id: 'education', name: 'Education', icon: 'book', color: categoryColors.education.bg },
+  { id: 'other', name: 'Other', icon: 'more-horizontal', color: categoryColors.other.bg },
 ];
 
-const INCOME_CATEGORIES: Category[] = [
-  { id: 'salary', name: 'Salary', icon: 'briefcase', color: categories.income },
+const INCOME_categoryColors: Category[] = [
+  { id: 'salary', name: 'Salary', icon: 'briefcase', color: categoryColors.income.bg },
   { id: 'freelance', name: 'Freelance', icon: 'edit-3', color: '#10B981' },
   { id: 'gift', name: 'Gift', icon: 'gift', color: '#EC4899' },
   { id: 'investment', name: 'Investment', icon: 'trending-up', color: '#8B5CF6' },
   { id: 'refund', name: 'Refund', icon: 'rotate-ccw', color: '#06B6D4' },
-  { id: 'other', name: 'Other', icon: 'more-horizontal', color: categories.other },
+  { id: 'other', name: 'Other', icon: 'more-horizontal', color: categoryColors.other.bg },
 ];
 
 export default function QuickAddScreen() {
@@ -75,7 +75,7 @@ export default function QuickAddScreen() {
   
   const currencySymbol = 'MK';
   
-  const currentCategories = transactionType === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+  const currentcategoryColors = transactionType === 'income' ? INCOME_categoryColors : EXPENSE_categoryColors;
   
   const handleTypeChange = (type: TransactionType) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -155,13 +155,13 @@ export default function QuickAddScreen() {
                   <Feather 
                     name={type === 'expense' ? 'minus-circle' : type === 'income' ? 'plus-circle' : 'repeat'} 
                     size={18} 
-                    color={transactionType === type ? colors.primary.main : colors.text.muted} 
+                    color={transactionType === type ? colors.primary.default : colors.text.secondary} 
                   />
                   <Text 
                     style={[
                       styles.typeButtonText, 
                       typeScale.labelMedium, 
-                      { color: transactionType === type ? colors.primary.main : colors.text.muted }
+                      { color: transactionType === type ? colors.primary.default : colors.text.secondary }
                     ]}
                   >
                     {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -173,7 +173,7 @@ export default function QuickAddScreen() {
           
           {/* Amount Input */}
           <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.amountSection}>
-            <Text style={[styles.amountLabel, typeScale.labelMedium, { color: colors.text.muted }]}>
+            <Text style={[styles.amountLabel, typeScale.labelMedium, { color: colors.text.secondary }]}>
               Amount
             </Text>
             <View style={styles.amountInputRow}>
@@ -186,7 +186,7 @@ export default function QuickAddScreen() {
                 value={amount}
                 onChangeText={handleAmountChange}
                 placeholder="0"
-                placeholderTextColor={colors.text.muted}
+                placeholderTextColor={colors.text.secondary}
                 keyboardType="decimal-pad"
                 autoFocus
               />
@@ -195,11 +195,11 @@ export default function QuickAddScreen() {
           
           {/* Category Selection */}
           <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.categorySection}>
-            <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.muted }]}>
+            <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.secondary }]}>
               Category
             </Text>
             <View style={styles.categoryGrid}>
-              {currentCategories.map((category, index) => {
+              {currentcategoryColors.map((category, index) => {
                 const isSelected = selectedCategory?.id === category.id;
                 return (
                   <Pressable
@@ -239,18 +239,18 @@ export default function QuickAddScreen() {
               label="Note (optional)"
               value={note}
               onChangeText={setNote}
-              leftIcon={<Feather name="edit-3" size={20} color={colors.text.muted} />}
+              leftIcon={<Feather name="edit-3" size={20} color={colors.text.secondary} />}
             />
           </Animated.View>
           
           {/* AI Suggestion */}
           {selectedCategory && (
             <Animated.View entering={FadeInUp.delay(100).duration(300)}>
-              <ClayCard variant="subtle" style={{ backgroundColor: colors.primary.light }}>
+              <ClayCard variant="subtle" style={{ backgroundColor: colors.primary.subtle }}>
                 <View style={styles.aiSuggestion}>
                   <ManjeCharacter mood="thinking" size="sm" />
                   <View style={styles.aiSuggestionText}>
-                    <Text style={[typeScale.labelMedium, { color: colors.primary.main }]}>
+                    <Text style={[typeScale.labelMedium, { color: colors.primary.default }]}>
                       💡 Quick tip
                     </Text>
                     <Text style={[typeScale.bodySmall, { color: colors.text.secondary, marginTop: 2 }]}>

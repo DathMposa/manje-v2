@@ -25,7 +25,7 @@ import { ManjeCharacter } from '../../src/components/character';
 import { useAuthStore } from '../../src/stores/authStore';
 import { typeScale } from '../../src/theme/typography';
 import { spacing, layout } from '../../src/theme/spacing';
-import { springConfigs } from '../../src/theme/animations';
+import { springPresets } from '../../src/theme/animations';
 
 export default function SuccessScreen() {
   const { colors, isDark } = useTheme();
@@ -42,8 +42,8 @@ export default function SuccessScreen() {
     confettiScale.value = withDelay(
       300,
       withSequence(
-        withSpring(1.2, springConfigs.bouncy),
-        withSpring(1, springConfigs.default)
+        withSpring(1.2, springPresets.bouncy),
+        withSpring(1, springPresets.default)
       )
     );
   }, []);
@@ -100,7 +100,7 @@ export default function SuccessScreen() {
           You're all set!
         </Text>
         
-        <Text style={[styles.subtitle, typeScale.headlineMedium, { color: colors.primary.main }]}>
+        <Text style={[styles.subtitle, typeScale.headlineMedium, { color: colors.primary.default }]}>
           Welcome to Manje 🌱
         </Text>
         
@@ -113,19 +113,19 @@ export default function SuccessScreen() {
           <FeatureItem 
             icon="📊" 
             text="Track every transaction" 
-            color={colors.text.muted}
+            color={colors.text.secondary}
             delay={600}
           />
           <FeatureItem 
             icon="🎯" 
             text="Set and achieve goals" 
-            color={colors.text.muted}
+            color={colors.text.secondary}
             delay={700}
           />
           <FeatureItem 
             icon="💡" 
             text="Get smart insights" 
-            color={colors.text.muted}
+            color={colors.text.secondary}
             delay={800}
           />
         </View>

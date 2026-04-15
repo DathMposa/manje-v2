@@ -48,12 +48,12 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon, label, value, onPress
       >
         {label}
       </Text>
-      {value && (
-        <Text style={[styles.settingsValue, typeScale.bodySmall, { color: colors.text.muted }]}>
+      {!!value && (
+        <Text style={[styles.settingsValue, typeScale.bodySmall, { color: colors.text.secondary }]}>
           {value}
         </Text>
       )}
-      <Feather name="chevron-right" size={20} color={colors.text.muted} />
+      <Feather name="chevron-right" size={20} color={colors.text.secondary} />
     </Pressable>
   );
 };
@@ -107,7 +107,7 @@ export default function ProfileScreen() {
         <Animated.View entering={FadeInDown.delay(100).duration(400)}>
           <ClayCard variant="clay" style={styles.profileCard}>
             <View style={styles.profileContent}>
-              <View style={[styles.avatar, { backgroundColor: colors.primary.light }]}>
+              <View style={[styles.avatar, { backgroundColor: colors.primary.subtle }]}>
                 <ManjeCharacter mood="happy" size="sm" />
               </View>
               <View style={styles.profileInfo}>
@@ -127,7 +127,7 @@ export default function ProfileScreen() {
         
         {/* Settings Sections */}
         <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.section}>
-          <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.muted }]}>
+          <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.secondary }]}>
             Preferences
           </Text>
           <View style={styles.settingsGroup}>
@@ -138,12 +138,6 @@ export default function ProfileScreen() {
               onPress={() => {}}
             />
             <SettingsItem
-              icon={isDark ? 'moon' : 'sun'}
-              label="Appearance"
-              value={getThemeLabel()}
-              onPress={toggleTheme}
-            />
-            <SettingsItem
               icon="bell"
               label="Notifications"
               onPress={() => {}}
@@ -152,7 +146,7 @@ export default function ProfileScreen() {
         </Animated.View>
         
         <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.section}>
-          <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.muted }]}>
+          <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.secondary }]}>
             Data & Privacy
           </Text>
           <View style={styles.settingsGroup}>
@@ -175,7 +169,7 @@ export default function ProfileScreen() {
         </Animated.View>
         
         <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.section}>
-          <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.muted }]}>
+          <Text style={[styles.sectionTitle, typeScale.labelMedium, { color: colors.text.secondary }]}>
             Support
           </Text>
           <View style={styles.settingsGroup}>
@@ -210,10 +204,10 @@ export default function ProfileScreen() {
         
         {/* Version */}
         <Animated.View entering={FadeInDown.delay(600).duration(400)} style={styles.version}>
-          <Text style={[typeScale.bodySmall, { color: colors.text.muted }]}>
+          <Text style={[typeScale.bodySmall, { color: colors.text.secondary }]}>
             Manje v1.0.0
           </Text>
-          <Text style={[typeScale.bodySmall, { color: colors.text.muted }]}>
+          <Text style={[typeScale.bodySmall, { color: colors.text.secondary }]}>
             Made with 💚 in Malawi
           </Text>
         </Animated.View>

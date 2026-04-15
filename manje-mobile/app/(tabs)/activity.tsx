@@ -13,7 +13,7 @@ import { useTheme } from '../../src/hooks/useTheme';
 import { ClayCard, ScreenHeader } from '../../src/components/common';
 import { typeScale } from '../../src/theme/typography';
 import { spacing, layout, radius } from '../../src/theme/spacing';
-import { categories } from '../../src/theme/colors';
+import { categoryColors } from '../../src/theme/colors';
 
 interface Transaction {
   id: string;
@@ -122,13 +122,13 @@ export default function ActivityScreen() {
         <View 
           style={[
             styles.transactionIcon, 
-            { backgroundColor: `${categories[item.category as keyof typeof categories] || categories.other}20` }
+            { backgroundColor: `${categoryColors[item.category as keyof typeof categoryColors]?.fg || categoryColors.other.fg}20` }
           ]}
         >
           <Feather 
             name={getTransactionIcon(item.category)} 
             size={20} 
-            color={categories[item.category as keyof typeof categories] || categories.other} 
+            color={categoryColors[item.category as keyof typeof categoryColors]?.fg || categoryColors.other.fg} 
           />
         </View>
         
@@ -136,7 +136,7 @@ export default function ActivityScreen() {
           <Text style={[styles.transactionTitle, typeScale.labelLarge, { color: colors.text.primary }]}>
             {item.title}
           </Text>
-          <Text style={[typeScale.bodySmall, { color: colors.text.muted }]}>
+          <Text style={[typeScale.bodySmall, { color: colors.text.secondary }]}>
             {item.time} • {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
           </Text>
         </View>
@@ -159,7 +159,7 @@ export default function ActivityScreen() {
       entering={FadeInDown.delay(index * 100).duration(400)}
       style={styles.dateGroup}
     >
-      <Text style={[styles.dateHeader, typeScale.labelMedium, { color: colors.text.muted }]}>
+      <Text style={[styles.dateHeader, typeScale.labelMedium, { color: colors.text.secondary }]}>
         {item.date}
       </Text>
       {item.transactions.map((transaction, tIndex) => (
@@ -182,8 +182,8 @@ export default function ActivityScreen() {
         style={[
           styles.filterChip,
           {
-            backgroundColor: isActive ? colors.primary.main : colors.bg.card,
-            borderColor: isActive ? colors.primary.main : colors.border.light,
+            backgroundColor: isActive ? colors.primary.default : colors.bg.card,
+            borderColor: isActive ? colors.primary.default : colors.border.light,
           },
           shadow('xs'),
         ]}
@@ -227,14 +227,14 @@ export default function ActivityScreen() {
           styles.searchContainer,
           { 
             backgroundColor: colors.bg.sunken,
-            borderColor: colors.border.medium,
+            borderColor: colors.border.light,
           }
         ]}>
-          <Feather name="search" size={20} color={colors.text.muted} />
+          <Feather name="search" size={20} color={colors.text.secondary} />
           <TextInput
             style={[styles.searchInput, typeScale.bodyMedium, { color: colors.text.primary }]}
             placeholder="Search transactions..."
-            placeholderTextColor={colors.text.muted}
+            placeholderTextColor={colors.text.secondary}
             value={searchQuery}
             onChangeText={setSearchQuery}
             autoCapitalize="none"
@@ -242,7 +242,7 @@ export default function ActivityScreen() {
           />
           {searchQuery.length > 0 && (
             <Pressable onPress={() => setSearchQuery('')}>
-              <Feather name="x" size={20} color={colors.text.muted} />
+              <Feather name="x" size={20} color={colors.text.secondary} />
             </Pressable>
           )}
         </View>
@@ -264,8 +264,8 @@ export default function ActivityScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Feather name="inbox" size={48} color={colors.text.muted} />
-            <Text style={[styles.emptyText, typeScale.bodyMedium, { color: colors.text.muted }]}>
+            <Feather name="inbox" size={48} color={colors.text.secondary} />
+            <Text style={[styles.emptyText, typeScale.bodyMedium, { color: colors.text.secondary }]}>
               No transactions found
             </Text>
           </View>

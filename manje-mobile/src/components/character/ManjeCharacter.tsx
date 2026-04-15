@@ -19,9 +19,7 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated';
 import { useTheme } from '../../hooks/useTheme';
-import { layout } from '../../theme/spacing';
-import { duration, springConfigs } from '../../theme/animations';
-import { character as characterColors } from '../../theme/colors';
+import { duration, springPresets } from '../../theme/animations';
 
 export type ManjeMood = 
   | 'wave' 
@@ -31,9 +29,11 @@ export type ManjeMood =
   | 'concern' 
   | 'encourage' 
   | 'sleep' 
-  | 'surprise';
+  | 'surprise'
+  | 'tip'
+  | 'focus';
 
-export type ManjeSize = 'sm' | 'md' | 'lg' | 'xl';
+export type ManjeSize = 'sm' | 'md' | 'lg' | 'xl' | number;
 
 interface ManjeCharacterProps {
   mood?: ManjeMood;
@@ -43,12 +43,26 @@ interface ManjeCharacterProps {
 }
 
 const getSizeValue = (size: ManjeSize): number => {
+  if (typeof size === 'number') return size;
   switch (size) {
-    case 'sm': return layout.characterSm;
-    case 'md': return layout.characterMd;
-    case 'lg': return layout.characterLg;
-    case 'xl': return layout.characterXl;
+    case 'sm': return 60;
+    case 'md': return 100;
+    case 'lg': return 150;
+    case 'xl': return 200;
+    default: return 100;
   }
+};
+
+const characterColors = {
+  bodyBase: '#1A6B4A',
+  bodyHighlight: '#2ECC71',
+  bodyShadow: '#0E3D2A',
+  face: '#FFFFFF',
+  eyes: '#0E2418',
+  blush: '#F472B6',
+  sparkle: '#FCD34D',
+  glassesLight: '#1E293B',
+  glassesDark: '#E8F5EE',
 };
 
 export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
@@ -74,8 +88,8 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
     if (animated && showIdleFloat && mood !== 'sleep') {
       floatY.value = withRepeat(
         withSequence(
-          withTiming(-6, { duration: duration.character, easing: Easing.inOut(Easing.sin) }),
-          withTiming(0, { duration: duration.character, easing: Easing.inOut(Easing.sin) })
+          withTiming(-6, { duration: duration.slow, easing: Easing.inOut(Easing.sin) }),
+          withTiming(0, { duration: duration.slow, easing: Easing.inOut(Easing.sin) })
         ),
         -1,
         false
@@ -85,9 +99,7 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
       floatY.value = 0;
     }
     
-    return () => {
-      cancelAnimation(floatY);
-    };
+    return () => cancelAnimation(floatY);
   }, [animated, showIdleFloat, mood]);
   
   // Mood-specific animations
@@ -96,7 +108,6 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
     
     switch (mood) {
       case 'wave':
-        // Wave gesture animation
         waveRotation.value = withRepeat(
           withSequence(
             withTiming(30, { duration: 300, easing: Easing.inOut(Easing.ease) }),
@@ -108,15 +119,13 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
         break;
         
       case 'celebrate':
-        // Celebrate burst animation
         scale.value = withSequence(
-          withSpring(1.12, springConfigs.bouncy),
-          withSpring(1, springConfigs.default)
+          withSpring(1.12, springPresets.bouncy),
+          withSpring(1, springPresets.default)
         );
         break;
         
       case 'thinking':
-        // Thinking dots animation
         thinkingDot1.value = withRepeat(
           withSequence(
             withTiming(1, { duration: 300 }),
@@ -148,21 +157,18 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
         break;
         
       case 'surprise':
-        // Surprise pop animation
         scale.value = withSequence(
-          withSpring(1.15, { damping: 4, stiffness: 120 }),
-          withSpring(1, springConfigs.default)
+          withSpring(1.15, { damping: 4, stiffness: 120, mass: 1, overshootClamping: false }),
+          withSpring(1, springPresets.default)
         );
         break;
         
       case 'concern':
-        // Lean forward animation
         rotation.value = withTiming(5, { duration: 300 });
         break;
         
       default:
-        // Reset animations
-        scale.value = withSpring(1, springConfigs.default);
+        scale.value = withSpring(1, springPresets.default);
         rotation.value = withTiming(0, { duration: 200 });
         waveRotation.value = 0;
     }
@@ -185,33 +191,23 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
     ],
   }));
   
-  const thinkingDot1Style = useAnimatedStyle(() => ({
-    opacity: thinkingDot1.value,
-  }));
+  const thinkingDot1Style = useAnimatedStyle(() => ({ opacity: thinkingDot1.value }));
+  const thinkingDot2Style = useAnimatedStyle(() => ({ opacity: thinkingDot2.value }));
+  const thinkingDot3Style = useAnimatedStyle(() => ({ opacity: thinkingDot3.value }));
   
-  const thinkingDot2Style = useAnimatedStyle(() => ({
-    opacity: thinkingDot2.value,
-  }));
-  
-  const thinkingDot3Style = useAnimatedStyle(() => ({
-    opacity: thinkingDot3.value,
-  }));
-  
-  // Get expression based on mood
   const getExpression = () => {
     switch (mood) {
       case 'wave':
-        return { eyes: '◠ ◠', mouth: '◡', eyebrows: '' };
       case 'happy':
+      case 'encourage':
+      case 'tip':
+      case 'celebrate':
         return { eyes: '◠ ◠', mouth: '◡', eyebrows: '' };
       case 'thinking':
         return { eyes: '◔ ◔', mouth: '—', eyebrows: '' };
-      case 'celebrate':
-        return { eyes: '★ ★', mouth: '◡', eyebrows: '' };
       case 'concern':
+      case 'focus':
         return { eyes: '• •', mouth: '︵', eyebrows: '╭ ╮' };
-      case 'encourage':
-        return { eyes: '◠ ◠', mouth: '◡', eyebrows: '' };
       case 'sleep':
         return { eyes: '— —', mouth: '∼', eyebrows: '' };
       case 'surprise':
@@ -233,7 +229,6 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
         backgroundColor: characterColors.bodyBase,
         borderRadius: sizeValue * 0.35,
       }]}>
-        {/* Body highlight */}
         <View style={[styles.bodyHighlight, {
           width: sizeValue * 0.5,
           height: sizeValue * 0.3,
@@ -271,7 +266,7 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
         </Text>
         
         {/* Eyebrows (for concern) */}
-        {expression.eyebrows && (
+        {!!expression.eyebrows && (
           <Text style={[styles.eyebrows, {
             fontSize: sizeValue * 0.08,
             color: characterColors.eyes,
@@ -290,8 +285,8 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
           {expression.mouth}
         </Text>
         
-        {/* Blush (for happy/celebrate) */}
-        {(mood === 'happy' || mood === 'celebrate' || mood === 'wave') && (
+        {/* Blush */}
+        {(mood === 'happy' || mood === 'celebrate' || mood === 'wave' || mood === 'tip') && (
           <>
             <View style={[styles.blush, {
               width: sizeValue * 0.08,

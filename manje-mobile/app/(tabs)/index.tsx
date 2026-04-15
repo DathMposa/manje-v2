@@ -17,7 +17,7 @@ import { useAuthStore } from '../../src/stores/authStore';
 import { typeScale } from '../../src/theme/typography';
 import { spacing, layout, radius } from '../../src/theme/spacing';
 import { gradients } from '../../src/theme/gradients';
-import { categories } from '../../src/theme/colors';
+import { categoryColors } from '../../src/theme/colors';
 
 // Mock data for demonstration
 const MOCK_TRANSACTIONS = [
@@ -84,8 +84,8 @@ export default function DashboardScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={colors.primary.main}
-            colors={[colors.primary.main]}
+            tintColor={colors.primary.default}
+            colors={[colors.primary.default]}
           />
         }
       >
@@ -204,7 +204,7 @@ export default function DashboardScreen() {
               Recent Transactions
             </Text>
             <Pressable onPress={() => router.push('/(tabs)/activity')}>
-              <Text style={[typeScale.labelMedium, { color: colors.primary.main }]}>
+              <Text style={[typeScale.labelMedium, { color: colors.primary.default }]}>
                 See All
               </Text>
             </Pressable>
@@ -220,20 +220,20 @@ export default function DashboardScreen() {
                   <View 
                     style={[
                       styles.transactionIcon, 
-                      { backgroundColor: `${categories[transaction.category as keyof typeof categories]}20` }
+                      { backgroundColor: `${categoryColors[transaction.category as keyof typeof categoryColors]?.fg}20` }
                     ]}
                   >
                     <Feather 
                       name={getTransactionIcon(transaction.category)} 
                       size={18} 
-                      color={categories[transaction.category as keyof typeof categories]} 
+                      color={categoryColors[transaction.category as keyof typeof categoryColors]?.fg || categoryColors.other.fg} 
                     />
                   </View>
                   <View style={styles.transactionInfo}>
                     <Text style={[styles.transactionTitle, typeScale.labelLarge, { color: colors.text.primary }]}>
                       {transaction.title}
                     </Text>
-                    <Text style={[typeScale.bodySmall, { color: colors.text.muted }]}>
+                    <Text style={[typeScale.bodySmall, { color: colors.text.secondary }]}>
                       {transaction.date}
                     </Text>
                   </View>
@@ -260,11 +260,11 @@ export default function DashboardScreen() {
           entering={FadeInDown.delay(500).duration(400)}
           style={styles.section}
         >
-          <ClayCard variant="subtle" style={{ backgroundColor: colors.primary.light }}>
+          <ClayCard variant="subtle" style={{ backgroundColor: colors.primary.subtle }}>
             <View style={styles.insightContent}>
               <ManjeCharacter mood="encourage" size="sm" />
               <View style={styles.insightText}>
-                <Text style={[typeScale.labelLarge, { color: colors.primary.main }]}>
+                <Text style={[typeScale.labelLarge, { color: colors.primary.default }]}>
                   💡 Spending Insight
                 </Text>
                 <Text style={[typeScale.bodySmall, { color: colors.text.secondary, marginTop: 4 }]}>

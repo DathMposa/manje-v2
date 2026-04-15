@@ -39,7 +39,7 @@ export default function BudgetsScreen() {
           
           <ClayCard variant="subtle" style={styles.tipCard}>
             <View style={styles.tipContent}>
-              <Feather name="info" size={20} color={colors.primary.main} />
+              <Feather name="info" size={20} color={colors.primary.default} />
               <Text style={[styles.tipText, typeScale.bodySmall, { color: colors.text.secondary }]}>
                 Start with one budget category like "Groceries" or "Transport" to build the habit.
               </Text>

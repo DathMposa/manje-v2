@@ -1,137 +1,119 @@
-/**
- * ScreenHeader Component
- * Standard header with back button, title, and optional action.
- */
-
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ViewStyle } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated';
+import { Feather } from '@expo/vector-icons'; // Or Ionicons if preferred, wait, the guide specifically mentions Ionicons, but Feather is mostly compatible. The guide says: `Ionicons chevron-back (24px)`
+import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../hooks/useTheme';
 import { layout, spacing } from '../../theme/spacing';
 import { typeScale } from '../../theme/typography';
-import { springConfigs } from '../../theme/animations';
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-interface ScreenHeaderProps {
+export interface ScreenHeaderProps {
   title?: string;
   showBack?: boolean;
-  onBackPress?: () => void;
+  onBack?: () => void;
   rightAction?: React.ReactNode;
   transparent?: boolean;
+  style?: ViewStyle;
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   title,
   showBack = true,
-  onBackPress,
+  onBack,
   rightAction,
   transparent = false,
+  style,
 }) => {
   const { colors } = useTheme();
   const router = useRouter();
-  const backScale = useSharedValue(1);
-  
-  const handleBackPress = () => {
+
+  const handleBack = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (onBackPress) {
-      onBackPress();
+    if (onBack) {
+      onBack();
     } else {
       router.back();
     }
   };
-  
-  const handleBackPressIn = () => {
-    backScale.value = withSpring(0.9, springConfigs.snappy);
+
+  const containerStyle: ViewStyle = {
+    height: layout.headerHeight,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // for absolute title
+    paddingHorizontal: layout.screenPaddingH,
+    backgroundColor: transparent ? 'transparent' : colors.bg.base,
+    borderBottomWidth: transparent ? 0 : 1,
+    borderBottomColor: transparent ? 'transparent' : colors.border.light,
   };
-  
-  const handleBackPressOut = () => {
-    backScale.value = withSpring(1, springConfigs.snappy);
-  };
-  
-  const backAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: backScale.value }],
-  }));
-  
+
   return (
-    <View style={[
-      styles.container,
-      { backgroundColor: transparent ? 'transparent' : colors.bg.base },
-    ]}>
-      {/* Left - Back Button */}
-      <View style={styles.left}>
-        {showBack && (
-          <AnimatedPressable
-            onPress={handleBackPress}
-            onPressIn={handleBackPressIn}
-            onPressOut={handleBackPressOut}
-            style={[styles.backButton, backAnimatedStyle]}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Feather name="arrow-left" size={24} color={colors.text.primary} />
-          </AnimatedPressable>
-        )}
-      </View>
-      
-      {/* Center - Title */}
-      <View style={styles.center}>
-        {title && (
+    <View style={[containerStyle, style]}>
+      {/* Absolute Title */}
+      {!!title && (
+        <View style={styles.titleContainer} pointerEvents="none">
           <Text
             style={[
-              styles.title,
-              typeScale.headlineMedium,
-              { color: colors.text.primary },
+              typeScale['headline.lg'],
+              { color: transparent ? colors.text.inverse : colors.text.primary, textAlign: 'center' },
             ]}
             numberOfLines={1}
           >
             {title}
           </Text>
-        )}
-      </View>
-      
-      {/* Right - Action */}
-      <View style={styles.right}>
-        {rightAction}
+        </View>
+      )}
+
+      {/* Left Action (Back) */}
+      {showBack ? (
+        <Pressable
+          onPress={handleBack}
+          style={styles.backButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={transparent ? colors.text.inverse : colors.text.primary}
+          />
+        </Pressable>
+      ) : (
+        <View style={styles.placeholderButton} />
+      )}
+
+      {/* Right Action */}
+      <View style={styles.rightActionContainer}>
+        {rightAction || <View style={styles.placeholderButton} />}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    height: layout.headerHeight,
-    flexDirection: 'row',
+  titleContainer: {
+    position: 'absolute',
+    left: 60,
+    right: 60,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: spacing[4],
-  },
-  left: {
-    width: 44,
-    alignItems: 'flex-start',
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  right: {
-    width: 44,
-    alignItems: 'flex-end',
   },
   backButton: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
+    width: layout.touchTargetMin,
+    height: layout.touchTargetMin,
     justifyContent: 'center',
+    alignItems: 'flex-start',
+    position: 'absolute',
+    left: layout.screenPaddingH,
   },
-  title: {
-    textAlign: 'center',
+  rightActionContainer: {
+    position: 'absolute',
+    right: layout.screenPaddingH,
+    height: layout.touchTargetMin,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  placeholderButton: {
+    width: layout.touchTargetMin,
   },
 });
-
-export default ScreenHeader;
