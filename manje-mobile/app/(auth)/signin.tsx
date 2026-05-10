@@ -9,7 +9,6 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import * as SecureStore from 'expo-secure-store';
 import { useTheme } from '../../src/hooks/useTheme';
 import { Button, Input, ScreenHeader, ClayCard } from '../../src/components/common';
 import { ManjeCharacter } from '../../src/components/character';
@@ -20,12 +19,13 @@ import { spacing, layout } from '../../src/theme/spacing';
 export default function SignInScreen() {
   const { colors } = useTheme();
   const router = useRouter();
-  const { setUser, setOnboarded } = useAuthStore();
+  const { signInWithEmail, signInWithGoogle } = useAuthStore();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const validateForm = (): boolean => {
@@ -49,42 +49,43 @@ export default function SignInScreen() {
     if (!validateForm()) return;
     
     setLoading(true);
+    setErrors({});
     
     try {
-      // Simulate API call - replace with Firebase Auth
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Store mock auth token
-      await SecureStore.setItemAsync('manje_auth_token', 'mock_token_' + Date.now());
-      
-      // Set user in store (simulating existing user who completed onboarding)
-      setUser({
-        id: 'user_' + Date.now(),
-        email: email,
-        displayName: email.split('@')[0],
-      });
-      
-      // Mark as onboarded (existing user)
-      await setOnboarded(true);
-      
-      // Navigate to main app
-      router.replace('/(tabs)');
+      const result = await signInWithEmail(email.trim(), password);
+      router.replace(result.isOnboarded ? '/(tabs)' : '/(onboarding)/country');
     } catch (error) {
       console.error('Sign in error:', error);
-      setErrors({ general: 'Invalid email or password. Please try again.' });
+      setErrors({ general: error instanceof Error ? error.message : 'Invalid email or password. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
   
   const handleGoogleSignIn = async () => {
-    // TODO: Implement Google Sign-In
-    console.log('Google Sign In');
+    setGoogleLoading(true);
+    setErrors({});
+
+    try {
+      const result = await signInWithGoogle();
+
+      if ('cancelled' in result) {
+        return;
+      }
+
+      router.replace(result.isOnboarded ? '/(tabs)' : '/(onboarding)/country');
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      setErrors({
+        general: error instanceof Error ? error.message : 'Google sign-in failed. Please try again.',
+      });
+    } finally {
+      setGoogleLoading(false);
+    }
   };
   
   const handleForgotPassword = () => {
-    // TODO: Navigate to forgot password screen
-    console.log('Forgot Password');
+    router.push('/(auth)/forgot-password');
   };
   
   return (
@@ -119,8 +120,8 @@ export default function SignInScreen() {
           <Animated.View entering={FadeInDown.delay(200).duration(400)}>
             {/* General Error */}
             {!!errors.general && (
-              <ClayCard variant="subtle" style={{ ...styles.errorCard, backgroundColor: colors.status.dangerBg }}>
-                <Text style={[typeScale.bodySmall, { color: colors.status.danger }]}>
+              <ClayCard variant="subtle" style={{ ...styles.errorCard, backgroundColor: colors.status.danger.bg }}>
+                <Text style={[typeScale.bodySmall, { color: colors.status.danger.text }]}>
                   {errors.general}
                 </Text>
               </ClayCard>
@@ -174,6 +175,7 @@ export default function SignInScreen() {
               size="lg"
               fullWidth
               loading={loading}
+              disabled={googleLoading}
             />
             
             {/* Divider */}
@@ -192,6 +194,8 @@ export default function SignInScreen() {
               variant="secondary"
               size="lg"
               fullWidth
+              loading={googleLoading}
+              disabled={loading}
               icon={<Feather name="chrome" size={20} color={colors.text.primary} />}
             />
           </Animated.View>

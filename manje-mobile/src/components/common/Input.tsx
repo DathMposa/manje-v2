@@ -42,9 +42,9 @@ export const Input: React.FC<InputProps> = ({
   };
 
   const isError = !!error;
-  const borderColor = isError ? colors.status.danger : isFocused ? colors.border.focus : colors.border.light;
+  const borderColor = isError ? colors.status.danger.base : isFocused ? colors.border.focus : colors.border.light;
   const borderWidth = isFocused || isError ? 2 : 1;
-  const backgroundColor = isError ? colors.status.dangerBg : colors.bg.sunken;
+  const backgroundColor = isError ? colors.status.danger.bg : colors.bg.sunken;
 
   const glowShadow = isFocused ? (isError ? glow('danger') : glow('primary')) : {};
 
@@ -86,7 +86,7 @@ export const Input: React.FC<InputProps> = ({
         <Text
           style={[
             styles.helperText,
-            { color: isError ? colors.status.danger : colors.text.secondary },
+            { color: isError ? colors.status.danger.text : colors.text.secondary },
           ]}
         >
           {error || hint}

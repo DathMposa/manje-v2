@@ -19,7 +19,7 @@ export const fonts = {
   },
 };
 
-export const typeScale: Record<string, TextStyle> = {
+export const typeScale = {
   'display.lg': {
     fontFamily: fonts.syne.extraBold,
     fontSize: 36,
@@ -104,7 +104,67 @@ export const typeScale: Record<string, TextStyle> = {
     lineHeight: 20 * 1.2,
     fontVariant: ['tabular-nums'],
   },
-};
+  displayLarge: {
+    fontFamily: fonts.syne.extraBold,
+    fontSize: 36,
+    lineHeight: 36 * 1.1,
+  },
+  displayMedium: {
+    fontFamily: fonts.syne.bold,
+    fontSize: 30,
+    lineHeight: 30 * 1.15,
+  },
+  displaySmall: {
+    fontFamily: fonts.syne.bold,
+    fontSize: 24,
+    lineHeight: 24 * 1.2,
+  },
+  headlineLarge: {
+    fontFamily: fonts.workSans.semiBold,
+    fontSize: 20,
+    lineHeight: 20 * 1.3,
+  },
+  headlineMedium: {
+    fontFamily: fonts.workSans.semiBold,
+    fontSize: 18,
+    lineHeight: 18 * 1.3,
+  },
+  headlineSmall: {
+    fontFamily: fonts.workSans.semiBold,
+    fontSize: 16,
+    lineHeight: 16 * 1.4,
+  },
+  bodyLarge: {
+    fontFamily: fonts.workSans.regular,
+    fontSize: 18,
+    lineHeight: 18 * 1.5,
+  },
+  bodyMedium: {
+    fontFamily: fonts.workSans.regular,
+    fontSize: 16,
+    lineHeight: 16 * 1.5,
+  },
+  bodySmall: {
+    fontFamily: fonts.workSans.regular,
+    fontSize: 14,
+    lineHeight: 14 * 1.5,
+  },
+  labelLarge: {
+    fontFamily: fonts.workSans.medium,
+    fontSize: 16,
+    lineHeight: 16 * 1.4,
+  },
+  labelMedium: {
+    fontFamily: fonts.workSans.medium,
+    fontSize: 14,
+    lineHeight: 14 * 1.3,
+  },
+  labelSmall: {
+    fontFamily: fonts.workSans.medium,
+    fontSize: 12,
+    lineHeight: 12 * 1.3,
+  },
+} as const satisfies Record<string, TextStyle>;
 
 export type TypographyVariant = keyof typeof typeScale;
 

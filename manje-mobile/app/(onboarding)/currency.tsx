@@ -118,8 +118,8 @@ export default function CurrencyScreen() {
                 {item.code}
               </Text>
               {isRecommended && (
-                <View style={[styles.recommendedBadge, { backgroundColor: colors.status.successBg }]}>
-                  <Text style={[typeScale.labelSmall, { color: colors.status.success }]}>
+                <View style={[styles.recommendedBadge, { backgroundColor: colors.status.success.bg }]}>
+                  <Text style={[typeScale.labelSmall, { color: colors.status.success.text }]}>
                     Recommended
                   </Text>
                 </View>

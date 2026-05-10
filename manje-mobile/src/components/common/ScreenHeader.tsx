@@ -12,6 +12,7 @@ export interface ScreenHeaderProps {
   title?: string;
   showBack?: boolean;
   onBack?: () => void;
+  onBackPress?: () => void;
   rightAction?: React.ReactNode;
   transparent?: boolean;
   style?: ViewStyle;
@@ -21,6 +22,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   title,
   showBack = true,
   onBack,
+  onBackPress,
   rightAction,
   transparent = false,
   style,
@@ -30,7 +32,9 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 
   const handleBack = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (onBack) {
+    if (onBackPress) {
+      onBackPress();
+    } else if (onBack) {
       onBack();
     } else {
       router.back();

@@ -9,7 +9,6 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import * as SecureStore from 'expo-secure-store';
 import { useTheme } from '../../src/hooks/useTheme';
 import { Button, Input, ScreenHeader, ClayCard } from '../../src/components/common';
 import { ManjeCharacter } from '../../src/components/character';
@@ -20,7 +19,7 @@ import { spacing, layout, radius } from '../../src/theme/spacing';
 export default function SignUpScreen() {
   const { colors } = useTheme();
   const router = useRouter();
-  const { setUser } = useAuthStore();
+  const { signUpWithEmail, signInWithGoogle } = useAuthStore();
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,6 +28,7 @@ export default function SignUpScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const validateForm = (): boolean => {
@@ -66,34 +66,39 @@ export default function SignUpScreen() {
     if (!validateForm()) return;
     
     setLoading(true);
+    setErrors({});
     
     try {
-      // Simulate API call - replace with Firebase Auth
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Store mock auth token
-      await SecureStore.setItemAsync('manje_auth_token', 'mock_token_' + Date.now());
-      
-      // Set user in store
-      setUser({
-        id: 'user_' + Date.now(),
-        email: email,
-        displayName: name,
-      });
-      
-      // Navigate to onboarding
+      await signUpWithEmail(name.trim(), email.trim(), password);
       router.replace('/(onboarding)/country');
     } catch (error) {
       console.error('Sign up error:', error);
-      setErrors({ general: 'Something went wrong. Please try again.' });
+      setErrors({ general: error instanceof Error ? error.message : 'Something went wrong. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
   
   const handleGoogleSignUp = async () => {
-    // TODO: Implement Google Sign-In
-    console.log('Google Sign Up');
+    setGoogleLoading(true);
+    setErrors({});
+
+    try {
+      const result = await signInWithGoogle();
+
+      if ('cancelled' in result) {
+        return;
+      }
+
+      router.replace(result.isOnboarded ? '/(tabs)' : '/(onboarding)/country');
+    } catch (error) {
+      console.error('Google sign up error:', error);
+      setErrors({
+        general: error instanceof Error ? error.message : 'Google sign-in failed. Please try again.',
+      });
+    } finally {
+      setGoogleLoading(false);
+    }
   };
   
   return (
@@ -125,8 +130,8 @@ export default function SignUpScreen() {
           <Animated.View entering={FadeInDown.delay(200).duration(400)}>
             {/* General Error */}
             {!!errors.general && (
-              <ClayCard variant="subtle" style={{ ...styles.errorCard, backgroundColor: colors.status.dangerBg }}>
-                <Text style={[typeScale.bodySmall, { color: colors.status.danger }]}>
+              <ClayCard variant="subtle" style={{ ...styles.errorCard, backgroundColor: colors.status.danger.bg }}>
+                <Text style={[typeScale.bodySmall, { color: colors.status.danger.text }]}>
                   {errors.general}
                 </Text>
               </ClayCard>
@@ -192,7 +197,7 @@ export default function SignUpScreen() {
               <View style={[
                 styles.checkbox,
                 { 
-                  borderColor: errors.terms ? colors.status.danger : colors.border.light,
+                  borderColor: errors.terms ? colors.status.danger.base : colors.border.light,
                   backgroundColor: agreeToTerms ? colors.primary.default : 'transparent',
                 }
               ]}>
@@ -208,7 +213,7 @@ export default function SignUpScreen() {
               </Text>
             </Pressable>
             {!!errors.terms && (
-              <Text style={[styles.termsError, typeScale.bodySmall, { color: colors.status.danger }]}>
+              <Text style={[styles.termsError, typeScale.bodySmall, { color: colors.status.danger.text }]}>
                 {errors.terms}
               </Text>
             )}
@@ -223,6 +228,7 @@ export default function SignUpScreen() {
               size="lg"
               fullWidth
               loading={loading}
+              disabled={googleLoading}
             />
             
             {/* Divider */}
@@ -241,6 +247,8 @@ export default function SignUpScreen() {
               variant="secondary"
               size="lg"
               fullWidth
+              loading={googleLoading}
+              disabled={loading}
               icon={<Feather name="chrome" size={20} color={colors.text.primary} />}
             />
           </Animated.View>

@@ -2,9 +2,18 @@
 
 AI-powered personal finance app for Malawi and Southern Africa.
 
+## Current Status
+
+- Expo Router app on Expo SDK 55
+- Shared theme/contracts reconciled and `npm run typecheck` passes
+- Local persisted stores now back auth profile state, transactions, goals, and budgets
+- Core P0 flow now supports real quick-add, dashboard/activity rendering, transaction detail/edit/delete, and goal create/contribute/edit
+- Firebase email/password auth and native Google sign-in are now wired in the client
+- Firebase project credentials, Google service files, and production observability still need environment-specific setup
+
 ## Tech Stack
 
-- **Framework:** React Native with Expo SDK 54
+- **Framework:** React Native with Expo SDK 55
 - **Navigation:** Expo Router (file-based routing)
 - **State Management:** Zustand
 - **Animations:** React Native Reanimated
@@ -78,6 +87,9 @@ npm run ios
 
 # Run on web
 npm run web
+
+# Validate types
+npm run typecheck
 ```
 
 ## Design System
@@ -121,13 +133,40 @@ All design values are defined in `src/theme/`:
 3. Uncomment the font requires in `src/theme/typography.ts`
 4. Rebuild the app
 
-## Next Steps
+## Environment Setup
 
-- [ ] Integrate Firebase Authentication
-- [ ] Add SQLite for offline data storage
-- [ ] Implement AI categorization with DeepInfra
-- [ ] Add budget creation flow
-- [ ] Implement goals & savings features
+Copy `.env.example` to `.env` and fill in:
+
+- `EXPO_PUBLIC_FIREBASE_API_KEY`
+- `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `EXPO_PUBLIC_FIREBASE_PROJECT_ID`
+- `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `EXPO_PUBLIC_FIREBASE_APP_ID`
+- `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`
+- `DEEPINFRA_API_KEY`
+- `SENTRY_DSN`
+
+## Firebase & Google Sign-In Setup
+
+1. Create Android and iOS apps in your Firebase project.
+2. In Firebase Authentication, enable:
+   - Email/Password
+   - Google
+3. Download `google-services.json` and place it at the project root: `manje-mobile/google-services.json`.
+4. Download `GoogleService-Info.plist` and place it at the project root: `manje-mobile/GoogleService-Info.plist`.
+5. For Android, register the SHA-1 and SHA-256 fingerprints for:
+   - your development build key
+   - your EAS/release signing key
+6. Use the Web OAuth client ID from Firebase/Google Cloud as `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
+7. Build the app with a development build or EAS build. Google sign-in does not work in Expo Go.
+
+## Release Gaps
+
+- [ ] Add Firebase project credentials and native Google service files for each environment
+- [ ] Add SQLite + migrations if we move beyond the current persisted Zustand foundation
+- [ ] Wire notifications, crash reporting, analytics, and AI services
+- [ ] Add automated tests beyond typecheck
 
 ## License
 

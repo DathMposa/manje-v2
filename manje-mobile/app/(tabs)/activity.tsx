@@ -3,98 +3,84 @@
  * Full transaction list with filtering and search.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { useTheme } from '../../src/hooks/useTheme';
-import { ClayCard, ScreenHeader } from '../../src/components/common';
 import { typeScale } from '../../src/theme/typography';
 import { spacing, layout, radius } from '../../src/theme/spacing';
 import { categoryColors } from '../../src/theme/colors';
-
-interface Transaction {
-  id: string;
-  title: string;
-  category: string;
-  amount: number;
-  date: string;
-  time: string;
-}
-
-// Mock data grouped by date
-const MOCK_TRANSACTIONS: { date: string; transactions: Transaction[] }[] = [
-  {
-    date: 'Today',
-    transactions: [
-      { id: '1', title: 'Shoprite Groceries', category: 'groceries', amount: -12500, date: 'Today', time: '2:30 PM' },
-      { id: '2', title: 'Airtel Mobile Money', category: 'income', amount: 50000, date: 'Today', time: '11:15 AM' },
-      { id: '3', title: 'Coffee Shop', category: 'dining', amount: -1500, date: 'Today', time: '9:00 AM' },
-    ],
-  },
-  {
-    date: 'Yesterday',
-    transactions: [
-      { id: '4', title: 'Uber Ride', category: 'transport', amount: -3500, date: 'Yesterday', time: '6:45 PM' },
-      { id: '5', title: 'Netflix Subscription', category: 'entertainment', amount: -8900, date: 'Yesterday', time: '12:00 AM' },
-    ],
-  },
-  {
-    date: 'March 15',
-    transactions: [
-      { id: '6', title: 'Electricity Bill', category: 'utilities', amount: -15000, date: 'March 15', time: '3:00 PM' },
-      { id: '7', title: 'Pharmacy', category: 'healthcare', amount: -4500, date: 'March 15', time: '10:30 AM' },
-      { id: '8', title: 'Salary Deposit', category: 'income', amount: 250000, date: 'March 15', time: '8:00 AM' },
-    ],
-  },
-  {
-    date: 'March 14',
-    transactions: [
-      { id: '9', title: 'Restaurant Dinner', category: 'dining', amount: -12000, date: 'March 14', time: '7:30 PM' },
-      { id: '10', title: 'Fuel Station', category: 'transport', amount: -8000, date: 'March 14', time: '5:00 PM' },
-    ],
-  },
-];
+import { useTransactionStore } from '../../src/stores';
 
 type FilterType = 'all' | 'income' | 'expense';
+
+const getDateLabel = (date: string) => {
+  const target = new Date(date);
+  const today = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const targetStart = new Date(target.getFullYear(), target.getMonth(), target.getDate()).getTime();
+  const diffDays = Math.round((todayStart - targetStart) / 86400000);
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+
+  return target.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+};
+
+const getTimeLabel = (date: string) =>
+  new Date(date).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+
+const getSignedAmount = (amount: number, type: string) => {
+  if (type === 'expense') return -amount;
+  if (type === 'income') return amount;
+  return 0;
+};
 
 export default function ActivityScreen() {
   const { colors, shadow } = useTheme();
   const router = useRouter();
-  
+  const transactions = useTransactionStore((state) => state.transactions);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-  
+
   const currencySymbol = 'MK';
-  
+
   const filteredData = useMemo(() => {
-    return MOCK_TRANSACTIONS.map(group => ({
-      ...group,
-      transactions: group.transactions.filter(t => {
-        // Filter by type
-        if (activeFilter === 'income' && t.amount < 0) return false;
-        if (activeFilter === 'expense' && t.amount > 0) return false;
-        
-        // Filter by search
-        if (searchQuery.trim()) {
-          const query = searchQuery.toLowerCase();
-          return (
-            t.title.toLowerCase().includes(query) ||
-            t.category.toLowerCase().includes(query)
-          );
-        }
-        
-        return true;
-      }),
-    })).filter(group => group.transactions.length > 0);
-  }, [searchQuery, activeFilter]);
-  
-  const formatCurrency = (amount: number) => {
-    return Math.abs(amount).toLocaleString();
-  };
-  
+    const filteredTransactions = transactions.filter((transaction) => {
+      if (activeFilter !== 'all' && transaction.type !== activeFilter) {
+        return false;
+      }
+
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        return (
+          transaction.title.toLowerCase().includes(query) ||
+          transaction.category.toLowerCase().includes(query)
+        );
+      }
+
+      return true;
+    });
+
+    const groups = filteredTransactions.reduce<Record<string, typeof filteredTransactions>>((acc, transaction) => {
+      const label = getDateLabel(transaction.date);
+      acc[label] = [...(acc[label] || []), transaction];
+      return acc;
+    }, {});
+
+    return Object.entries(groups).map(([date, groupedTransactions]) => ({
+      date,
+      transactions: groupedTransactions,
+    }));
+  }, [activeFilter, searchQuery, transactions]);
+
   const getTransactionIcon = (category: string): keyof typeof Feather.glyphMap => {
     const icons: Record<string, keyof typeof Feather.glyphMap> = {
       groceries: 'shopping-cart',
@@ -106,76 +92,81 @@ export default function ActivityScreen() {
       shopping: 'shopping-bag',
       bills: 'file-text',
       education: 'book',
+      salary: 'briefcase',
+      freelance: 'edit-3',
+      investment: 'trending-up',
+      refund: 'rotate-ccw',
       income: 'trending-up',
       transfer: 'repeat',
       other: 'more-horizontal',
     };
     return icons[category] || 'circle';
   };
-  
-  const renderTransaction = ({ item, index }: { item: Transaction; index: number }) => (
-    <Animated.View entering={FadeInRight.delay(index * 30).duration(300)}>
-      <Pressable 
-        style={[styles.transactionItem, { backgroundColor: colors.bg.card }, shadow('sm')]}
-        onPress={() => {}}
-      >
-        <View 
-          style={[
-            styles.transactionIcon, 
-            { backgroundColor: `${categoryColors[item.category as keyof typeof categoryColors]?.fg || categoryColors.other.fg}20` }
-          ]}
+
+  const renderTransaction = ({ item, index }: { item: (typeof filteredData)[number]['transactions'][number]; index: number }) => {
+    const categoryTone =
+      categoryColors[item.category as keyof typeof categoryColors] || categoryColors.other;
+    const signedAmount = getSignedAmount(item.amount, item.type);
+
+    return (
+      <Animated.View entering={FadeInRight.delay(index * 30).duration(300)}>
+        <Pressable
+          style={[styles.transactionItem, { backgroundColor: colors.bg.card }, shadow('sm')]}
+          onPress={() =>
+            router.push({
+              pathname: '/(tabs)/transactions/[id]',
+              params: { id: item.id },
+            })
+          }
         >
-          <Feather 
-            name={getTransactionIcon(item.category)} 
-            size={20} 
-            color={categoryColors[item.category as keyof typeof categoryColors]?.fg || categoryColors.other.fg} 
-          />
-        </View>
-        
-        <View style={styles.transactionInfo}>
-          <Text style={[styles.transactionTitle, typeScale.labelLarge, { color: colors.text.primary }]}>
-            {item.title}
+          <View style={[styles.transactionIcon, { backgroundColor: `${categoryTone.fg}20` }]}>
+            <Feather name={getTransactionIcon(item.category)} size={20} color={categoryTone.fg} />
+          </View>
+
+          <View style={styles.transactionInfo}>
+            <Text style={[styles.transactionTitle, typeScale['label.lg'], { color: colors.text.primary }]}>
+              {item.title}
+            </Text>
+            <Text style={[typeScale['body.sm'], { color: colors.text.secondary }]}>
+              {getTimeLabel(item.date)} • {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
+            </Text>
+          </View>
+
+          <Text
+            style={[
+              styles.transactionAmount,
+              typeScale['label.lg'],
+              { color: item.type === 'income' ? colors.status.success.text : colors.text.primary },
+            ]}
+          >
+            {signedAmount > 0 ? '+' : signedAmount < 0 ? '-' : ''}
+            {currencySymbol} {Math.abs(signedAmount).toLocaleString()}
           </Text>
-          <Text style={[typeScale.bodySmall, { color: colors.text.secondary }]}>
-            {item.time} • {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
-          </Text>
-        </View>
-        
-        <Text 
-          style={[
-            styles.transactionAmount, 
-            typeScale.labelLarge, 
-            { color: item.amount > 0 ? colors.status.success : colors.text.primary }
-          ]}
-        >
-          {item.amount > 0 ? '+' : '-'}{currencySymbol} {formatCurrency(item.amount)}
-        </Text>
-      </Pressable>
-    </Animated.View>
-  );
-  
-  const renderDateGroup = ({ item, index }: { item: typeof MOCK_TRANSACTIONS[0]; index: number }) => (
-    <Animated.View 
-      entering={FadeInDown.delay(index * 100).duration(400)}
-      style={styles.dateGroup}
-    >
-      <Text style={[styles.dateHeader, typeScale.labelMedium, { color: colors.text.secondary }]}>
+        </Pressable>
+      </Animated.View>
+    );
+  };
+
+  const renderDateGroup = ({ item, index }: { item: (typeof filteredData)[number]; index: number }) => (
+    <Animated.View entering={FadeInDown.delay(index * 100).duration(400)} style={styles.dateGroup}>
+      <Text style={[styles.dateHeader, typeScale['label.md'], { color: colors.text.secondary }]}>
         {item.date}
       </Text>
-      {item.transactions.map((transaction, tIndex) => (
+      {item.transactions.map((transaction, transactionIndex) => (
         <View key={transaction.id} style={styles.transactionWrapper}>
-          {renderTransaction({ item: transaction, index: tIndex })}
+          {renderTransaction({ item: transaction, index: transactionIndex })}
         </View>
       ))}
     </Animated.View>
   );
-  
-  const FilterChip: React.FC<{ label: string; type: FilterType; icon: keyof typeof Feather.glyphMap }> = ({ 
-    label, 
-    type, 
-    icon 
+
+  const FilterChip: React.FC<{ label: string; type: FilterType; icon: keyof typeof Feather.glyphMap }> = ({
+    label,
+    type,
+    icon,
   }) => {
     const isActive = activeFilter === type;
+
     return (
       <Pressable
         onPress={() => setActiveFilter(type)}
@@ -188,16 +179,12 @@ export default function ActivityScreen() {
           shadow('xs'),
         ]}
       >
-        <Feather 
-          name={icon} 
-          size={16} 
-          color={isActive ? colors.text.inverse : colors.text.secondary} 
-        />
-        <Text 
+        <Feather name={icon} size={16} color={isActive ? colors.text.inverse : colors.text.secondary} />
+        <Text
           style={[
-            styles.filterChipText, 
-            typeScale.labelMedium, 
-            { color: isActive ? colors.text.inverse : colors.text.secondary }
+            styles.filterChipText,
+            typeScale['label.md'],
+            { color: isActive ? colors.text.inverse : colors.text.secondary },
           ]}
         >
           {label}
@@ -205,34 +192,34 @@ export default function ActivityScreen() {
       </Pressable>
     );
   };
-  
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bg.base }]} edges={['top']}>
-      {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, typeScale.displaySmall, { color: colors.text.primary }]}>
+        <Text style={[styles.headerTitle, typeScale['display.sm'], { color: colors.text.primary }]}>
           Activity
         </Text>
-        <Pressable 
+        <Pressable
           style={[styles.exportButton, { backgroundColor: colors.bg.card }, shadow('sm')]}
-          onPress={() => {}}
+          onPress={() => router.push('/(tabs)/transactions/index')}
         >
-          <Feather name="download" size={20} color={colors.text.primary} />
+          <Feather name="list" size={20} color={colors.text.primary} />
         </Pressable>
       </View>
-      
-      {/* Search */}
+
       <Animated.View entering={FadeInDown.delay(100).duration(400)} style={styles.searchSection}>
-        <View style={[
-          styles.searchContainer,
-          { 
-            backgroundColor: colors.bg.sunken,
-            borderColor: colors.border.light,
-          }
-        ]}>
+        <View
+          style={[
+            styles.searchContainer,
+            {
+              backgroundColor: colors.bg.sunken,
+              borderColor: colors.border.light,
+            },
+          ]}
+        >
           <Feather name="search" size={20} color={colors.text.secondary} />
           <TextInput
-            style={[styles.searchInput, typeScale.bodyMedium, { color: colors.text.primary }]}
+            style={[styles.searchInput, typeScale['body.md'], { color: colors.text.primary }]}
             placeholder="Search transactions..."
             placeholderTextColor={colors.text.secondary}
             value={searchQuery}
@@ -247,15 +234,13 @@ export default function ActivityScreen() {
           )}
         </View>
       </Animated.View>
-      
-      {/* Filters */}
+
       <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.filters}>
         <FilterChip label="All" type="all" icon="list" />
         <FilterChip label="Income" type="income" icon="trending-up" />
         <FilterChip label="Expenses" type="expense" icon="trending-down" />
       </Animated.View>
-      
-      {/* Transaction List */}
+
       <FlatList
         data={filteredData}
         renderItem={renderDateGroup}
@@ -265,7 +250,7 @@ export default function ActivityScreen() {
         ListEmptyComponent={
           <View style={styles.emptyState}>
             <Feather name="inbox" size={48} color={colors.text.secondary} />
-            <Text style={[styles.emptyText, typeScale.bodyMedium, { color: colors.text.secondary }]}>
+            <Text style={[styles.emptyText, typeScale['body.md'], { color: colors.text.secondary }]}>
               No transactions found
             </Text>
           </View>

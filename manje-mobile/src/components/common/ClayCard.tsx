@@ -18,6 +18,7 @@ export interface ClayCardProps extends Omit<PressableProps, 'style'> {
   style?: ViewStyle | ViewStyle[];
   innerStyle?: ViewStyle;
   pressable?: boolean;
+  noPadding?: boolean;
 }
 
 export const ClayCard: React.FC<ClayCardProps> = ({
@@ -26,6 +27,7 @@ export const ClayCard: React.FC<ClayCardProps> = ({
   style,
   innerStyle,
   pressable = false,
+  noPadding = false,
   onPress,
   ...pressableProps
 }) => {
@@ -110,19 +112,6 @@ export const ClayCard: React.FC<ClayCardProps> = ({
     if (!vStyles.hasClay && variant !== 'hero') return null;
     return (
       <>
-        {/* Inner Highlight Top */}
-        <View
-          style={[
-            StyleSheet.absoluteFillObject,
-            {
-              height: '40%',
-              backgroundColor: colors.clay.innerHighlight,
-              borderTopLeftRadius: radius['2xl'],
-              borderTopRightRadius: radius['2xl'],
-            },
-          ]}
-          pointerEvents="none"
-        />
         {/* Inner Shadow Bottom */}
         <View
           style={[
@@ -131,10 +120,11 @@ export const ClayCard: React.FC<ClayCardProps> = ({
               bottom: 0,
               left: 0,
               right: 0,
-              height: 40,
+              height: 24,
               backgroundColor: colors.clay.innerShadow,
               borderBottomLeftRadius: radius['2xl'],
               borderBottomRightRadius: radius['2xl'],
+              opacity: 0.3,
             },
           ]}
           pointerEvents="none"
@@ -144,7 +134,7 @@ export const ClayCard: React.FC<ClayCardProps> = ({
   };
 
   const contentWrap = (
-    <View style={[styles.content, innerStyle]}>{children}</View>
+    <View style={[!noPadding && styles.content, innerStyle]}>{children}</View>
   );
 
   const containerStyle = [styles.base, vStyles.container, style];

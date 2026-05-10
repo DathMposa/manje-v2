@@ -49,6 +49,43 @@ const TabBarIcon: React.FC<TabBarIconProps> = ({ name, color, focused }) => {
   );
 };
 
+const HIDDEN_TABS = [
+  'transactions/[id]',
+  'transactions/index',
+  'transactions/edit/[id]',
+  'settings/support',
+  'settings/security',
+  'settings/privacy',
+  'settings/notifications',
+  'settings/index',
+  'settings/delete-account',
+  'settings/currency',
+  'reports/trends',
+  'reports/index',
+  'reports/health',
+  'notifications/[id]',
+  'notifications/index',
+  'goals/[id]',
+  'goals/index',
+  'goals/edit/[id]',
+  'goals/create/index',
+  'goals/contribute/[id]',
+  'education/[id]',
+  'education/index',
+  'budgets/[id]',
+  'budgets/create/manual',
+  'budgets/edit/[id]',
+  'bills/[id]',
+  'bills/pay/[id]',
+  'bills/index',
+  'bills/edit/[id]',
+  'bills/create/index',
+  'ai/index',
+  'ai/history',
+  'ai/chat',
+  'ai/budget'
+];
+
 export default function TabsLayout() {
   const { colors, shadow, isDark } = useTheme();
   const router = useRouter();
@@ -66,17 +103,21 @@ export default function TabsLayout() {
           backgroundColor: colors.bg.card,
           borderTopColor: colors.border.light,
           borderTopWidth: 1,
-          height: layout.tabBarHeight,
-          paddingBottom: spacing[2],
-          paddingTop: spacing[2],
+          height: 80,
+          paddingBottom: 25,
+          paddingTop: 10,
           ...shadow('md'),
         },
         tabBarActiveTintColor: colors.primary.default,
         tabBarInactiveTintColor: colors.text.secondary,
         tabBarLabelStyle: {
           ...typeScale.labelSmall,
-          marginTop: spacing[1],
+          marginTop: 2, 
         },
+        tabBarItemStyle: {
+          height: 50,
+          paddingBottom: 5,
+        }
       }}
     >
       <Tabs.Screen
@@ -102,7 +143,8 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="quick-add"
         options={{
-          title: '',
+          title: 'Add',
+          tabBarLabel: () => null, // Hide label for the FAB button
           tabBarButton: () => (
             <View style={styles.quickAddContainer}>
               <AnimatedPressable
@@ -121,7 +163,7 @@ export default function TabsLayout() {
       />
       
       <Tabs.Screen
-        name="budgets"
+        name="budgets/index"
         options={{
           title: 'Budgets',
           tabBarIcon: ({ color, focused }) => (
@@ -139,6 +181,17 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {HIDDEN_TABS.map((name) => (
+        <Tabs.Screen
+          key={name}
+          name={name}
+          options={{
+            href: null,
+            headerShown: false,
+          }}
+        />
+      ))}
     </Tabs>
   );
 }
@@ -147,14 +200,19 @@ const styles = StyleSheet.create({
   quickAddContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginTop: -spacing[4],
+    justifyContent: 'center',
+    marginTop: -25, // Adjusted to compensate for the larger tab bar padding
   },
   quickAddButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60, // Increased size slightly to make it stand out more
+    height: 60,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
 });

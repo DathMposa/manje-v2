@@ -13,7 +13,17 @@ import { useFonts, Syne_400Regular, Syne_600SemiBold, Syne_700Bold, Syne_800Extr
 import { WorkSans_400Regular, WorkSans_500Medium, WorkSans_600SemiBold, WorkSans_700Bold } from '@expo-google-fonts/work-sans';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from '../src/hooks/useTheme';
+import { ToastProvider } from '../src/hooks/useToast';
 import { useAuthStore } from '../src/stores/authStore';
+import {
+  useBillStore,
+  useBudgetStore,
+  useContentStore,
+  useGoalStore,
+  useNotificationStore,
+  useSettingsStore,
+  useTransactionStore,
+} from '../src/stores';
 import { green } from '../src/theme/colors';
 
 // Keep splash screen visible while loading
@@ -37,13 +47,59 @@ const loadFonts = async () => {
 
 function RootLayoutNav() {
   const { colors, isDark } = useTheme();
-  const { isAuthenticated, isOnboarded, isLoading, checkAuthState } = useAuthStore();
+  const { user, isAuthenticated, isOnboarded, isLoading, initializeAuth } = useAuthStore();
+  const initializeTransactions = useTransactionStore((state) => state.initializeForUser);
+  const initializeBudgets = useBudgetStore((state) => state.initializeForUser);
+  const initializeGoals = useGoalStore((state) => state.initializeForUser);
+  const initializeBills = useBillStore((state) => state.initializeForUser);
+  const initializeNotifications = useNotificationStore((state) => state.initializeForUser);
+  const initializeSettings = useSettingsStore((state) => state.initializeForUser);
+  const initializeContent = useContentStore((state) => state.initializeContent);
+  const transactions = useTransactionStore((state) => state.transactions);
+  const recalculateSpending = useBudgetStore((state) => state.recalculateSpending);
   const segments = useSegments();
   const router = useRouter();
   
   useEffect(() => {
-    checkAuthState();
-  }, []);
+    let unsubscribe: undefined | (() => void);
+
+    void initializeAuth().then((cleanup) => {
+      unsubscribe = cleanup;
+    });
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, [initializeAuth]);
+
+  useEffect(() => {
+    initializeContent();
+  }, [initializeContent]);
+
+  useEffect(() => {
+    if (!user?.id) {
+      return;
+    }
+
+    initializeTransactions(user.id);
+    initializeBudgets(user.id);
+    initializeGoals(user.id);
+    initializeBills(user.id);
+    initializeNotifications(user.id);
+    initializeSettings(user.id);
+  }, [
+    initializeBills,
+    initializeBudgets,
+    initializeGoals,
+    initializeNotifications,
+    initializeSettings,
+    initializeTransactions,
+    user?.id,
+  ]);
+
+  useEffect(() => {
+    recalculateSpending(transactions);
+  }, [recalculateSpending, transactions]);
   
   useEffect(() => {
     if (isLoading) return;
@@ -61,7 +117,7 @@ function RootLayoutNav() {
       // Redirect to main app if authenticated and onboarded
       router.replace('/(tabs)');
     }
-  }, [isAuthenticated, isOnboarded, isLoading, segments]);
+  }, [isAuthenticated, isOnboarded, isLoading, router, segments]);
   
   if (isLoading) {
     return (
@@ -117,7 +173,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <ThemeProvider>
-        <RootLayoutNav />
+        <ToastProvider>
+          <RootLayoutNav />
+        </ToastProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

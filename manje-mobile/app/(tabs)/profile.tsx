@@ -1,5 +1,5 @@
 /**
- * Profile Screen (Placeholder)
+ * Profile Screen
  * User profile and settings.
  */
 
@@ -13,7 +13,7 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../src/hooks/useTheme';
 import { ClayCard } from '../../src/components/common';
 import { ManjeCharacter } from '../../src/components/character';
-import { useAuthStore } from '../../src/stores/authStore';
+import { useAuthStore, useSettingsStore } from '../../src/stores';
 import { typeScale } from '../../src/theme/typography';
 import { spacing, layout, radius } from '../../src/theme/spacing';
 
@@ -62,6 +62,7 @@ export default function ProfileScreen() {
   const { colors, shadow, isDark, toggleTheme, themeMode } = useTheme();
   const router = useRouter();
   const { user, signOut } = useAuthStore();
+  const currency = useSettingsStore((state) => state.settings.currency);
   
   const handleSignOut = () => {
     Alert.alert(
@@ -118,7 +119,10 @@ export default function ProfileScreen() {
                   {user?.email || 'user@example.com'}
                 </Text>
               </View>
-              <Pressable style={[styles.editButton, { backgroundColor: colors.bg.sunken }]}>
+              <Pressable 
+                style={[styles.editButton, { backgroundColor: colors.bg.sunken }]}
+                onPress={() => router.push('/(tabs)/settings')}
+              >
                 <Feather name="edit-2" size={18} color={colors.text.secondary} />
               </Pressable>
             </View>
@@ -134,13 +138,24 @@ export default function ProfileScreen() {
             <SettingsItem
               icon="globe"
               label="Currency"
-              value="MWK"
-              onPress={() => {}}
+              value={currency}
+              onPress={() => router.push('/(tabs)/settings/currency')}
+            />
+            <SettingsItem
+              icon="moon"
+              label="Appearance"
+              value={getThemeLabel()}
+              onPress={toggleTheme}
             />
             <SettingsItem
               icon="bell"
               label="Notifications"
-              onPress={() => {}}
+              onPress={() => router.push('/(tabs)/settings/notifications')}
+            />
+            <SettingsItem
+              icon="shield"
+              label="Security"
+              onPress={() => router.push('/(tabs)/settings/security')}
             />
           </View>
         </Animated.View>
@@ -151,19 +166,9 @@ export default function ProfileScreen() {
           </Text>
           <View style={styles.settingsGroup}>
             <SettingsItem
-              icon="download"
-              label="Export Data"
-              onPress={() => {}}
-            />
-            <SettingsItem
-              icon="shield"
-              label="Privacy Policy"
-              onPress={() => {}}
-            />
-            <SettingsItem
-              icon="file-text"
-              label="Terms of Service"
-              onPress={() => {}}
+              icon="lock"
+              label="Privacy & Security"
+              onPress={() => router.push('/(tabs)/settings/privacy')}
             />
           </View>
         </Animated.View>
@@ -175,18 +180,8 @@ export default function ProfileScreen() {
           <View style={styles.settingsGroup}>
             <SettingsItem
               icon="help-circle"
-              label="Help & FAQ"
-              onPress={() => {}}
-            />
-            <SettingsItem
-              icon="message-circle"
-              label="Contact Support"
-              onPress={() => {}}
-            />
-            <SettingsItem
-              icon="star"
-              label="Rate Manje"
-              onPress={() => {}}
+              label="Help & Support"
+              onPress={() => router.push('/(tabs)/settings/support')}
             />
           </View>
         </Animated.View>

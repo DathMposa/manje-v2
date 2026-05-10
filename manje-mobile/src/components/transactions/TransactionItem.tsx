@@ -52,7 +52,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
       <View style={styles.rightActions}>
         <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
           <RectButton
-            style={[styles.actionButton, { backgroundColor: colors.status.warning }]}
+            style={[styles.actionButton, { backgroundColor: colors.status.warning.base }]}
             onPress={() => onEdit?.(transaction)}
           >
             <Ionicons name="pencil" size={24} color={colors.text.inverse} />
@@ -63,7 +63,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
         </Animated.View>
         <Animated.View style={{ transform: [{ scale: scaleDelete }] }}>
           <RectButton
-            style={[styles.actionButton, { backgroundColor: colors.status.danger }]}
+            style={[styles.actionButton, { backgroundColor: colors.status.danger.base }]}
             onPress={() => onDelete?.(transaction)}
           >
             <Ionicons name="trash" size={24} color={colors.text.inverse} />
@@ -77,7 +77,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
   };
 
   const isExpense = transaction.amount < 0;
-  const amountColor = isExpense ? colors.status.danger : colors.status.success;
+  const amountColor = isExpense ? colors.status.danger.text : colors.status.success.text;
   const categoryToken = categoryColors[transaction.category] || categoryColors.other;
 
   return (
