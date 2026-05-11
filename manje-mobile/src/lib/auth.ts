@@ -1,17 +1,4 @@
 import {
-  GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  getAdditionalUserInfo,
-  onAuthStateChanged,
-  signInWithCredential,
-  signInWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  updateProfile,
-  type Unsubscribe,
-  type User as FirebaseUser,
-  type UserCredential,
-} from '@firebase/auth';
-import {
   GoogleSignin,
   isCancelledResponse,
   isErrorWithCode,
@@ -20,11 +7,11 @@ import {
 } from '@react-native-google-signin/google-signin';
 import { Platform } from 'react-native';
 import {
-  getFirebaseAuth,
-  getFirebaseConfigurationError,
   getGoogleConfigurationError,
   getGoogleWebClientId,
-} from './firebase';
+  getSupabaseConfigurationError,
+  supabase,
+} from './supabase';
 
 export interface AppUser {
   id: string;
@@ -42,23 +29,24 @@ export interface GoogleAuthCancelledResult {
   cancelled: true;
 }
 
-const toAppUser = (user: FirebaseUser): AppUser => ({
-  id: user.uid,
-  email: user.email ?? '',
-  displayName: user.displayName,
-  photoURL: user.photoURL,
+type Unsubscribe = () => void;
+
+const toAppUser = (session: { id: string; email?: string | null; user_metadata?: Record<string, unknown> }): AppUser => ({
+  id: session.id,
+  email: session.email ?? '',
+  displayName:
+    (session.user_metadata?.['full_name'] as string | undefined) ??
+    (session.user_metadata?.['name'] as string | undefined) ??
+    null,
+  photoURL: (session.user_metadata?.['avatar_url'] as string | undefined) ?? null,
 });
 
-const getAdditionalInfo = (credential: UserCredential) => getAdditionalUserInfo(credential);
+const assertConfigured = () => {
+  const error = getSupabaseConfigurationError();
 
-const getConfiguredAuth = () => {
-  const configurationError = getFirebaseConfigurationError();
-
-  if (configurationError) {
-    throw new Error(configurationError);
+  if (error) {
+    throw new Error(error);
   }
-
-  return getFirebaseAuth();
 };
 
 const configureGoogleSignIn = () => {
@@ -80,24 +68,38 @@ const configureGoogleSignIn = () => {
 };
 
 export const observeAuthState = (callback: (user: AppUser | null) => void): Unsubscribe => {
-  const configurationError = getFirebaseConfigurationError();
+  const configurationError = getSupabaseConfigurationError();
 
   if (configurationError) {
     callback(null);
     return () => undefined;
   }
 
-  return onAuthStateChanged(getConfiguredAuth(), (user) => {
+  supabase.auth.getSession().then(({ data }) => {
+    const user = data.session?.user;
     callback(user ? toAppUser(user) : null);
   });
+
+  const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const user = session?.user;
+    callback(user ? toAppUser(user) : null);
+  });
+
+  return () => listener.subscription.unsubscribe();
 };
 
 export const signInWithEmail = async (email: string, password: string): Promise<AuthSuccessResult> => {
-  const result = await signInWithEmailAndPassword(getConfiguredAuth(), email, password);
+  assertConfigured();
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error || !data.user) {
+    throw error ?? new Error('Sign in failed. Please try again.');
+  }
 
   return {
-    user: toAppUser(result.user),
-    isNewUser: getAdditionalInfo(result)?.isNewUser ?? false,
+    user: toAppUser(data.user),
+    isNewUser: false,
   };
 };
 
@@ -106,21 +108,24 @@ export const signUpWithEmail = async (
   email: string,
   password: string
 ): Promise<AuthSuccessResult> => {
-  const auth = getConfiguredAuth();
-  const result = await createUserWithEmailAndPassword(auth, email, password);
+  assertConfigured();
+
   const trimmedName = name.trim();
 
-  if (trimmedName) {
-    await updateProfile(result.user, { displayName: trimmedName });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: trimmedName ? { full_name: trimmedName } : undefined,
+    },
+  });
+
+  if (error || !data.user) {
+    throw error ?? new Error('Sign up failed. Please try again.');
   }
 
   return {
-    user: {
-      id: result.user.uid,
-      email: result.user.email ?? email,
-      displayName: trimmedName || result.user.displayName,
-      photoURL: result.user.photoURL,
-    },
+    user: toAppUser(data.user),
     isNewUser: true,
   };
 };
@@ -142,38 +147,45 @@ export const signInWithGoogle = async (): Promise<AuthSuccessResult | GoogleAuth
     throw new Error('Google sign-in did not return an ID token. Check the Google client setup and try again.');
   }
 
-  const credential = GoogleAuthProvider.credential(response.data.idToken);
-  const result = await signInWithCredential(getConfiguredAuth(), credential);
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: 'google',
+    token: response.data.idToken,
+  });
+
+  if (error || !data.user) {
+    throw error ?? new Error('Google sign-in failed. Please try again.');
+  }
 
   return {
-    user: toAppUser(result.user),
-    isNewUser: getAdditionalInfo(result)?.isNewUser ?? false,
+    user: toAppUser(data.user),
+    isNewUser: data.user.created_at === data.user.updated_at,
   };
 };
 
 export const signOut = async () => {
-  await firebaseSignOut(getConfiguredAuth());
+  await supabase.auth.signOut();
 
   try {
     if (GoogleSignin.getCurrentUser()) {
       await GoogleSignin.signOut();
     }
   } catch {
-    // Ignore Google session cleanup failures after Firebase sign-out succeeds.
+    // Ignore Google session cleanup failures after Supabase sign-out succeeds.
   }
 };
 
-export const updateCurrentUserDisplayName = async (displayName: string) => {
-  const auth = getConfiguredAuth();
-  const currentUser = auth.currentUser;
+export const updateCurrentUserDisplayName = async (displayName: string): Promise<AppUser> => {
+  assertConfigured();
 
-  if (!currentUser) {
-    throw new Error('You need to be signed in before updating your profile.');
+  const { data, error } = await supabase.auth.updateUser({
+    data: { full_name: displayName.trim() || null },
+  });
+
+  if (error || !data.user) {
+    throw error ?? new Error('You need to be signed in before updating your profile.');
   }
 
-  await updateProfile(currentUser, { displayName: displayName.trim() || null });
-
-  return toAppUser(currentUser);
+  return toAppUser(data.user);
 };
 
 export const getAuthErrorMessage = (error: unknown) => {
@@ -190,27 +202,27 @@ export const getAuthErrorMessage = (error: unknown) => {
     }
   }
 
-  if (typeof error === 'object' && error && 'code' in error && typeof error.code === 'string') {
-    switch (error.code) {
-      case 'auth/account-exists-with-different-credential':
-        return 'This email already uses a different sign-in method. Sign in with that method first, then try Google again later.';
-      case 'auth/email-already-in-use':
-        return 'An account with this email already exists. Try signing in instead.';
-      case 'auth/invalid-credential':
-      case 'auth/user-not-found':
-      case 'auth/wrong-password':
-      case 'auth/invalid-login-credentials':
-        return 'Invalid email or password. Please try again.';
-      case 'auth/invalid-email':
-        return 'Please enter a valid email address.';
-      case 'auth/missing-password':
-        return 'Please enter your password.';
-      case 'auth/weak-password':
-        return 'Password must be at least 6 characters long.';
-      case 'auth/network-request-failed':
-        return 'Network error. Check your connection and try again.';
-      default:
-        break;
+  if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message: unknown }).message === 'string') {
+    const message = (error as { message: string }).message.toLowerCase();
+
+    if (message.includes('invalid login credentials') || message.includes('invalid email or password')) {
+      return 'Invalid email or password. Please try again.';
+    }
+
+    if (message.includes('email already registered') || message.includes('user already registered')) {
+      return 'An account with this email already exists. Try signing in instead.';
+    }
+
+    if (message.includes('password should be at least')) {
+      return 'Password must be at least 6 characters long.';
+    }
+
+    if (message.includes('unable to validate email address')) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (message.includes('network') || message.includes('fetch')) {
+      return 'Network error. Check your connection and try again.';
     }
   }
 

@@ -4,7 +4,7 @@ import {
   subscribeUserSettings,
   updateUserSettingsDoc,
   type UserSettingsDoc,
-} from '../lib/firestore';
+} from '../lib/database';
 
 interface SettingsState {
   userId: string | null;

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import {
+  createGoalContribution,
   createUserGoal,
   createUserNotification,
   deleteUserGoal,
@@ -8,7 +9,7 @@ import {
   type GoalContributionDoc,
   type GoalDoc,
   type GoalRecord as FirestoreGoalRecord,
-} from '../lib/firestore';
+} from '../lib/database';
 import { createId, nowIso } from './storage';
 
 export interface GoalContribution extends GoalContributionDoc {}
@@ -113,7 +114,6 @@ export const useGoalStore = create<GoalState>()((set, get) => ({
           ? currentGoal.deadline
           : updates.deadline.trim() || undefined,
       currentAmount: currentGoal.currentAmount,
-      contributions: currentGoal.contributions,
     });
   },
 
@@ -135,23 +135,29 @@ export const useGoalStore = create<GoalState>()((set, get) => ({
       return undefined;
     }
 
-    const contribution: GoalContribution = {
-      id: createId('goal_contribution'),
-      amount: Math.max(0, Number(input.amount) || 0),
-      date: input.date || nowIso(),
+    const contributionAmount = Math.max(0, Number(input.amount) || 0);
+    const createdAt = nowIso();
+    const date = input.date || createdAt;
+
+    const contributionId = await createGoalContribution(userId, goal.id, {
+      amount: contributionAmount,
+      date,
       note: input.note?.trim() || undefined,
-      createdAt: nowIso(),
+      createdAt,
+    });
+
+    const contribution: GoalContribution = {
+      id: contributionId,
+      amount: contributionAmount,
+      date,
+      note: input.note?.trim() || undefined,
+      createdAt,
     };
 
     const currentAmount = goal.currentAmount + contribution.amount;
-    const contributions = [contribution, ...goal.contributions];
 
     await updateUserGoal(userId, goal.id, {
-      name: goal.name,
-      targetAmount: goal.targetAmount,
       currentAmount,
-      deadline: goal.deadline,
-      contributions,
     });
 
     const progress = Math.min((currentAmount / Math.max(goal.targetAmount, 1)) * 100, 100);

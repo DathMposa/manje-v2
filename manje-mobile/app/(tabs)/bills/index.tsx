@@ -103,7 +103,7 @@ export default function BillsListScreen() {
               No live bills yet
             </Text>
             <Text style={[typography.body.medium, { color: colors.text.secondary }]}>
-              Add your first bill to start tracking upcoming payments from Firestore.
+              Add your first bill to start tracking upcoming payments.
             </Text>
           </ClayCard>
         ) : (

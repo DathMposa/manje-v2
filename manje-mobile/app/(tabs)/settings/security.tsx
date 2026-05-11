@@ -29,7 +29,7 @@ export default function SecuritySettingsScreen() {
             Your Data is Secure
           </Text>
           <Text style={[typography.body.medium, { color: colors.text.secondary, textAlign: 'center', marginTop: spacing.xs }]}>
-            These preferences are stored per account in Firestore.
+            These preferences are stored per account in Supabase.
           </Text>
         </View>
 

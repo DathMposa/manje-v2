@@ -8,7 +8,7 @@ import { ClayCard } from '../../../src/components/common/ClayCard';
 import { Input } from '../../../src/components/common/Input';
 import { Button } from '../../../src/components/common/Button';
 import { useAuthStore, useContentStore } from '../../../src/stores';
-import { submitSupportFeedback } from '../../../src/lib/firestore';
+import { submitSupportFeedback } from '../../../src/lib/database';
 
 export default function SupportScreen() {
   const router = useRouter();
@@ -80,7 +80,7 @@ export default function SupportScreen() {
           {faqs.length === 0 ? (
             <View style={styles.emptyFaq}>
               <Text style={[typography.body.medium, { color: colors.text.secondary }]}>
-                Add `supportFaqs` documents in Firestore to publish help content here.
+                Add rows to the `support_faqs` table in Supabase to publish help content here.
               </Text>
             </View>
           ) : (
@@ -116,7 +116,7 @@ export default function SupportScreen() {
 
         <ClayCard variant="subtle" style={styles.feedbackCard}>
           <Text style={[typography.body.medium, { color: colors.text.secondary, marginBottom: spacing.md }]}>
-            Have an idea to improve Manje or found a bug? Your feedback is stored with your account in Firestore.
+            Have an idea to improve Manje or found a bug? Your feedback is stored with your account in Supabase.
           </Text>
           <Input label="" placeholder="Tell us what you think..." value={feedback} onChangeText={setFeedback} multiline numberOfLines={4} />
           <View style={{ marginTop: spacing.md }}>

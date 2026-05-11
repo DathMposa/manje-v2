@@ -4,7 +4,7 @@ import {
   subscribeSupportFaqs,
   type EducationArticleRecord,
   type SupportFaqRecord,
-} from '../lib/firestore';
+} from '../lib/database';
 
 interface ContentState {
   isLoading: boolean;

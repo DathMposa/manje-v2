@@ -3,7 +3,7 @@ import {
   markNotificationRead,
   subscribeUserNotifications,
   type NotificationRecord,
-} from '../lib/firestore';
+} from '../lib/database';
 
 interface NotificationState {
   userId: string | null;

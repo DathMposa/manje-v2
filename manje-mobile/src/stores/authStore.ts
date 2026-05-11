@@ -1,6 +1,6 @@
 /**
  * Auth Store
- * Manages Firebase authentication and profile state using Zustand.
+ * Manages Supabase authentication and profile state using Zustand.
  */
 
 import { create } from 'zustand';
@@ -9,7 +9,7 @@ import {
   getUserProfileDoc,
   subscribeUserProfile,
   updateUserProfileDoc,
-} from '../lib/firestore';
+} from '../lib/database';
 import {
   getAuthErrorMessage,
   observeAuthState,

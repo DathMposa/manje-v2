@@ -88,7 +88,7 @@ export default function NotificationCentreScreen() {
               You're all caught up
             </Text>
             <Text style={[typography.body.medium, { color: colors.text.secondary, textAlign: 'center' }]}>
-              New account and activity updates from Firestore will show up here.
+              New account and activity updates from Supabase will show up here.
             </Text>
           </View>
         }

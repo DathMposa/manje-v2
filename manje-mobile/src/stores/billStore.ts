@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import {
+  createBillPayment,
   createUserBill,
   createUserNotification,
   deleteUserBill,
@@ -10,7 +11,7 @@ import {
   type BillPaymentDoc,
   type BillRecord as FirestoreBillRecord,
   type BillStatus,
-} from '../lib/firestore';
+} from '../lib/database';
 import { createId, nowIso } from './storage';
 
 export interface BillPaymentRecord extends BillPaymentDoc {}
@@ -174,7 +175,6 @@ export const useBillStore = create<BillState>()((set, get) => ({
       frequency: updates.frequency ?? currentBill.frequency,
       nextDueDate,
       remindersEnabled: updates.remindersEnabled ?? currentBill.remindersEnabled,
-      paymentHistory: currentBill.paymentHistory,
       status: currentBill.status === 'paid' ? 'paid' : deriveBillStatus(nextDueDate),
     });
   },
@@ -206,13 +206,19 @@ export const useBillStore = create<BillState>()((set, get) => ({
       createdAt: nowIso(),
     };
 
+    await createBillPayment(userId, currentBill.id, {
+      amount: payment.amount,
+      date: payment.date,
+      note: payment.note,
+      createdAt: payment.createdAt,
+    });
+
     await updateUserBill(userId, id, {
       name: currentBill.name,
       amount: currentBill.amount,
       frequency: currentBill.frequency,
       remindersEnabled: currentBill.remindersEnabled,
       nextDueDate: advanceDueDate(paymentDate, currentBill.frequency),
-      paymentHistory: [payment, ...currentBill.paymentHistory],
       status: 'paid',
     });
 

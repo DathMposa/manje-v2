@@ -7,7 +7,7 @@ import {
   updateUserTransaction,
   type TransactionDoc,
   type TransactionRecord as FirestoreTransactionRecord,
-} from '../lib/firestore';
+} from '../lib/database';
 import { nowIso } from './storage';
 
 export type TransactionType = 'expense' | 'income' | 'transfer';

@@ -7,7 +7,7 @@ import {
   type BudgetCategoryDoc,
   type BudgetDoc,
   type BudgetRecord as FirestoreBudgetRecord,
-} from '../lib/firestore';
+} from '../lib/database';
 import { useTransactionStore } from './transactionStore';
 import { nowIso } from './storage';
 
