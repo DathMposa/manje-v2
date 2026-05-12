@@ -21,6 +21,7 @@ import {
   type AppUser,
   type AuthSuccessResult,
   type GoogleAuthCancelledResult,
+  type EmailConfirmationPendingResult,
 } from '../lib/auth';
 import { useBillStore } from './billStore';
 import { useBudgetStore } from './budgetStore';
@@ -50,7 +51,7 @@ export interface AuthState {
   setOnboarded: (value: boolean) => Promise<void>;
   updateProfile: (displayName: string) => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<AuthResult>;
-  signUpWithEmail: (name: string, email: string, password: string) => Promise<AuthResult>;
+  signUpWithEmail: (name: string, email: string, password: string) => Promise<AuthResult | EmailConfirmationPendingResult>;
   signInWithGoogle: () => Promise<AuthResult | GoogleAuthCancelledResult>;
   signOut: () => Promise<void>;
 }
@@ -210,6 +211,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signUpWithEmail: async (name, email, password) => {
     try {
       const result = await signUpWithEmailRequest(name, email, password);
+      if ('confirmationPending' in result) {
+        return result;
+      }
       return await finalizeAuthSuccess(set, result);
     } catch (error) {
       throw new Error(getAuthErrorMessage(error));

@@ -29,10 +29,10 @@ export default function WelcomeScreen() {
         <Animated.View entering={FadeInUp.delay(600).duration(400)} style={styles.titleContainer}>
           <Text style={[typeScale['display.lg'], { color: colors.text.primary }]}>Manje</Text>
           <Text style={[typeScale['body.md'], { color: colors.text.secondary, marginTop: spacing[2] }]}>
-            Ndalama zako. Bwino. Tsopano.
+            Kuthana ndi Maluzi
           </Text>
           <Text style={[typeScale['label.md'], { color: colors.text.secondary, marginTop: spacing[1], opacity: 0.7 }]}>
-            Your money. Clear. Now.
+            The Gateway to Financial Freedom
           </Text>
         </Animated.View>
       </View>

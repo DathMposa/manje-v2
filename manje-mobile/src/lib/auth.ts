@@ -1,10 +1,3 @@
-import {
-  GoogleSignin,
-  isCancelledResponse,
-  isErrorWithCode,
-  isSuccessResponse,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
 import { Platform } from 'react-native';
 import {
   getGoogleConfigurationError,
@@ -29,7 +22,25 @@ export interface GoogleAuthCancelledResult {
   cancelled: true;
 }
 
+export interface EmailConfirmationPendingResult {
+  confirmationPending: true;
+  email: string;
+}
+
 type Unsubscribe = () => void;
+
+type GoogleSignInModule = typeof import('@react-native-google-signin/google-signin');
+
+const GOOGLE_SIGN_IN_NATIVE_MODULE_ERROR =
+  'Google sign-in requires a development/production build. Expo Go does not include the Google native module.';
+
+const loadGoogleSignInModule = async (): Promise<GoogleSignInModule> => {
+  try {
+    return await import('@react-native-google-signin/google-signin');
+  } catch {
+    throw new Error(GOOGLE_SIGN_IN_NATIVE_MODULE_ERROR);
+  }
+};
 
 const toAppUser = (session: { id: string; email?: string | null; user_metadata?: Record<string, unknown> }): AppUser => ({
   id: session.id,
@@ -59,12 +70,6 @@ const configureGoogleSignIn = () => {
   if (googleConfigurationError) {
     throw new Error(googleConfigurationError);
   }
-
-  GoogleSignin.configure({
-    webClientId: getGoogleWebClientId(),
-    offlineAccess: false,
-    scopes: ['email', 'profile'],
-  });
 };
 
 export const observeAuthState = (callback: (user: AppUser | null) => void): Unsubscribe => {
@@ -107,7 +112,7 @@ export const signUpWithEmail = async (
   name: string,
   email: string,
   password: string
-): Promise<AuthSuccessResult> => {
+): Promise<AuthSuccessResult | EmailConfirmationPendingResult> => {
   assertConfigured();
 
   const trimmedName = name.trim();
@@ -120,8 +125,16 @@ export const signUpWithEmail = async (
     },
   });
 
-  if (error || !data.user) {
-    throw error ?? new Error('Sign up failed. Please try again.');
+  if (error) {
+    throw error;
+  }
+
+  if (!data.user) {
+    throw new Error('Sign up failed. Please try again.');
+  }
+
+  if (!data.session) {
+    return { confirmationPending: true, email };
   }
 
   return {
@@ -132,6 +145,14 @@ export const signUpWithEmail = async (
 
 export const signInWithGoogle = async (): Promise<AuthSuccessResult | GoogleAuthCancelledResult> => {
   configureGoogleSignIn();
+
+  const { GoogleSignin, isCancelledResponse, isSuccessResponse } = await loadGoogleSignInModule();
+
+  GoogleSignin.configure({
+    webClientId: getGoogleWebClientId(),
+    offlineAccess: false,
+    scopes: ['email', 'profile'],
+  });
 
   if (Platform.OS === 'android') {
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
@@ -166,6 +187,8 @@ export const signOut = async () => {
   await supabase.auth.signOut();
 
   try {
+    const { GoogleSignin } = await loadGoogleSignInModule();
+
     if (GoogleSignin.getCurrentUser()) {
       await GoogleSignin.signOut();
     }
@@ -189,16 +212,19 @@ export const updateCurrentUserDisplayName = async (displayName: string): Promise
 };
 
 export const getAuthErrorMessage = (error: unknown) => {
-  if (isErrorWithCode(error)) {
-    switch (error.code) {
-      case statusCodes.IN_PROGRESS:
-        return 'An authentication request is already in progress. Please wait a moment and try again.';
-      case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-        return 'Google Play Services is unavailable on this device. Update it and try again.';
-      case statusCodes.SIGN_IN_CANCELLED:
-        return 'Google sign-in was cancelled.';
-      default:
-        break;
+  if (typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code: unknown }).code === 'string') {
+    const code = (error as { code: string }).code;
+
+    if (code.includes('IN_PROGRESS')) {
+      return 'An authentication request is already in progress. Please wait a moment and try again.';
+    }
+
+    if (code.includes('PLAY_SERVICES_NOT_AVAILABLE')) {
+      return 'Google Play Services is unavailable on this device. Update it and try again.';
+    }
+
+    if (code.includes('SIGN_IN_CANCELLED')) {
+      return 'Google sign-in was cancelled.';
     }
   }
 

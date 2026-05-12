@@ -30,6 +30,7 @@ export default function SignUpScreen() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
   
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -69,8 +70,12 @@ export default function SignUpScreen() {
     setErrors({});
     
     try {
-      await signUpWithEmail(name.trim(), email.trim(), password);
-      router.replace('/(onboarding)/country');
+      const result = await signUpWithEmail(name.trim(), email.trim(), password);
+      if ('confirmationPending' in result) {
+        setConfirmationEmail(result.email);
+      } else {
+        router.replace('/(onboarding)/country');
+      }
     } catch (error) {
       console.error('Sign up error:', error);
       setErrors({ general: error instanceof Error ? error.message : 'Something went wrong. Please try again.' });
@@ -100,7 +105,45 @@ export default function SignUpScreen() {
       setGoogleLoading(false);
     }
   };
-  
+
+  if (confirmationEmail) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.bg.base }]} edges={['top']}>
+        <ScreenHeader title="Check Your Email" />
+        <View style={styles.confirmationContainer}>
+          <Animated.View entering={FadeInDown.delay(100).duration(400)} style={styles.confirmationContent}>
+            <ManjeCharacter mood="happy" size="md" />
+            <Text style={[typeScale['headline.md'], { color: colors.text.primary, marginTop: spacing[6], textAlign: 'center' }]}>
+              Almost there!
+            </Text>
+            <Text style={[typeScale['body.md'], { color: colors.text.secondary, marginTop: spacing[3], textAlign: 'center', lineHeight: 24 }]}>
+              We sent a confirmation link to{' '}
+              <Text style={{ color: colors.primary.default, fontWeight: '600' }}>{confirmationEmail}</Text>
+              {'. Open it to activate your account, then sign in.'}
+            </Text>
+            <Button
+              title="Go to Sign In"
+              onPress={() => router.replace('/(auth)/signin')}
+              variant="primary"
+              size="lg"
+              fullWidth
+              style={{ marginTop: spacing[8] }}
+            />
+            <Button
+              title="Use a Different Email"
+              onPress={() => setConfirmationEmail(null)}
+              variant="ghost"
+              size="lg"
+              fullWidth
+              style={{ marginTop: spacing[3] }}
+              textStyle={{ color: colors.text.secondary }}
+            />
+          </Animated.View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bg.base }]} edges={['top']}>
       <ScreenHeader title="Create Account" />
@@ -339,5 +382,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: spacing[6],
+  },
+  confirmationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: layout.screenPaddingH,
+  },
+  confirmationContent: {
+    alignItems: 'center',
   },
 });

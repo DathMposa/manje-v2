@@ -4,8 +4,9 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useTransactionStore } from '../../src/stores';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
@@ -39,8 +40,10 @@ export default function IncomeScreen() {
     currency: string;
     currencySymbol: string;
   }>();
+  const addTransaction = useTransactionStore((state) => state.addTransaction);
   
   const [selectedRange, setSelectedRange] = useState<IncomeRange | null>(null);
+  const [seeding, setSeeding] = useState(false);
   
   const currencySymbol = params.currencySymbol || 'MK';
   
@@ -49,8 +52,25 @@ export default function IncomeScreen() {
     setSelectedRange(range);
   };
   
-  const handleContinue = () => {
-    // Store income range preference (optional)
+  const handleContinue = async () => {
+    if (selectedRange) {
+      try {
+        setSeeding(true);
+        const seedAmount = selectedRange.maxValue
+          ? Math.round((selectedRange.minValue + selectedRange.maxValue) / 2)
+          : selectedRange.minValue;
+        await addTransaction({
+          title: 'Monthly Income',
+          category: 'income',
+          amount: seedAmount,
+          type: 'income',
+        });
+      } catch {
+        // Non-fatal — continue to success regardless
+      } finally {
+        setSeeding(false);
+      }
+    }
     router.push('/(onboarding)/success');
   };
   
@@ -69,7 +89,12 @@ export default function IncomeScreen() {
         }
       />
       
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Character & Intro */}
         <Animated.View 
           entering={FadeInDown.delay(100).duration(400)}
@@ -138,7 +163,7 @@ export default function IncomeScreen() {
             Your income data stays on your device and is never shared
           </Text>
         </Animated.View>
-      </View>
+      </ScrollView>
       
       {/* Continue Button */}
       <View style={styles.footer}>
@@ -148,6 +173,8 @@ export default function IncomeScreen() {
           variant={selectedRange ? "primary" : "secondary"}
           size="lg"
           fullWidth
+          loading={seeding}
+          disabled={seeding}
         />
       </View>
     </SafeAreaView>
@@ -158,9 +185,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
+  scroll: {
     flex: 1,
+  },
+  content: {
     paddingHorizontal: layout.screenPaddingH,
+    paddingBottom: spacing[4],
   },
   header: {
     alignItems: 'center',

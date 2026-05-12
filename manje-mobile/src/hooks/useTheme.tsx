@@ -6,7 +6,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 import { lightColors, darkColors, categoryColors } from '../theme/colors';
-import { createShadows, ShadowLevel } from '../theme/shadows';
+import { createShadows } from '../theme/shadows';
 import { typeScale, fonts } from '../theme/typography';
 import { spacing, layout, radius } from '../theme/spacing';
 
@@ -26,18 +26,11 @@ interface ThemeContextType {
   radius: any;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-interface ThemeProviderProps {
-  children: ReactNode;
-}
-
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const systemColorScheme = useColorScheme();
-  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('light');
-  
-  const isDark = themeMode === 'dark' || (themeMode === 'system' && systemColorScheme === 'dark');
-  
+const createThemeValue = (
+  isDark: boolean,
+  themeMode: 'light' | 'dark' | 'system',
+  setThemeMode: (mode: 'light' | 'dark' | 'system') => void
+): ThemeContextType => {
   const baseColors = isDark ? darkColors : lightColors;
   const currentShadows = createShadows(isDark);
 
@@ -137,39 +130,47 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     '3xl': spacing[12],
     '4xl': spacing[16],
   };
-  
-  const toggleTheme = () => {
-    setThemeMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+
+  return {
+    isDark,
+    colors,
+    toggleTheme: () => setThemeMode(themeMode === 'light' ? 'dark' : 'light'),
+    setTheme: setThemeMode,
+    themeMode,
+    shadow: (level) => currentShadows[level],
+    glow: (type) => currentShadows.glow[type],
+    typography,
+    spacing: spacingCompat,
+    layout,
+    radius,
   };
-  
-  const shadow = (level: keyof Omit<Shadows, 'glow'>) => currentShadows[level];
-  const glow = (type: keyof Shadows['glow']) => currentShadows.glow[type];
-  
+};
+
+const noopSetThemeMode = (_mode: 'light' | 'dark' | 'system') => undefined;
+const fallbackThemeContext = createThemeValue(false, 'light', noopSetThemeMode);
+
+const ThemeContext = createContext<ThemeContextType>(fallbackThemeContext);
+
+interface ThemeProviderProps {
+  children: ReactNode;
+}
+
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+  const systemColorScheme = useColorScheme();
+  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('light');
+
+  const isDark = themeMode === 'dark' || (themeMode === 'system' && systemColorScheme === 'dark');
+  const contextValue = createThemeValue(isDark, themeMode, setThemeMode);
+
   return (
-    <ThemeContext.Provider value={{
-      isDark,
-      colors,
-      toggleTheme,
-      setTheme: setThemeMode,
-      themeMode,
-      shadow,
-      glow,
-      typography,
-      spacing: spacingCompat,
-      layout,
-      radius,
-    }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
 export const useTheme = (): ThemeContextType => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
+  return useContext(ThemeContext);
 };
 
 export default useTheme;

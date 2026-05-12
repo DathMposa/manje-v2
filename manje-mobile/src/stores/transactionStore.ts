@@ -92,6 +92,10 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     const id = await createUserTransaction(userId, payload);
     const record = { id, ...payload };
 
+    set((state) => ({
+      transactions: sortTransactions([record, ...state.transactions]),
+    }));
+
     if (record.type === 'expense' && record.amount >= 50000) {
       await createUserNotification(userId, {
         type: 'transaction',
@@ -114,17 +118,24 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
       return;
     }
 
-    await updateUserTransaction(userId, id, {
+    const merged = {
       title: updates.title === undefined ? current.title : updates.title.trim() || current.title,
       category: updates.category === undefined ? current.category : updates.category.trim() || current.category,
-      amount:
-        updates.amount === undefined
-          ? current.amount
-          : Math.max(0, Number(updates.amount) || 0),
+      amount: updates.amount === undefined ? current.amount : Math.max(0, Number(updates.amount) || 0),
       type: updates.type ?? current.type,
       date: updates.date ?? current.date,
       note: updates.note === undefined ? current.note : updates.note.trim() || undefined,
-    });
+    };
+
+    await updateUserTransaction(userId, id, merged);
+
+    set((state) => ({
+      transactions: sortTransactions(
+        state.transactions.map((t) =>
+          t.id === id ? { ...t, ...merged, updatedAt: new Date().toISOString() } : t
+        )
+      ),
+    }));
   },
 
   deleteTransaction: async (id) => {
@@ -135,6 +146,10 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     }
 
     await deleteUserTransaction(userId, id);
+
+    set((state) => ({
+      transactions: state.transactions.filter((t) => t.id !== id),
+    }));
   },
 
   getTransaction: (id) => get().transactions.find((transaction) => transaction.id === id),
