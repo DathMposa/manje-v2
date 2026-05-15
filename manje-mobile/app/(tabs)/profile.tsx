@@ -3,15 +3,15 @@
  * User profile and settings.
  */
 
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../src/hooks/useTheme';
-import { ClayCard } from '../../src/components/common';
+import { ClayCard, ConfirmModal } from '../../src/components/common';
 import { ManjeCharacter } from '../../src/components/character';
 import { useAuthStore, useSettingsStore } from '../../src/stores';
 import { typeScale } from '../../src/theme/typography';
@@ -64,22 +64,24 @@ export default function ProfileScreen() {
   const { user, signOut } = useAuthStore();
   const currency = useSettingsStore((state) => state.settings.currency);
   
+  const [signOutModalVisible, setSignOutModalVisible] = useState(false);
+  const [signOutLoading, setSignOutLoading] = useState(false);
+
   const handleSignOut = () => {
-    Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Sign Out', 
-          style: 'destructive',
-          onPress: async () => {
-            await signOut();
-            router.replace('/(auth)/welcome');
-          }
-        },
-      ]
-    );
+    setSignOutModalVisible(true);
+  };
+
+  const confirmSignOut = async () => {
+    setSignOutLoading(true);
+    try {
+      await signOut();
+      setSignOutModalVisible(false);
+      router.replace('/(auth)/welcome');
+    } catch (error) {
+      console.error('Sign out error:', error);
+    } finally {
+      setSignOutLoading(false);
+    }
   };
   
   const getThemeLabel = () => {
@@ -207,6 +209,20 @@ export default function ProfileScreen() {
           </Text>
         </Animated.View>
       </ScrollView>
+
+      {/* Sign Out Confirmation Modal */}
+      <ConfirmModal
+        visible={signOutModalVisible}
+        onClose={() => setSignOutModalVisible(false)}
+        onConfirm={confirmSignOut}
+        title="Sign Out"
+        message="Are you sure you want to sign out? You'll need to sign in again to access your account."
+        confirmText="Sign Out"
+        cancelText="Cancel"
+        confirmVariant="danger"
+        icon="log-out"
+        loading={signOutLoading}
+      />
     </SafeAreaView>
   );
 }

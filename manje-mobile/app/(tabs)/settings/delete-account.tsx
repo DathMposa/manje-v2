@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AlertTriangle } from 'lucide-react-native';
 import { useTheme } from '../../../src/hooks';
-import { ScreenHeader } from '../../../src/components/common/ScreenHeader';
-import { Button } from '../../../src/components/common/Button';
-import { Input } from '../../../src/components/common/Input';
-import { ClayCard } from '../../../src/components/common/ClayCard';
+import { ScreenHeader, Button, Input, ClayCard, ConfirmModal } from '../../../src/components/common';
 
 export default function DeleteAccountScreen() {
   const router = useRouter();
@@ -15,10 +12,11 @@ export default function DeleteAccountScreen() {
   const [step, setStep] = useState(1);
   const [confirmationText, setConfirmationText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
 
   const handleDelete = () => {
     if (confirmationText !== 'DELETE') {
-      Alert.alert('Error', 'Please type DELETE exactly to confirm.');
+      setErrorModalVisible(true);
       return;
     }
 
@@ -125,6 +123,19 @@ export default function DeleteAccountScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Error Modal */}
+      <ConfirmModal
+        visible={errorModalVisible}
+        onClose={() => setErrorModalVisible(false)}
+        onConfirm={() => setErrorModalVisible(false)}
+        title="Invalid Confirmation"
+        message="Please type DELETE exactly (in uppercase) to confirm account deletion."
+        confirmText="Got it"
+        cancelText=""
+        confirmVariant="primary"
+        icon="alert-triangle"
+      />
     </KeyboardAvoidingView>
   );
 }

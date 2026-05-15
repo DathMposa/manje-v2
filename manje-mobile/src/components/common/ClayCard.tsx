@@ -109,28 +109,8 @@ export const ClayCard: React.FC<ClayCardProps> = ({
   const vStyles = getVariantStyles();
 
   const renderInnerClayEffects = () => {
-    if (!vStyles.hasClay && variant !== 'hero') return null;
-    return (
-      <>
-        {/* Inner Shadow Bottom */}
-        <View
-          style={[
-            {
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 24,
-              backgroundColor: colors.clay.innerShadow,
-              borderBottomLeftRadius: radius['2xl'],
-              borderBottomRightRadius: radius['2xl'],
-              opacity: 0.3,
-            },
-          ]}
-          pointerEvents="none"
-        />
-      </>
-    );
+    // Inner shadow removed for cleaner card appearance
+    return null;
   };
 
   const contentWrap = (

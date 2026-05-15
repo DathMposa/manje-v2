@@ -1,0 +1,5 @@
+# Supabase Configuration
+project_id = "hdvkzsvnfznrryfmchdv"
+
+[functions.send-sms]
+verify_jwt = false

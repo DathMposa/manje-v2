@@ -18,6 +18,7 @@ import { spacing, layout, radius } from '../../src/theme/spacing';
 
 const OTP_LENGTH = 6;
 const RESEND_TIMER = 30;
+const OTP_EXPIRY_SECONDS = 300; // 5 minutes
 
 export default function VerifyOtpScreen() {
   const { colors } = useTheme();
@@ -29,7 +30,9 @@ export default function VerifyOtpScreen() {
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [timer, setTimer] = useState(RESEND_TIMER);
+  const [expiryTimer, setExpiryTimer] = useState(OTP_EXPIRY_SECONDS);
   const [error, setError] = useState<string | null>(null);
+  const [isExpired, setIsExpired] = useState(false);
   
   const inputRefs = useRef<TextInput[]>([]);
 
@@ -42,6 +45,24 @@ export default function VerifyOtpScreen() {
     }
     return () => clearInterval(interval);
   }, [timer]);
+
+  // OTP expiry countdown
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (expiryTimer > 0 && !isExpired) {
+      interval = setInterval(() => {
+        setExpiryTimer((prev) => {
+          if (prev <= 1) {
+            setIsExpired(true);
+            setError('Code has expired. Please request a new one.');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [expiryTimer, isExpired]);
 
   const handleOtpChange = (text: string, index: number) => {
     const newCode = [...code];
@@ -101,6 +122,8 @@ export default function VerifyOtpScreen() {
     
     setResendLoading(true);
     setError(null);
+    setIsExpired(false);
+    setExpiryTimer(OTP_EXPIRY_SECONDS);
     
     try {
       await sendPhoneOtp(phone!);
@@ -112,6 +135,12 @@ export default function VerifyOtpScreen() {
     } finally {
       setResendLoading(false);
     }
+  };
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -134,6 +163,40 @@ export default function VerifyOtpScreen() {
             <Text style={[styles.subtitle, typeScale.bodyMedium, { color: colors.text.secondary }]}>
               We sent a 6-digit code to {phone}
             </Text>
+          </Animated.View>
+
+          {/* Expiry Timer */}
+          <Animated.View entering={FadeInDown.delay(150).duration(400)} style={styles.expiryContainer}>
+            <View style={[styles.expiryBadge, { 
+              backgroundColor: isExpired 
+                ? colors.status?.danger?.bg || '#fee2e2'
+                : expiryTimer < 60 
+                  ? colors.status?.warning?.bg || '#fef3c7'
+                  : colors.bg?.subtle || '#f3f4f6'
+            }]}>
+              <Feather 
+                name={isExpired ? "alert-circle" : "clock"} 
+                size={14} 
+                color={isExpired 
+                  ? colors.status?.danger?.text || '#dc2626'
+                  : expiryTimer < 60 
+                    ? colors.status?.warning?.text || '#b45309'
+                    : colors.text?.secondary || '#6b7280'
+                } 
+              />
+              <Text style={[styles.expiryText, { 
+                color: isExpired 
+                  ? colors.status?.danger?.text || '#dc2626'
+                  : expiryTimer < 60 
+                    ? colors.status?.warning?.text || '#b45309'
+                    : colors.text?.secondary || '#6b7280'
+              }]}>
+                {isExpired 
+                  ? 'Code expired' 
+                  : `Expires in ${formatTime(expiryTimer)}`
+                }
+              </Text>
+            </View>
           </Animated.View>
 
           <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.otpContainer}>
@@ -169,13 +232,13 @@ export default function VerifyOtpScreen() {
 
           <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.actions}>
             <Button
-              title="Verify Code"
+              title={isExpired ? "Code Expired" : "Verify Code"}
               onPress={() => handleVerify()}
               variant="primary"
               size="lg"
               fullWidth
               loading={loading}
-              disabled={resendLoading}
+              disabled={resendLoading || isExpired}
             />
             
             <View style={styles.resendContainer}>
@@ -249,5 +312,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: spacing[6],
+  },
+  expiryContainer: {
+    alignItems: 'center',
+    marginBottom: spacing[4],
+  },
+  expiryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
+    borderRadius: 20,
+    gap: 6,
+  },
+  expiryText: {
+    fontSize: 13,
+    fontWeight: '500',
   },
 });

@@ -32,6 +32,15 @@ export default function DashboardScreen() {
   const recalculateSpending = useBudgetStore((state) => state.recalculateSpending);
 
   const [refreshing, setRefreshing] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Track initial mount - animations only run on first load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     recalculateSpending(transactions);
@@ -81,7 +90,7 @@ export default function DashboardScreen() {
   };
 
   const renderTopArea = () => (
-    <Animated.View entering={FadeInDown.delay(100).duration(400)} style={styles.header}>
+    <Animated.View entering={isInitialLoad ? FadeInDown.delay(100).duration(400) : undefined} style={styles.header}>
       <View style={styles.headerLeft}>
         <Text style={[styles.greeting, typeScale['headline.md'], { color: colors.text.secondary }]}>
           Hello,
@@ -105,7 +114,7 @@ export default function DashboardScreen() {
   );
 
   const renderHeroArea = () => (
-    <Animated.View entering={FadeInDown.delay(200).duration(400)}>
+    <Animated.View entering={isInitialLoad ? FadeInDown.delay(200).duration(400) : undefined}>
       <ClayCard variant="hero" style={styles.balanceCard}>
         <View style={styles.balanceContent}>
           <Text style={[styles.balanceLabel, typeScale['label.lg'], { color: 'rgba(255,255,255,0.8)' }]}>
@@ -154,7 +163,7 @@ export default function DashboardScreen() {
         : 'Start adding transactions to unlock richer insights.';
 
     return (
-      <Animated.View entering={FadeInDown.delay(250).duration(400)} style={styles.section}>
+      <Animated.View entering={isInitialLoad ? FadeInDown.delay(250).duration(400) : undefined} style={styles.section}>
         <ClayCard variant="subtle" style={{ backgroundColor: colors.primary.subtle }}>
           <View style={styles.insightContent}>
             <View style={[styles.insightIconContainer, { backgroundColor: `${colors.primary.default}20` }]}>
@@ -177,7 +186,7 @@ export default function DashboardScreen() {
     }
 
     return (
-      <Animated.View entering={FadeInDown.delay(350).duration(400)} style={styles.section}>
+      <Animated.View entering={isInitialLoad ? FadeInDown.delay(350).duration(400) : undefined} style={styles.section}>
         <Text style={[styles.sectionTitle, typeScale['headline.sm'], { color: colors.text.primary }]}>
           Budget & Goals
         </Text>
@@ -266,7 +275,7 @@ export default function DashboardScreen() {
     return (
       <View>
         {!!attentionCategories.length && (
-          <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.section}>
+          <Animated.View entering={isInitialLoad ? FadeInDown.delay(400).duration(400) : undefined} style={styles.section}>
             <Text style={[styles.sectionTitle, typeScale['headline.sm'], { color: colors.text.primary }]}>
               Needs Attention
             </Text>
@@ -300,7 +309,7 @@ export default function DashboardScreen() {
         )}
 
         {!!recentTransactions.length && (
-          <Animated.View entering={FadeInDown.delay(450).duration(400)} style={styles.section}>
+          <Animated.View entering={isInitialLoad ? FadeInDown.delay(450).duration(400) : undefined} style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={[styles.sectionTitle, typeScale['headline.sm'], { color: colors.text.primary, marginBottom: 0 }]}>
                 Recent Activity
@@ -366,7 +375,7 @@ export default function DashboardScreen() {
     }
 
     return (
-      <Animated.View entering={FadeInDown.delay(400).duration(400)} style={[styles.section, { alignItems: 'center', marginTop: spacing[8] }]}>
+      <Animated.View entering={isInitialLoad ? FadeInDown.delay(400).duration(400) : undefined} style={[styles.section, { alignItems: 'center', marginTop: spacing[8] }]}>
         <View style={[styles.emptyStateCircle, { backgroundColor: colors.bg.card }]} />
         <Text style={[typeScale['headline.md'], { color: colors.text.primary, marginTop: spacing[4], textAlign: 'center' }]}>
           No activity yet

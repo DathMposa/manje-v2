@@ -13,6 +13,17 @@ export interface AppUser {
   photoURL?: string | null;
 }
 
+// Format Malawian numbers to E.164 for Africa's Talking
+export function toE164(phone: string): string {
+  const cleaned = phone.replace(/\D/g, '');
+  if (cleaned.startsWith('265')) return `+${cleaned}`;
+  if (cleaned.startsWith('0')) return `+265${cleaned.slice(1)}`;
+  return `+265${cleaned}`;
+}
+
+// Country codes for phone input - re-export from components
+export { countryCodes, defaultCountryCode, type CountryCode } from '../components/common/CountryCodePicker';
+
 export interface AuthSuccessResult {
   user: AppUser;
   isNewUser: boolean;
@@ -34,12 +45,11 @@ export interface OtpSentResult {
 
 type Unsubscribe = () => void;
 
-type GoogleSignInModule = typeof import('@react-native-google-signin/google-signin');
-
 const GOOGLE_SIGN_IN_NATIVE_MODULE_ERROR =
   'Google sign-in requires a development/production build. Expo Go does not include the Google native module.';
 
-const loadGoogleSignInModule = async (): Promise<GoogleSignInModule> => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const loadGoogleSignInModule = async (): Promise<any> => {
   try {
     return await import('@react-native-google-signin/google-signin');
   } catch {
@@ -148,9 +158,10 @@ export const signUpWithEmail = async (
   };
 };
 
-export const sendPhoneOtp = async (phone: string): Promise<OtpSentResult> => {
+export const sendPhoneOtp = async (rawPhone: string): Promise<OtpSentResult> => {
   assertConfigured();
 
+  const phone = toE164(rawPhone);
   console.log('Attempting to send OTP to:', phone);
 
   const { data, error } = await supabase.auth.signInWithOtp({
@@ -197,19 +208,30 @@ export const verifyPhoneOtp = async (phone: string, token: string): Promise<Auth
 export const signInWithGoogle = async (): Promise<AuthSuccessResult | GoogleAuthCancelledResult> => {
   configureGoogleSignIn();
 
-  const { GoogleSignin, isCancelledResponse, isSuccessResponse } = await loadGoogleSignInModule();
+  let GoogleSigninModule;
+  let isCancelledResponse: (response: unknown) => boolean;
+  let isSuccessResponse: (response: unknown) => boolean;
 
-  GoogleSignin.configure({
+  try {
+    const module = await loadGoogleSignInModule();
+    GoogleSigninModule = module.GoogleSignin;
+    isCancelledResponse = module.isCancelledResponse;
+    isSuccessResponse = module.isSuccessResponse;
+  } catch {
+    throw new Error(GOOGLE_SIGN_IN_NATIVE_MODULE_ERROR);
+  }
+
+  GoogleSigninModule.configure({
     webClientId: getGoogleWebClientId(),
     offlineAccess: false,
     scopes: ['email', 'profile'],
   });
 
   if (Platform.OS === 'android') {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    await GoogleSigninModule.hasPlayServices({ showPlayServicesUpdateDialog: true });
   }
 
-  const response = await GoogleSignin.signIn();
+  const response = await GoogleSigninModule.signIn();
 
   if (isCancelledResponse(response)) {
     return { cancelled: true };
@@ -237,11 +259,19 @@ export const signInWithGoogle = async (): Promise<AuthSuccessResult | GoogleAuth
 export const signOut = async () => {
   await supabase.auth.signOut();
 
+  // Attempt Google sign-out only if native module is available
   try {
-    const { GoogleSignin } = await loadGoogleSignInModule();
+    let GoogleSigninModule;
+    try {
+      const module = await loadGoogleSignInModule();
+      GoogleSigninModule = module.GoogleSignin;
+    } catch {
+      // Module not available (Expo Go), skip Google sign-out
+      return;
+    }
 
-    if (GoogleSignin.getCurrentUser()) {
-      await GoogleSignin.signOut();
+    if (GoogleSigninModule.getCurrentUser()) {
+      await GoogleSigninModule.signOut();
     }
   } catch {
     // Ignore Google session cleanup failures after Supabase sign-out succeeds.

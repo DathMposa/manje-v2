@@ -84,15 +84,15 @@ export default function ManualBudgetScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <ClayCard variant="subtle" style={styles.card}>
+        <ClayCard variant="clay" style={styles.card}>
           <Input
             label="Budget Name"
             value={name}
             onChangeText={setName}
           />
-          
+
           <View style={styles.inputSpacing} />
-          
+
           <Input
             label="Total Monthly Income (MK)"
             value={totalIncome}
@@ -100,7 +100,7 @@ export default function ManualBudgetScreen() {
             keyboardType="numeric"
             placeholder="0"
           />
-          
+
           <View style={[styles.switchContainer, { marginTop: spacing.xl }]}>
             <View>
               <Text style={[typography.scale['headline.sm'], { color: colors.text.primary }]}>Primary Budget</Text>
