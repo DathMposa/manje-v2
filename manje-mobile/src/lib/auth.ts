@@ -27,6 +27,11 @@ export interface EmailConfirmationPendingResult {
   email: string;
 }
 
+export interface OtpSentResult {
+  otpSent: true;
+  phone: string;
+}
+
 type Unsubscribe = () => void;
 
 type GoogleSignInModule = typeof import('@react-native-google-signin/google-signin');
@@ -143,6 +148,52 @@ export const signUpWithEmail = async (
   };
 };
 
+export const sendPhoneOtp = async (phone: string): Promise<OtpSentResult> => {
+  assertConfigured();
+
+  console.log('Attempting to send OTP to:', phone);
+
+  const { data, error } = await supabase.auth.signInWithOtp({
+    phone,
+  });
+
+  if (error) {
+    console.error('Supabase OTP Error details:', {
+      message: error.message,
+      status: error.status,
+      name: error.name,
+      // @ts-ignore
+      code: error.code
+    });
+    throw error;
+  }
+
+  console.log('OTP sent successfully. Response:', data);
+  return {
+    otpSent: true,
+    phone,
+  };
+};
+
+export const verifyPhoneOtp = async (phone: string, token: string): Promise<AuthSuccessResult> => {
+  assertConfigured();
+
+  const { data, error } = await supabase.auth.verifyOtp({
+    phone,
+    token,
+    type: 'sms',
+  });
+
+  if (error || !data.user) {
+    throw error ?? new Error('Verification failed. Please try again.');
+  }
+
+  return {
+    user: toAppUser(data.user),
+    isNewUser: data.user.created_at === data.user.updated_at,
+  };
+};
+
 export const signInWithGoogle = async (): Promise<AuthSuccessResult | GoogleAuthCancelledResult> => {
   configureGoogleSignIn();
 
@@ -232,11 +283,11 @@ export const getAuthErrorMessage = (error: unknown) => {
     const message = (error as { message: string }).message.toLowerCase();
 
     if (message.includes('invalid login credentials') || message.includes('invalid email or password')) {
-      return 'Invalid email or password. Please try again.';
+      return 'Invalid credentials. Please try again.';
     }
 
     if (message.includes('email already registered') || message.includes('user already registered')) {
-      return 'An account with this email already exists. Try signing in instead.';
+      return 'An account with this email or phone already exists.';
     }
 
     if (message.includes('password should be at least')) {
@@ -245,6 +296,18 @@ export const getAuthErrorMessage = (error: unknown) => {
 
     if (message.includes('unable to validate email address')) {
       return 'Please enter a valid email address.';
+    }
+
+    if (message.includes('invalid phone number')) {
+      return 'Please enter a valid phone number with country code.';
+    }
+
+    if (message.includes('token has expired')) {
+      return 'The OTP has expired. Please request a new one.';
+    }
+
+    if (message.includes('invalid token')) {
+      return 'Invalid OTP. Please check and try again.';
     }
 
     if (message.includes('network') || message.includes('fetch')) {

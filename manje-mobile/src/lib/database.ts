@@ -142,7 +142,8 @@ export interface SupportFeedbackDoc {
 
 export interface UserIdentity {
   id: string;
-  email: string;
+  email?: string | null;
+  phone?: string | null;
   displayName: string | null;
   photoURL?: string | null;
 }
@@ -326,6 +327,7 @@ type FaqRow = {
 const mapProfile = (row: ProfileRow): UserProfileDoc => ({
   displayName: row.display_name,
   email: row.email,
+  phone: row.phone,
   photoURL: row.photo_url,
   isOnboarded: row.is_onboarded,
   createdAt: row.created_at,
@@ -438,7 +440,8 @@ export const ensureUserProfile = async (user: UserIdentity, _isNewUser?: boolean
   const { error } = await supabase.from('profiles').upsert(
     {
       id: user.id,
-      email: user.email,
+      email: user.email ?? null,
+      phone: user.phone ?? null,
       display_name: user.displayName?.trim() || null,
       photo_url: user.photoURL ?? null,
       updated_at: timestamp,
@@ -475,7 +478,7 @@ export const subscribeUserProfile = (
 
 export const updateUserProfileDoc = async (
   uid: string,
-  updates: Partial<Pick<UserProfileDoc, 'displayName' | 'photoURL' | 'isOnboarded'>>
+  updates: Partial<Pick<UserProfileDoc, 'displayName' | 'photoURL' | 'isOnboarded' | 'phone'>>
 ) => {
   const payload: Record<string, unknown> = { updated_at: nowIso() };
 
@@ -489,6 +492,10 @@ export const updateUserProfileDoc = async (
 
   if (updates.isOnboarded !== undefined) {
     payload['is_onboarded'] = updates.isOnboarded;
+  }
+
+  if (updates.phone !== undefined) {
+    payload['phone'] = updates.phone;
   }
 
   const { error } = await supabase.from('profiles').update(payload).eq('id', uid);

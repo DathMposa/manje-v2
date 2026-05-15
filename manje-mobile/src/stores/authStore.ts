@@ -13,6 +13,8 @@ import {
 import {
   getAuthErrorMessage,
   observeAuthState,
+  sendPhoneOtp as sendPhoneOtpRequest,
+  verifyPhoneOtp as verifyPhoneOtpRequest,
   signInWithEmail as signInWithEmailRequest,
   signInWithGoogle as signInWithGoogleRequest,
   signOut as signOutRequest,
@@ -22,6 +24,7 @@ import {
   type AuthSuccessResult,
   type GoogleAuthCancelledResult,
   type EmailConfirmationPendingResult,
+  type OtpSentResult,
 } from '../lib/auth';
 import { useBillStore } from './billStore';
 import { useBudgetStore } from './budgetStore';
@@ -32,7 +35,8 @@ import { useTransactionStore } from './transactionStore';
 
 export interface User {
   id: string;
-  email: string;
+  email?: string | null;
+  phone?: string | null;
   displayName: string | null;
   photoURL?: string | null;
 }
@@ -50,6 +54,8 @@ export interface AuthState {
   initializeAuth: () => Promise<() => void>;
   setOnboarded: (value: boolean) => Promise<void>;
   updateProfile: (displayName: string) => Promise<void>;
+  sendPhoneOtp: (phone: string) => Promise<OtpSentResult>;
+  verifyPhoneOtp: (phone: string, token: string) => Promise<AuthResult>;
   signInWithEmail: (email: string, password: string) => Promise<AuthResult>;
   signUpWithEmail: (name: string, email: string, password: string) => Promise<AuthResult | EmailConfirmationPendingResult>;
   signInWithGoogle: () => Promise<AuthResult | GoogleAuthCancelledResult>;
@@ -62,6 +68,7 @@ let activeProfileUserId: string | null = null;
 const toStoreUser = (user: AppUser): User => ({
   id: user.id,
   email: user.email,
+  phone: user.phone,
   displayName: user.displayName,
   photoURL: user.photoURL ?? null,
 });
@@ -197,6 +204,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         displayName: nextDisplayName || null,
       },
     });
+  },
+
+  sendPhoneOtp: async (phone) => {
+    try {
+      return await sendPhoneOtpRequest(phone);
+    } catch (error) {
+      throw new Error(getAuthErrorMessage(error));
+    }
+  },
+
+  verifyPhoneOtp: async (phone, token) => {
+    try {
+      const result = await verifyPhoneOtpRequest(phone, token);
+      return await finalizeAuthSuccess(set, result);
+    } catch (error) {
+      throw new Error(getAuthErrorMessage(error));
+    }
   },
 
   signInWithEmail: async (email, password) => {

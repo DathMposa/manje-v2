@@ -1,6 +1,6 @@
 /**
  * AUTH-02: Sign Up Screen
- * Email, name, and password registration form.
+ * Phone-first registration with email alternative.
  */
 
 import React, { useState } from 'react';
@@ -19,9 +19,11 @@ import { spacing, layout, radius } from '../../src/theme/spacing';
 export default function SignUpScreen() {
   const { colors } = useTheme();
   const router = useRouter();
-  const { signUpWithEmail, signInWithGoogle } = useAuthStore();
+  const { signUpWithEmail, signInWithGoogle, sendPhoneOtp } = useAuthStore();
   
+  const [authMode, setAuthMode] = useState<'phone' | 'email'>('phone');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -39,20 +41,28 @@ export default function SignUpScreen() {
       newErrors.name = 'Please enter your name';
     }
     
-    if (!email.trim()) {
-      newErrors.email = 'Please enter your email';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-    
-    if (!password) {
-      newErrors.password = 'Please enter a password';
-    } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-    
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+    if (authMode === 'phone') {
+      if (!phone.trim()) {
+        newErrors.phone = 'Please enter your phone number';
+      } else if (!/^\+?[1-9]\d{1,14}$/.test(phone.replace(/\s/g, ''))) {
+        newErrors.phone = 'Please enter a valid phone number';
+      }
+    } else {
+      if (!email.trim()) {
+        newErrors.email = 'Please enter your email';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        newErrors.email = 'Please enter a valid email';
+      }
+      
+      if (!password) {
+        newErrors.password = 'Please enter a password';
+      } else if (password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      }
+      
+      if (password !== confirmPassword) {
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
     }
     
     if (!agreeToTerms) {
@@ -63,7 +73,30 @@ export default function SignUpScreen() {
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSignUp = async () => {
+  const handlePhoneSignUp = async () => {
+    if (!validateForm()) return;
+    
+    setLoading(true);
+    setErrors({});
+    
+    try {
+      // Supabase signInWithOtp works for both sign-up and sign-in
+      await sendPhoneOtp(phone.trim());
+      // We'll need to store the name temporarily if it's a new user, 
+      // but usually we update profile AFTER verification.
+      router.push({
+        pathname: '/(auth)/verify-otp',
+        params: { phone: phone.trim(), name: name.trim() }
+      });
+    } catch (error) {
+      console.error('Phone sign up error:', error);
+      setErrors({ general: error instanceof Error ? error.message : 'Something went wrong. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEmailSignUp = async () => {
     if (!validateForm()) return;
     
     setLoading(true);
@@ -77,7 +110,7 @@ export default function SignUpScreen() {
         router.replace('/(onboarding)/country');
       }
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error('Email sign up error:', error);
       setErrors({ general: error instanceof Error ? error.message : 'Something went wrong. Please try again.' });
     } finally {
       setLoading(false);
@@ -190,47 +223,62 @@ export default function SignUpScreen() {
               leftIcon={<Feather name="user" size={20} color={colors.text.secondary} />}
             />
             
-            <Input
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              error={errors.email}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
-            />
-            
-            <Input
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              error={errors.password}
-              secureTextEntry={!showPassword}
-              autoCapitalize="none"
-              autoComplete="password-new"
-              leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
-              rightIcon={
-                <Pressable onPress={() => setShowPassword(!showPassword)}>
-                  <Feather 
-                    name={showPassword ? 'eye-off' : 'eye'} 
-                    size={20} 
-                    color={colors.text.secondary} 
-                  />
-                </Pressable>
-              }
-            />
-            
-            <Input
-              label="Confirm Password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              error={errors.confirmPassword}
-              secureTextEntry={!showPassword}
-              autoCapitalize="none"
-              autoComplete="password-new"
-              leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
-            />
+            {authMode === 'phone' ? (
+              <Input
+                label="Phone Number"
+                value={phone}
+                onChangeText={setPhone}
+                error={errors.phone}
+                keyboardType="phone-pad"
+                autoComplete="tel"
+                placeholder="+265..."
+                leftIcon={<Feather name="phone" size={20} color={colors.text.secondary} />}
+              />
+            ) : (
+              <>
+                <Input
+                  label="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  error={errors.email}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
+                />
+                
+                <Input
+                  label="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  error={errors.password}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoComplete="password-new"
+                  leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
+                  rightIcon={
+                    <Pressable onPress={() => setShowPassword(!showPassword)}>
+                      <Feather 
+                        name={showPassword ? 'eye-off' : 'eye'} 
+                        size={20} 
+                        color={colors.text.secondary} 
+                      />
+                    </Pressable>
+                  }
+                />
+                
+                <Input
+                  label="Confirm Password"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  error={errors.confirmPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoComplete="password-new"
+                  leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
+                />
+              </>
+            )}
             
             {/* Terms Checkbox */}
             <Pressable 
@@ -266,12 +314,25 @@ export default function SignUpScreen() {
           <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.actions}>
             <Button
               title="Create Account"
-              onPress={handleSignUp}
+              onPress={authMode === 'phone' ? handlePhoneSignUp : handleEmailSignUp}
               variant="primary"
               size="lg"
               fullWidth
               loading={loading}
               disabled={googleLoading}
+            />
+
+            <Button
+              title={authMode === 'phone' ? "Register with Email" : "Register with Phone"}
+              onPress={() => {
+                setAuthMode(authMode === 'phone' ? 'email' : 'phone');
+                setErrors({});
+              }}
+              variant="ghost"
+              size="lg"
+              fullWidth
+              style={{ marginTop: spacing[2] }}
+              textStyle={{ color: colors.text.secondary }}
             />
             
             {/* Divider */}

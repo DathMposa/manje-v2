@@ -1,6 +1,6 @@
 /**
  * AUTH-03: Sign In Screen
- * Email/password login with Google Sign-In option.
+ * Phone-first authentication with email/password and Google options.
  */
 
 import React, { useState } from 'react';
@@ -19,8 +19,10 @@ import { spacing, layout } from '../../src/theme/spacing';
 export default function SignInScreen() {
   const { colors } = useTheme();
   const router = useRouter();
-  const { signInWithEmail, signInWithGoogle } = useAuthStore();
+  const { signInWithEmail, signInWithGoogle, sendPhoneOtp } = useAuthStore();
   
+  const [authMode, setAuthMode] = useState<'phone' | 'email'>('phone');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,18 +33,46 @@ export default function SignInScreen() {
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
     
-    if (!email.trim()) {
-      newErrors.email = 'Please enter your email';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-    
-    if (!password) {
-      newErrors.password = 'Please enter your password';
+    if (authMode === 'phone') {
+      if (!phone.trim()) {
+        newErrors.phone = 'Please enter your phone number';
+      } else if (!/^\+?[1-9]\d{1,14}$/.test(phone.replace(/\s/g, ''))) {
+        newErrors.phone = 'Please enter a valid phone number';
+      }
+    } else {
+      if (!email.trim()) {
+        newErrors.email = 'Please enter your email';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        newErrors.email = 'Please enter a valid email';
+      }
+      
+      if (!password) {
+        newErrors.password = 'Please enter your password';
+      }
     }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSendOtp = async () => {
+    if (!validateForm()) return;
+
+    setLoading(true);
+    setErrors({});
+
+    try {
+      await sendPhoneOtp(phone.trim());
+      router.push({
+        pathname: '/(auth)/verify-otp',
+        params: { phone: phone.trim() }
+      });
+    } catch (error) {
+      console.error('Send OTP error:', error);
+      setErrors({ general: error instanceof Error ? error.message : 'Failed to send verification code.' });
+    } finally {
+      setLoading(false);
+    }
   };
   
   const handleSignIn = async () => {
@@ -56,7 +86,7 @@ export default function SignInScreen() {
       router.replace(result.isOnboarded ? '/(tabs)' : '/(onboarding)/country');
     } catch (error) {
       console.error('Sign in error:', error);
-      setErrors({ general: error instanceof Error ? error.message : 'Invalid email or password. Please try again.' });
+      setErrors({ general: error instanceof Error ? error.message : 'Invalid credentials. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -127,55 +157,95 @@ export default function SignInScreen() {
               </ClayCard>
             )}
             
-            <Input
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              error={errors.email}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
-            />
-            
-            <Input
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              error={errors.password}
-              secureTextEntry={!showPassword}
-              autoCapitalize="none"
-              autoComplete="password"
-              leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
-              rightIcon={
-                <Pressable onPress={() => setShowPassword(!showPassword)}>
-                  <Feather 
-                    name={showPassword ? 'eye-off' : 'eye'} 
-                    size={20} 
-                    color={colors.text.secondary} 
-                  />
+            {authMode === 'phone' ? (
+              <Input
+                label="Phone Number"
+                value={phone}
+                onChangeText={setPhone}
+                error={errors.phone}
+                keyboardType="phone-pad"
+                autoComplete="tel"
+                placeholder="+265..."
+                leftIcon={<Feather name="phone" size={20} color={colors.text.secondary} />}
+              />
+            ) : (
+              <>
+                <Input
+                  label="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  error={errors.email}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
+                />
+                
+                <Input
+                  label="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  error={errors.password}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoComplete="password"
+                  leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
+                  rightIcon={
+                    <Pressable onPress={() => setShowPassword(!showPassword)}>
+                      <Feather 
+                        name={showPassword ? 'eye-off' : 'eye'} 
+                        size={20} 
+                        color={colors.text.secondary} 
+                      />
+                    </Pressable>
+                  }
+                />
+                
+                {/* Forgot Password */}
+                <Pressable onPress={handleForgotPassword} style={styles.forgotPassword}>
+                  <Text style={[typeScale.labelMedium, { color: colors.primary.default }]}>
+                    Forgot Password?
+                  </Text>
                 </Pressable>
-              }
-            />
-            
-            {/* Forgot Password */}
-            <Pressable onPress={handleForgotPassword} style={styles.forgotPassword}>
-              <Text style={[typeScale.labelMedium, { color: colors.primary.default }]}>
-                Forgot Password?
-              </Text>
-            </Pressable>
+              </>
+            )}
           </Animated.View>
           
           {/* Actions */}
           <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.actions}>
+            {authMode === 'phone' ? (
+              <Button
+                title="Send Code"
+                onPress={handleSendOtp}
+                variant="primary"
+                size="lg"
+                fullWidth
+                loading={loading}
+                disabled={googleLoading}
+              />
+            ) : (
+              <Button
+                title="Sign In"
+                onPress={handleSignIn}
+                variant="primary"
+                size="lg"
+                fullWidth
+                loading={loading}
+                disabled={googleLoading}
+              />
+            )}
+            
             <Button
-              title="Sign In"
-              onPress={handleSignIn}
-              variant="primary"
+              title={authMode === 'phone' ? "Continue with Email" : "Continue with Phone"}
+              onPress={() => {
+                setAuthMode(authMode === 'phone' ? 'email' : 'phone');
+                setErrors({});
+              }}
+              variant="ghost"
               size="lg"
               fullWidth
-              loading={loading}
-              disabled={googleLoading}
+              style={{ marginTop: spacing[2] }}
+              textStyle={{ color: colors.text.secondary }}
             />
             
             {/* Divider */}
