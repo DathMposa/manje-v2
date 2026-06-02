@@ -3,7 +3,19 @@
  * Sets up providers, fonts, and navigation structure.
  */
 
+import * as Sentry from '@sentry/react-native';
+import { PostHogProvider } from 'posthog-react-native';
+import NetInfo from '@react-native-community/netinfo';
+import { posthog } from '../src/lib/analytics';
+import { runSync } from '../src/lib/syncEngine';
+import { supabase } from '../src/lib/supabase';
 import { useEffect, useState } from 'react';
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN ?? '',
+  enabled: Boolean(process.env.SENTRY_DSN),
+  tracesSampleRate: 0.2,
+});
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -14,6 +26,7 @@ import { WorkSans_400Regular, WorkSans_500Medium, WorkSans_600SemiBold, WorkSans
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from '../src/hooks/useTheme';
 import { ToastProvider } from '../src/hooks/useToast';
+import { ErrorBoundary } from '../src/components/common/ErrorBoundary';
 import { useAuthStore } from '../src/stores/authStore';
 import {
   useBillStore,
@@ -47,7 +60,7 @@ const loadFonts = async () => {
 
 function RootLayoutNav() {
   const { colors, isDark } = useTheme();
-  const { user, isAuthenticated, isOnboarded, isLoading, initializeAuth } = useAuthStore();
+  const { user, isAuthenticated, isOnboarded, isLoading, initializeAuth, localAuthUserId, biometricAuthState } = useAuthStore();
   const initializeTransactions = useTransactionStore((state) => state.initializeForUser);
   const initializeBudgets = useBudgetStore((state) => state.initializeForUser);
   const initializeGoals = useGoalStore((state) => state.initializeForUser);
@@ -76,6 +89,26 @@ function RootLayoutNav() {
     initializeContent();
   }, [initializeContent]);
 
+  // Auto-sync when network becomes available
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isConnected && user?.id) {
+        void runSync(user.id);
+      }
+    });
+    return () => unsubscribe();
+  }, [user?.id]);
+
+  // Handle PASSWORD_RECOVERY deep link — route to reset-password screen
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        router.push('/(auth)/reset-password');
+      }
+    });
+    return () => listener.subscription.unsubscribe();
+  }, [router]);
+
   useEffect(() => {
     if (!user?.id) {
       return;
@@ -103,10 +136,22 @@ function RootLayoutNav() {
   
   useEffect(() => {
     if (isLoading) return;
-    
+
     const inAuthGroup = segments[0] === '(auth)';
     const inOnboardingGroup = segments[0] === '(onboarding)';
-    
+    const segs = segments as string[];
+    const inBiometricLock = segs[0] === '(auth)' && segs[1] === 'biometric-lock';
+
+    // If the user has a previous local session and biometric is required, show lock screen
+    if (
+      localAuthUserId &&
+      (biometricAuthState === 'required' || biometricAuthState === 'authenticating' || biometricAuthState === 'failed' || biometricAuthState === 'locked_out') &&
+      !inBiometricLock
+    ) {
+      router.replace('/(auth)/biometric-lock');
+      return;
+    }
+
     if (!isAuthenticated && !inAuthGroup) {
       // Redirect to auth if not authenticated
       router.replace('/(auth)/welcome');
@@ -117,7 +162,7 @@ function RootLayoutNav() {
       // Redirect to main app if authenticated and onboarded
       router.replace('/(tabs)');
     }
-  }, [isAuthenticated, isOnboarded, isLoading, router, segments]);
+  }, [isAuthenticated, isOnboarded, isLoading, localAuthUserId, biometricAuthState, router, segments]);
   
   if (isLoading) {
     return (
@@ -145,7 +190,7 @@ function RootLayoutNav() {
   );
 }
 
-export default function RootLayout() {
+function RootLayout() {
   const [fontsLoaded] = useFonts({
     Syne_400Regular,
     Syne_600SemiBold,
@@ -172,14 +217,20 @@ export default function RootLayout() {
   
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ThemeProvider>
-        <ToastProvider>
-          <RootLayoutNav />
-        </ToastProvider>
-      </ThemeProvider>
+      <ErrorBoundary>
+        <PostHogProvider client={posthog ?? undefined} autocapture>
+          <ThemeProvider>
+            <ToastProvider>
+              <RootLayoutNav />
+            </ToastProvider>
+          </ThemeProvider>
+        </PostHogProvider>
+      </ErrorBoundary>
     </GestureHandlerRootView>
   );
 }
+
+export default Sentry.wrap(RootLayout);
 
 const styles = StyleSheet.create({
   container: {

@@ -46,30 +46,47 @@ export default function DashboardScreen() {
     recalculateSpending(transactions);
   }, [transactions, recalculateSpending]);
 
-  const primaryBudget = budgets.find((budget) => budget.isPrimary) || budgets[0];
+  const primaryBudget = useMemo(
+    () => budgets.find((b) => b.isPrimary) ?? budgets[0],
+    [budgets]
+  );
+
   const monthlyTransactions = useMemo(
     () => transactions.filter((transaction) => isSameMonth(transaction.date)),
     [transactions]
   );
 
-  const monthlyIncome = monthlyTransactions
-    .filter((transaction) => transaction.type === 'income')
-    .reduce((sum, transaction) => sum + transaction.amount, 0);
+  const monthlyIncome = useMemo(
+    () => monthlyTransactions.filter((t) => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+    [monthlyTransactions]
+  );
 
-  const monthlySpent = monthlyTransactions
-    .filter((transaction) => transaction.type === 'expense')
-    .reduce((sum, transaction) => sum + transaction.amount, 0);
+  const monthlySpent = useMemo(
+    () => monthlyTransactions.filter((t) => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0),
+    [monthlyTransactions]
+  );
 
-  const availableToSpend = primaryBudget
-    ? Math.max(primaryBudget.totalLimit - primaryBudget.totalSpent, 0)
-    : Math.max(monthlyIncome - monthlySpent, 0);
+  const availableToSpend = useMemo(
+    () =>
+      primaryBudget
+        ? Math.max(primaryBudget.totalLimit - primaryBudget.totalSpent, 0)
+        : Math.max(monthlyIncome - monthlySpent, 0),
+    [primaryBudget, monthlyIncome, monthlySpent]
+  );
 
-  const topGoal = goals[0];
-  const recentTransactions = transactions.slice(0, 4);
-  const attentionCategories =
-    primaryBudget?.categories.filter((category) => category.limit > 0 && category.spent / category.limit >= 0.75) || [];
+  const topGoal = useMemo(() => goals[0], [goals]);
+  const recentTransactions = useMemo(() => transactions.slice(0, 4), [transactions]);
 
-  const isEmptyState = !transactions.length && !budgets.length && !goals.length;
+  const attentionCategories = useMemo(
+    () =>
+      primaryBudget?.categories.filter((c) => c.limit > 0 && c.spent / c.limit >= 0.75) ?? [],
+    [primaryBudget]
+  );
+
+  const isEmptyState = useMemo(
+    () => !transactions.length && !budgets.length && !goals.length,
+    [transactions.length, budgets.length, goals.length]
+  );
   const currencySymbol = 'MK';
 
   const onRefresh = async () => {

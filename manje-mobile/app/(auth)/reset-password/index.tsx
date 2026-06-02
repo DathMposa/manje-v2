@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Lock } from 'lucide-react-native';
@@ -7,6 +7,7 @@ import { Button } from '../../../src/components/common/Button';
 import { Input } from '../../../src/components/common/Input';
 import { ScreenHeader } from '../../../src/components/common/ScreenHeader';
 import { ManjeCharacter } from '../../../src/components/character/ManjeCharacter';
+import { supabase } from '../../../src/lib/supabase';
 
 export default function ResetPasswordScreen() {
   const router = useRouter();
@@ -19,7 +20,15 @@ export default function ResetPasswordScreen() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleReset = () => {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) {
+        router.replace('/(auth)/forgot-password');
+      }
+    });
+  }, [router]);
+
+  const handleReset = async () => {
     setError('');
     
     if (!password || !confirmPassword) {
@@ -39,11 +48,20 @@ export default function ResetPasswordScreen() {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+
+      if (updateError) {
+        setError(updateError.message);
+        return;
+      }
+
       setIsSuccess(true);
-    }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSuccess) {

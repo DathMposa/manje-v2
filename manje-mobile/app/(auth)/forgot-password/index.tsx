@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Mail, ArrowLeft } from 'lucide-react-native';
+import { Mail } from 'lucide-react-native';
 import { useTheme } from '../../../src/hooks/useTheme';
 import { Button } from '../../../src/components/common/Button';
 import { Input } from '../../../src/components/common/Input';
 import { ScreenHeader } from '../../../src/components/common/ScreenHeader';
 import { ManjeCharacter } from '../../../src/components/character/ManjeCharacter';
+import { supabase } from '../../../src/lib/supabase';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function ForgotPasswordScreen() {
     return /\S+@\S+\.\S+/.test(email);
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     setError('');
     
     if (!email) {
@@ -36,11 +37,22 @@ export default function ForgotPasswordScreen() {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: 'manje://reset-password',
+      });
+
+      if (resetError) {
+        setError(resetError.message);
+        return;
+      }
+
       setIsSuccess(true);
-    }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSuccess) {

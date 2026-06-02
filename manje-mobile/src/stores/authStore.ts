@@ -26,6 +26,11 @@ import {
   type EmailConfirmationPendingResult,
   type OtpSentResult,
 } from '../lib/auth';
+import { analytics } from '../lib/analytics';
+import { initLocalDatabase, getLocalUserProfile, saveLocalUserProfile } from '../lib/localDatabase';
+import { getLocalAuthUserId, setLocalAuthUserId, clearLocalAuth, authenticateWithBiometrics } from '../lib/biometricAuth';
+import { seedFromCloud } from '../lib/syncEngine';
+import { registerForPushNotifications } from '../lib/notifications';
 import { useBillStore } from './billStore';
 import { useBudgetStore } from './budgetStore';
 import { useGoalStore } from './goalStore';
@@ -46,12 +51,17 @@ export interface AuthResult {
   isOnboarded: boolean;
 }
 
+export type BiometricAuthState = 'idle' | 'required' | 'authenticating' | 'authenticated' | 'failed' | 'locked_out';
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isOnboarded: boolean;
   isLoading: boolean;
+  localAuthUserId: string | null;
+  biometricAuthState: BiometricAuthState;
   initializeAuth: () => Promise<() => void>;
+  authenticateBiometric: () => Promise<void>;
   setOnboarded: (value: boolean) => Promise<void>;
   updateProfile: (displayName: string) => Promise<void>;
   sendPhoneOtp: (phone: string) => Promise<OtpSentResult>;
@@ -154,25 +164,114 @@ const attachUserProfile = async (
 const finalizeAuthSuccess = async (
   set: (partial: Partial<AuthState>) => void,
   result: AuthSuccessResult
-) => attachUserProfile(set, result.user, result.isNewUser);
+) => {
+  const authResult = await attachUserProfile(set, result.user, result.isNewUser);
+
+  // Persist user profile locally and seed SQLite with cloud data
+  void (async () => {
+    try {
+      saveLocalUserProfile({
+        serverId: authResult.user.id,
+        userAuthId: authResult.user.id,
+        displayName: authResult.user.displayName,
+        email: authResult.user.email ?? null,
+        photoUrl: authResult.user.photoURL ?? null,
+        isOnboarded: authResult.isOnboarded,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      await setLocalAuthUserId(authResult.user.id);
+      await seedFromCloud(authResult.user.id);
+    } catch (e) {
+      console.warn('[AuthStore] Failed to seed local DB after auth', e);
+    }
+
+    // Register push token (best-effort)
+    try {
+      await registerForPushNotifications();
+    } catch { /* ignore */ }
+  })();
+
+  return authResult;
+};
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: false,
   isOnboarded: false,
   isLoading: true,
+  localAuthUserId: null,
+  biometricAuthState: 'idle',
 
   initializeAuth: async () => {
     set({ isLoading: true });
 
+    // Ensure the local SQLite database schema is ready
+    try {
+      await initLocalDatabase();
+    } catch (e) {
+      console.warn('[AuthStore] Failed to init local DB', e);
+    }
+
+    // Check if the user has previously signed in on this device
+    const localUserId = await getLocalAuthUserId();
+    if (localUserId) {
+      // Don't wait for Supabase — show biometric lock immediately
+      set({ localAuthUserId: localUserId, biometricAuthState: 'required', isLoading: false });
+    }
+
+    // Also start the Supabase session observation in the background
     return observeAuthState((user) => {
       if (!user) {
-        syncSignedOutState(set);
+        // Only redirect to welcome if there's no local auth pending
+        const { biometricAuthState } = get();
+        if (biometricAuthState !== 'required' && biometricAuthState !== 'authenticating') {
+          syncSignedOutState(set);
+        }
         return;
       }
 
       void attachUserProfile(set, user);
     });
+  },
+
+  authenticateBiometric: async () => {
+    const localUserId = get().localAuthUserId;
+    if (!localUserId) return;
+
+    set({ biometricAuthState: 'authenticating' });
+
+    const result = await authenticateWithBiometrics('Unlock Manje');
+
+    if (result.success) {
+      // Load the user profile from SQLite
+      try {
+        const profile = getLocalUserProfile(localUserId);
+        if (profile) {
+          set({
+            user: {
+              id: localUserId,
+              email: profile.email,
+              displayName: profile.displayName,
+              photoURL: profile.photoUrl,
+            },
+            isAuthenticated: true,
+            isOnboarded: profile.isOnboarded,
+            biometricAuthState: 'authenticated',
+            isLoading: false,
+          });
+        }
+      } catch (e) {
+        console.warn('[AuthStore] Failed to load local profile', e);
+      }
+    } else if (result.reason === 'locked_out') {
+      set({ biometricAuthState: 'locked_out' });
+    } else if (result.reason !== 'cancelled') {
+      set({ biometricAuthState: 'failed' });
+    } else {
+      // User cancelled — go back to required state
+      set({ biometricAuthState: 'required' });
+    }
   },
 
   setOnboarded: async (value) => {
@@ -217,7 +316,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   verifyPhoneOtp: async (phone, token) => {
     try {
       const result = await verifyPhoneOtpRequest(phone, token);
-      return await finalizeAuthSuccess(set, result);
+      const auth = await finalizeAuthSuccess(set, result);
+      analytics.identify(auth.user.id, { method: 'phone' });
+      analytics.track('auth_signin_success', { method: 'phone' });
+      return auth;
     } catch (error) {
       throw new Error(getAuthErrorMessage(error));
     }
@@ -226,7 +328,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signInWithEmail: async (email, password) => {
     try {
       const result = await signInWithEmailRequest(email, password);
-      return await finalizeAuthSuccess(set, result);
+      const auth = await finalizeAuthSuccess(set, result);
+      analytics.identify(auth.user.id, { method: 'email' });
+      analytics.track('auth_signin_success', { method: 'email' });
+      return auth;
     } catch (error) {
       throw new Error(getAuthErrorMessage(error));
     }
@@ -238,7 +343,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if ('confirmationPending' in result) {
         return result;
       }
-      return await finalizeAuthSuccess(set, result);
+      const auth = await finalizeAuthSuccess(set, result);
+      analytics.identify(auth.user.id, { method: 'email' });
+      analytics.track('auth_signup_success', { method: 'email' });
+      return auth;
     } catch (error) {
       throw new Error(getAuthErrorMessage(error));
     }
@@ -252,14 +360,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return result;
       }
 
-      return await finalizeAuthSuccess(set, result);
+      const auth = await finalizeAuthSuccess(set, result);
+      analytics.identify(auth.user.id, { method: 'google' });
+      analytics.track('auth_signin_success', { method: 'google' });
+      return auth;
     } catch (error) {
       throw new Error(getAuthErrorMessage(error));
     }
   },
 
   signOut: async () => {
+    analytics.track('auth_signout');
+    analytics.reset();
+    await clearLocalAuth();
     await signOutRequest();
+    set({ localAuthUserId: null, biometricAuthState: 'idle' });
     syncSignedOutState(set);
   },
 }));

@@ -8,6 +8,14 @@ import {
   type BudgetDoc,
   type BudgetRecord as FirestoreBudgetRecord,
 } from '../lib/database';
+import {
+  getLocalBudgets,
+  saveLocalBudget,
+  updateLocalBudget,
+  markBudgetDeleted,
+  markBudgetSynced,
+  upsertBudgetFromServer,
+} from '../lib/localDatabase';
 import { useTransactionStore } from './transactionStore';
 import { nowIso } from './storage';
 
@@ -118,7 +126,42 @@ export const useBudgetStore = create<BudgetState>()((set, get) => ({
     resetBudgetSubscription();
     set({ userId, isLoading: true, sourceBudgets: [], budgets: [] });
 
+    // Load from SQLite first (instant, offline)
+    try {
+      const localBudgets = getLocalBudgets(userId);
+      if (localBudgets.length > 0) {
+        const mapped = localBudgets.map((b) => ({
+          id: b.localId,
+          userId,
+          name: b.name,
+          totalLimit: b.totalLimit,
+          isPrimary: b.isPrimary,
+          categories: b.categories,
+          createdAt: b.createdAt,
+          updatedAt: b.updatedAt,
+        })) as unknown as FirestoreBudgetRecord[];
+        set({
+          sourceBudgets: mapped,
+          budgets: deriveBudgetView(mapped, useTransactionStore.getState().transactions),
+          isLoading: false,
+        });
+      }
+    } catch { /* SQLite not ready */ }
+
     budgetSubscription = subscribeUserBudgets(userId, (budgets) => {
+      // Upsert into SQLite
+      budgets.forEach((b) => {
+        upsertBudgetFromServer(userId, {
+          serverId: b.id,
+          userAuthId: userId,
+          name: b.name,
+          totalLimit: b.totalLimit,
+          isPrimary: b.isPrimary,
+          categories: b.categories as unknown as import('../lib/localDatabase').LocalBudgetCategory[],
+          createdAt: b.createdAt,
+          updatedAt: b.updatedAt,
+        });
+      });
       set({
         sourceBudgets: budgets,
         budgets: deriveBudgetView(budgets, useTransactionStore.getState().transactions),

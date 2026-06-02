@@ -73,7 +73,7 @@ export default function SecuritySettingsScreen() {
             </View>
             <View style={styles.settingInfo}>
               <Text style={[typography.headline.small, { color: colors.text.primary }]}>Data Encryption</Text>
-              <Text style={[typography.label.medium, { color: colors.text.secondary }]}>Managed through Firebase and transport security</Text>
+              <Text style={[typography.label.medium, { color: colors.text.secondary }]}>Managed through Supabase and TLS transport security</Text>
             </View>
             <View style={[styles.badge, { backgroundColor: colors.status.success.bg }]}>
               <Text style={[typography.label.small, { color: colors.status.success.text }]}>Active</Text>

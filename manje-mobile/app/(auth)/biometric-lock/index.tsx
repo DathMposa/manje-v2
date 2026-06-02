@@ -1,85 +1,100 @@
-import React, { useEffect, useState } from 'react';
+/**
+ * Biometric Lock Screen
+ * Shown on launch when the user has previously signed in on this device.
+ * Authenticates locally without needing a network connection.
+ */
+
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as LocalAuthentication from 'expo-local-authentication';
 import { useTheme } from '../../../src/hooks/useTheme';
 import { Button } from '../../../src/components/common/Button';
 import { ManjeCharacter } from '../../../src/components/character/ManjeCharacter';
+import { useAuthStore } from '../../../src/stores/authStore';
 
 export default function BiometricLockScreen() {
   const router = useRouter();
   const { colors, typography, spacing } = useTheme();
-  
-  const [isSupported, setIsSupported] = useState(false);
-  const [error, setError] = useState('');
+  const { biometricAuthState, authenticateBiometric, signOut } = useAuthStore();
 
+  // Trigger biometric prompt automatically on mount
   useEffect(() => {
-    checkBiometrics();
+    if (biometricAuthState === 'required') {
+      void authenticateBiometric();
+    }
   }, []);
 
-  const checkBiometrics = async () => {
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-    
-    if (hasHardware && isEnrolled) {
-      setIsSupported(true);
-      authenticate();
-    } else {
-      setError('Biometrics not available. Please use your PIN.');
+  // Navigate to main app after successful authentication
+  useEffect(() => {
+    if (biometricAuthState === 'authenticated') {
+      router.replace('/(tabs)');
     }
+  }, [biometricAuthState, router]);
+
+  const handleUnlock = () => {
+    void authenticateBiometric();
   };
 
-  const authenticate = async () => {
-    try {
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Unlock Manje',
-        fallbackLabel: 'Use PIN',
-      });
-
-      if (result.success) {
-        // In a real app, this would update a global "isUnlocked" state
-        router.back();
-      } else {
-        setError('Authentication failed. Please try again.');
-      }
-    } catch (e) {
-      setError('An error occurred during authentication.');
-    }
+  const handleSignOut = async () => {
+    await signOut();
+    router.replace('/(auth)/welcome');
   };
+
+  const isLockedOut = biometricAuthState === 'locked_out';
+  const isAuthenticating = biometricAuthState === 'authenticating';
+  const hasFailed = biometricAuthState === 'failed';
+
+  const statusText = isLockedOut
+    ? 'Too many failed attempts. Please sign out and sign in again.'
+    : hasFailed
+    ? 'Authentication failed. Tap Unlock to try again.'
+    : isAuthenticating
+    ? 'Verifying...'
+    : 'Tap Unlock or use your fingerprint to continue.';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background.base }]}>
       <View style={styles.content}>
-        <ManjeCharacter mood="wave" size="lg" animated showIdleFloat />
-        
-        <Text style={[
-          typography.display.medium,
-          { color: colors.text.primary, textAlign: 'center', marginTop: spacing.xl, marginBottom: spacing.sm }
-        ]}>
-          App Locked
+        <ManjeCharacter
+          mood={isLockedOut || hasFailed ? 'concern' : 'wave'}
+          size="lg"
+          animated
+          showIdleFloat
+        />
+
+        <Text
+          style={[
+            typography.display.medium,
+            { color: colors.text.primary, textAlign: 'center', marginTop: spacing.xl, marginBottom: spacing.sm },
+          ]}
+        >
+          {isLockedOut ? 'Account Locked' : 'Welcome Back'}
         </Text>
-        
-        <Text style={[
-          typography.body.large,
-          { color: colors.text.secondary, textAlign: 'center', marginBottom: spacing['3xl'] }
-        ]}>
-          {error || 'Please authenticate to unlock Manje'}
+
+        <Text
+          style={[
+            typography.body.medium,
+            { color: colors.text.secondary, textAlign: 'center', marginBottom: spacing['3xl'], paddingHorizontal: spacing.xl },
+          ]}
+        >
+          {statusText}
         </Text>
-        
-        {isSupported && (
+
+        {!isLockedOut && (
           <Button
-            title="Unlock"
-            onPress={authenticate}
+            title={isAuthenticating ? 'Verifying...' : 'Unlock'}
+            onPress={handleUnlock}
             fullWidth
             size="lg"
             variant="primary"
+            disabled={isAuthenticating}
           />
         )}
-        
+
         <View style={{ marginTop: spacing.lg }}>
           <Button
             title="Sign Out"
-            onPress={() => router.replace('/(auth)/signin')}
+            onPress={handleSignOut}
             fullWidth
             size="md"
             variant="ghost"
@@ -99,5 +114,5 @@ const styles = StyleSheet.create({
     padding: 24,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

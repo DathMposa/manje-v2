@@ -1,0 +1,4 @@
+# Exclude local dev-only tools and stale artifacts from EAS cloud builds
+generate-icons.js
+node_modules/@napi-rs/
+dist/

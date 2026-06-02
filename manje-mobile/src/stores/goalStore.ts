@@ -10,6 +10,10 @@ import {
   type GoalDoc,
   type GoalRecord as FirestoreGoalRecord,
 } from '../lib/database';
+import {
+  getLocalGoals,
+  upsertGoalFromServer,
+} from '../lib/localDatabase';
 import { createId, nowIso } from './storage';
 
 export interface GoalContribution extends GoalContributionDoc {}
@@ -64,11 +68,39 @@ export const useGoalStore = create<GoalState>()((set, get) => ({
     resetGoalSubscription();
     set({ userId, isLoading: true, goals: [] });
 
+    // Load from SQLite first
+    try {
+      const localGoals = getLocalGoals(userId);
+      if (localGoals.length > 0) {
+        const mapped = localGoals.map((g) => ({
+          id: g.localId,
+          userId,
+          name: g.name,
+          targetAmount: g.targetAmount,
+          currentAmount: g.currentAmount,
+          deadline: g.deadline,
+          contributions: [],
+          createdAt: g.createdAt,
+          updatedAt: g.updatedAt,
+        })) as FirestoreGoalRecord[];
+        set({ goals: sortGoals(mapped), isLoading: false });
+      }
+    } catch { /* SQLite not ready */ }
+
     goalSubscription = subscribeUserGoals(userId, (goals) => {
-      set({
-        goals: sortGoals(goals),
-        isLoading: false,
+      goals.forEach((g) => {
+        upsertGoalFromServer(userId, {
+          serverId: g.id,
+          userAuthId: userId,
+          name: g.name,
+          targetAmount: g.targetAmount,
+          currentAmount: g.currentAmount,
+          deadline: g.deadline,
+          createdAt: g.createdAt,
+          updatedAt: g.updatedAt,
+        });
       });
+      set({ goals: sortGoals(goals), isLoading: false });
     });
   },
 

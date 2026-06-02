@@ -12,6 +12,10 @@ import {
   type BillRecord as FirestoreBillRecord,
   type BillStatus,
 } from '../lib/database';
+import {
+  getLocalBills,
+  upsertBillFromServer,
+} from '../lib/localDatabase';
 import { createId, nowIso } from './storage';
 
 export interface BillPaymentRecord extends BillPaymentDoc {}
@@ -125,11 +129,42 @@ export const useBillStore = create<BillState>()((set, get) => ({
     resetBillSubscription();
     set({ userId, isLoading: true, bills: [] });
 
+    // Load from SQLite first
+    try {
+      const localBills = getLocalBills(userId);
+      if (localBills.length > 0) {
+        const mapped = localBills.map((b) => ({
+          id: b.localId,
+          userId,
+          name: b.name,
+          amount: b.amount,
+          frequency: b.frequency as BillFrequency,
+          nextDueDate: b.nextDueDate,
+          status: b.status as BillStatus,
+          remindersEnabled: b.remindersEnabled,
+          createdAt: b.createdAt,
+          updatedAt: b.updatedAt,
+        })) as unknown as FirestoreBillRecord[];
+        set({ bills: sortBills(mapped), isLoading: false });
+      }
+    } catch { /* SQLite not ready */ }
+
     billSubscription = subscribeUserBills(userId, (bills) => {
-      set({
-        bills: sortBills(bills),
-        isLoading: false,
+      bills.forEach((b) => {
+        upsertBillFromServer(userId, {
+          serverId: b.id,
+          userAuthId: userId,
+          name: b.name,
+          amount: b.amount,
+          frequency: b.frequency,
+          nextDueDate: b.nextDueDate,
+          status: b.status,
+          remindersEnabled: b.remindersEnabled,
+          createdAt: b.createdAt,
+          updatedAt: b.updatedAt,
+        });
       });
+      set({ bills: sortBills(bills), isLoading: false });
     });
   },
 

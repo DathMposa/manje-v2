@@ -8,6 +8,14 @@ import {
   type TransactionDoc,
   type TransactionRecord as FirestoreTransactionRecord,
 } from '../lib/database';
+import {
+  getLocalTransactions,
+  saveLocalTransaction,
+  updateLocalTransaction,
+  markTransactionDeleted,
+  markTransactionSynced,
+  upsertTransactionFromServer,
+} from '../lib/localDatabase';
 import { nowIso } from './storage';
 
 export type TransactionType = 'expense' | 'income' | 'transfer';
@@ -73,11 +81,61 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     resetTransactionSubscription();
     set({ userId, isLoading: true, transactions: [] });
 
+    // Load from SQLite first (instant, works offline)
+    try {
+      const localTxs = getLocalTransactions(userId);
+      if (localTxs.length > 0) {
+        const mapped = localTxs.map((t) => ({
+          id: t.localId,
+          userId,
+          title: t.title,
+          category: t.category,
+          amount: t.amount,
+          type: t.type,
+          date: t.date,
+          note: t.note,
+          createdAt: t.createdAt,
+          updatedAt: t.updatedAt,
+        })) as FirestoreTransactionRecord[];
+        set({ transactions: sortTransactions(mapped), isLoading: false });
+      }
+    } catch { /* SQLite not ready yet — will be populated by cloud fetch */ }
+
+    // Then fetch from Supabase (updates SQLite + state)
     transactionSubscription = subscribeUserTransactions(userId, (transactions) => {
-      set({
-        transactions: sortTransactions(transactions),
-        isLoading: false,
+      // Upsert each cloud record into SQLite
+      transactions.forEach((t) => {
+        upsertTransactionFromServer(userId, {
+          serverId: t.id,
+          userAuthId: userId,
+          title: t.title,
+          category: t.category,
+          amount: t.amount,
+          type: t.type,
+          date: t.date,
+          note: t.note,
+          createdAt: t.createdAt,
+          updatedAt: t.updatedAt,
+        });
       });
+      // Re-read from SQLite so local pending items are included too
+      try {
+        const merged = getLocalTransactions(userId).map((t) => ({
+          id: t.serverId ?? t.localId,
+          userId,
+          title: t.title,
+          category: t.category,
+          amount: t.amount,
+          type: t.type,
+          date: t.date,
+          note: t.note,
+          createdAt: t.createdAt,
+          updatedAt: t.updatedAt,
+        })) as FirestoreTransactionRecord[];
+        set({ transactions: sortTransactions(merged), isLoading: false });
+      } catch {
+        set({ transactions: sortTransactions(transactions), isLoading: false });
+      }
     });
   },
 
@@ -89,23 +147,37 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
     }
 
     const payload = createTransactionPayload(input);
-    const id = await createUserTransaction(userId, payload);
-    const record = { id, ...payload };
+
+    // Save locally first (works offline)
+    const localId = saveLocalTransaction(userId, { serverId: null, userAuthId: userId, ...payload });
+    const record = { id: localId, ...payload };
 
     set((state) => ({
       transactions: sortTransactions([record, ...state.transactions]),
     }));
 
-    if (record.type === 'expense' && record.amount >= 50000) {
-      await createUserNotification(userId, {
-        type: 'transaction',
-        title: 'Large Expense Detected',
-        message: `A large transaction of MK ${record.amount.toLocaleString()} was recorded for ${record.title}.`,
-        read: false,
-        actionId: id,
-        actionRoute: `/(tabs)/transactions/${id}`,
-      });
-    }
+    // Push to Supabase (best-effort — sync engine handles failures later)
+    try {
+      const serverId = await createUserTransaction(userId, payload);
+      markTransactionSynced(localId, serverId);
+      // Upgrade in-memory record to use server ID
+      set((state) => ({
+        transactions: state.transactions.map((t) =>
+          t.id === localId ? { ...t, id: serverId } : t
+        ),
+      }));
+
+      if (payload.type === 'expense' && payload.amount >= 50000) {
+        await createUserNotification(userId, {
+          type: 'transaction',
+          title: 'Large Expense Detected',
+          message: `A large transaction of MK ${payload.amount.toLocaleString()} was recorded for ${payload.title}.`,
+          read: false,
+          actionId: serverId,
+          actionRoute: `/(tabs)/transactions/${serverId}`,
+        });
+      }
+    } catch { /* offline — sync engine will push later */ }
 
     return record;
   },
@@ -127,7 +199,8 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
       note: updates.note === undefined ? current.note : updates.note.trim() || undefined,
     };
 
-    await updateUserTransaction(userId, id, merged);
+    // Update SQLite first
+    updateLocalTransaction(id, merged);
 
     set((state) => ({
       transactions: sortTransactions(
@@ -136,6 +209,11 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
         )
       ),
     }));
+
+    // Push to Supabase (best-effort)
+    try {
+      await updateUserTransaction(userId, id, merged);
+    } catch { /* offline — sync engine will push later */ }
   },
 
   deleteTransaction: async (id) => {
@@ -145,11 +223,17 @@ export const useTransactionStore = create<TransactionState>()((set, get) => ({
       return;
     }
 
-    await deleteUserTransaction(userId, id);
+    // Mark deleted locally first (removes from UI instantly)
+    markTransactionDeleted(id);
 
     set((state) => ({
       transactions: state.transactions.filter((t) => t.id !== id),
     }));
+
+    // Push deletion to Supabase (best-effort)
+    try {
+      await deleteUserTransaction(userId, id);
+    } catch { /* sync engine will handle later */ }
   },
 
   getTransaction: (id) => get().transactions.find((transaction) => transaction.id === id),

@@ -13,7 +13,8 @@
       "backgroundColor": "#1A6B4A"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.manje.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +22,20 @@
         "backgroundColor": "#1A6B4A"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.manje.app"
+      "package": "com.manje.app",
+      "googleServicesFile": "./google-services.json",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "manje"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +44,30 @@
       "expo-router",
       "expo-font",
       "expo-secure-store",
-      "@react-native-google-signin/google-signin"
-    ]
+      "@react-native-google-signin/google-signin",
+      "@sentry/react-native/expo",
+      "expo-sqlite",
+      "expo-updates",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#1A6B4A",
+          "defaultChannel": "default"
+        }
+      ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f0e8eaaa-3708-4c32-992b-0997d5361434"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f0e8eaaa-3708-4c32-992b-0997d5361434"
+    }
   }
 }

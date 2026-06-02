@@ -1,16 +1,16 @@
 /**
  * AUTH-03: Sign In Screen
- * Phone-first authentication with email/password and Google options.
+ * Email/password authentication with Google option.
  */
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '../../src/hooks/useTheme';
-import { Button, Input, ScreenHeader, ClayCard, CountryCodePicker, defaultCountryCode, type CountryCode } from '../../src/components/common';
+import { Button, Input, ScreenHeader, ClayCard } from '../../src/components/common';
 import { ManjeCharacter } from '../../src/components/character';
 import { useAuthStore } from '../../src/stores/authStore';
 import { typeScale } from '../../src/theme/typography';
@@ -19,63 +19,29 @@ import { spacing, layout } from '../../src/theme/spacing';
 export default function SignInScreen() {
   const { colors } = useTheme();
   const router = useRouter();
-  const { signInWithEmail, signInWithGoogle, sendPhoneOtp } = useAuthStore();
+  const { signInWithEmail } = useAuthStore();
   
-  const [authMode, setAuthMode] = useState<'phone' | 'email'>('phone');
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(defaultCountryCode);
-  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
     
-    if (authMode === 'phone') {
-      if (!phone.trim()) {
-        newErrors.phone = 'Please enter your phone number';
-      } else if (!/^\d{7,10}$/.test(phone.replace(/\s/g, ''))) {
-        newErrors.phone = 'Please enter a valid phone number (7-10 digits)';
-      }
-    } else {
-      if (!email.trim()) {
-        newErrors.email = 'Please enter your email';
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        newErrors.email = 'Please enter a valid email';
-      }
-      
-      if (!password) {
-        newErrors.password = 'Please enter your password';
-      }
+    if (!email.trim()) {
+      newErrors.email = 'Please enter your email';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    
+    if (!password) {
+      newErrors.password = 'Please enter your password';
     }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSendOtp = async () => {
-    if (!validateForm()) return;
-
-    setLoading(true);
-    setErrors({});
-
-    try {
-      // Combine country code with phone number
-      const fullPhoneNumber = `${selectedCountry.dialCode}${phone.trim()}`;
-      await sendPhoneOtp(fullPhoneNumber);
-      router.push({
-        pathname: '/(auth)/verify-otp',
-        params: { phone: fullPhoneNumber }
-      });
-    } catch (error) {
-      console.error('Send OTP error:', error);
-      setErrors({ general: error instanceof Error ? error.message : 'Failed to send verification code.' });
-    } finally {
-      setLoading(false);
-    }
   };
   
   const handleSignIn = async () => {
@@ -92,28 +58,6 @@ export default function SignInScreen() {
       setErrors({ general: error instanceof Error ? error.message : 'Invalid credentials. Please try again.' });
     } finally {
       setLoading(false);
-    }
-  };
-  
-  const handleGoogleSignIn = async () => {
-    setGoogleLoading(true);
-    setErrors({});
-
-    try {
-      const result = await signInWithGoogle();
-
-      if ('cancelled' in result) {
-        return;
-      }
-
-      router.replace(result.isOnboarded ? '/(tabs)' : '/(onboarding)/country');
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      setErrors({
-        general: error instanceof Error ? error.message : 'Google sign-in failed. Please try again.',
-      });
-    } finally {
-      setGoogleLoading(false);
     }
   };
   
@@ -160,139 +104,54 @@ export default function SignInScreen() {
               </ClayCard>
             )}
             
-            {authMode === 'phone' ? (
-              <View>
-                <Text style={[styles.inputLabel, { color: colors.text.secondary }]}>
-                  Phone Number
-                </Text>
-                <View style={styles.phoneInputContainer}>
-                  <CountryCodePicker
-                    selectedCountry={selectedCountry}
-                    onSelect={setSelectedCountry}
-                    colors={colors}
+            <Input
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              error={errors.email}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
+            />
+            
+            <Input
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              error={errors.password}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              autoComplete="password"
+              leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
+              rightIcon={
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                  <Feather 
+                    name={showPassword ? 'eye-off' : 'eye'} 
+                    size={20} 
+                    color={colors.text.secondary} 
                   />
-                  <View style={[styles.phoneInputWrapper, { borderColor: errors.phone ? colors.status?.danger?.base || '#ef4444' : colors.border.light }]}>
-                    <Feather name="phone" size={20} color={colors.text.secondary} style={styles.phoneIcon} />
-                    <TextInput
-                      style={[styles.phoneInput, { color: colors.text.primary }]}
-                      value={phone}
-                      onChangeText={(text: string) => {
-                        // Only allow digits
-                        const digitsOnly = text.replace(/\D/g, '');
-                        setPhone(digitsOnly);
-                      }}
-                      keyboardType="phone-pad"
-                      placeholder="999123456"
-                      placeholderTextColor={colors.text.secondary}
-                      maxLength={12}
-                    />
-                  </View>
-                </View>
-                {errors.phone && (
-                  <Text style={[styles.errorText, { color: colors.status?.danger?.text || '#ef4444' }]}>
-                    {errors.phone}
-                  </Text>
-                )}
-              </View>
-            ) : (
-              <>
-                <Input
-                  label="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  error={errors.email}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  leftIcon={<Feather name="mail" size={20} color={colors.text.secondary} />}
-                />
-                
-                <Input
-                  label="Password"
-                  value={password}
-                  onChangeText={setPassword}
-                  error={errors.password}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  autoComplete="password"
-                  leftIcon={<Feather name="lock" size={20} color={colors.text.secondary} />}
-                  rightIcon={
-                    <Pressable onPress={() => setShowPassword(!showPassword)}>
-                      <Feather 
-                        name={showPassword ? 'eye-off' : 'eye'} 
-                        size={20} 
-                        color={colors.text.secondary} 
-                      />
-                    </Pressable>
-                  }
-                />
-                
-                {/* Forgot Password */}
-                <Pressable onPress={handleForgotPassword} style={styles.forgotPassword}>
-                  <Text style={[typeScale.labelMedium, { color: colors.primary.default }]}>
-                    Forgot Password?
-                  </Text>
                 </Pressable>
-              </>
-            )}
+              }
+            />
+            
+            {/* Forgot Password */}
+            <Pressable onPress={handleForgotPassword} style={styles.forgotPassword}>
+              <Text style={[typeScale.labelMedium, { color: colors.primary.default }]}>
+                Forgot Password?
+              </Text>
+            </Pressable>
           </Animated.View>
           
           {/* Actions */}
           <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.actions}>
-            {authMode === 'phone' ? (
-              <Button
-                title="Send Code"
-                onPress={handleSendOtp}
-                variant="primary"
-                size="lg"
-                fullWidth
-                loading={loading}
-                disabled={googleLoading}
-              />
-            ) : (
-              <Button
-                title="Sign In"
-                onPress={handleSignIn}
-                variant="primary"
-                size="lg"
-                fullWidth
-                loading={loading}
-                disabled={googleLoading}
-              />
-            )}
-            
             <Button
-              title={authMode === 'phone' ? "Continue with Email" : "Continue with Phone"}
-              onPress={() => {
-                setAuthMode(authMode === 'phone' ? 'email' : 'phone');
-                setErrors({});
-              }}
-              variant="ghost"
+              title="Sign In"
+              onPress={handleSignIn}
+              variant="primary"
               size="lg"
               fullWidth
-              style={{ marginTop: spacing[2] }}
-              textStyle={{ color: colors.text.secondary }}
-            />
-            
-            {/* Divider */}
-            <View style={styles.divider}>
-              <View style={[styles.dividerLine, { backgroundColor: colors.border.light }]} />
-              <Text style={[styles.dividerText, typeScale.labelSmall, { color: colors.text.secondary }]}>
-                or
-              </Text>
-              <View style={[styles.dividerLine, { backgroundColor: colors.border.light }]} />
-            </View>
-            
-            {/* Google Sign In */}
-            <Button
-              title="Continue with Google"
-              onPress={handleGoogleSignIn}
-              variant="secondary"
-              size="lg"
-              fullWidth
-              loading={googleLoading}
-              disabled={loading}
-              icon={<Feather name="chrome" size={20} color={colors.text.primary} />}
+              loading={loading}
             />
           </Animated.View>
           
@@ -319,38 +178,6 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 6,
-    marginTop: 12,
-  },
-  phoneInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  phoneInputWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  phoneIcon: {
-    marginRight: 8,
-  },
-  phoneInput: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: 2,
-  },
-  errorText: {
-    fontSize: 12,
-    marginTop: 4,
-    marginLeft: 4,
   },
   scrollView: {
     flex: 1,
