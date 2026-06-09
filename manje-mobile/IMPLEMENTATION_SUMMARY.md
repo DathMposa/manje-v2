@@ -111,7 +111,7 @@ AUTH-01 → AUTH-02 → OB-02 → OB-03 → OB-08 → OB-07 → DASH-01 → NAV-
 - **Type-Safe:** ColorTheme interface for light/dark compatibility
 
 ##### `typography.ts` (162 lines)
-- **Font Families:** Syne (display), Work Sans (body)
+- **Font Families:** Comfortaa (display), Inter (body/UI)
 - **Type Scale:** 16 text styles
   - Display: Large (36px), Medium (30px), Small (24px)
   - Headline: Large (20px), Medium (18px), Small (16px)
@@ -992,7 +992,7 @@ Transaction Details (future)
 ### Current Limitations
 1. **Mock Data:** All transactions and balances are hardcoded
 2. **No Backend:** Auth and data storage are simulated
-3. **System Fonts:** Custom fonts (Syne, Work Sans) not yet loaded
+3. **System Fonts:** Custom fonts (Comfortaa, Inter) not yet loaded
 4. **Placeholder Screens:** Budgets screen is empty state only
 5. **No Persistence:** Data resets on app reload
 6. **Limited Validation:** Basic form validation only
@@ -1021,7 +1021,7 @@ Transaction Details (future)
 - [ ] Anomaly detection
 
 #### UI/UX Enhancements
-- [ ] Custom font loading (Syne, Work Sans)
+- [ ] Custom font loading (Comfortaa, Inter)
 - [ ] Skeleton loading states
 - [ ] Error boundaries
 - [ ] Offline mode indicators

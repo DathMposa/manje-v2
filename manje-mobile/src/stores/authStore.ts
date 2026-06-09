@@ -370,12 +370,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signOut: async () => {
-    analytics.track('auth_signout');
-    analytics.reset();
-    await clearLocalAuth();
-    await signOutRequest();
-    set({ localAuthUserId: null, biometricAuthState: 'idle' });
-    syncSignedOutState(set);
+    try {
+      analytics.track('auth_signout');
+      analytics.reset();
+      await clearLocalAuth();
+      await signOutRequest();
+    } catch (error) {
+      console.warn('[AuthStore] Sign out error during API/Local cleanup:', error);
+    } finally {
+      set({ localAuthUserId: null, biometricAuthState: 'idle' });
+      syncSignedOutState(set);
+    }
   },
 }));
 

@@ -76,9 +76,10 @@ export default function ProfileScreen() {
     try {
       await signOut();
       setSignOutModalVisible(false);
-      router.replace('/(auth)/welcome');
+      // Redirection is handled automatically by RootLayoutNav when isAuthenticated becomes false
     } catch (error) {
       console.error('Sign out error:', error);
+      setSignOutModalVisible(false);
     } finally {
       setSignOutLoading(false);
     }

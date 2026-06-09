@@ -22,7 +22,7 @@ export default function WelcomeScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.bg.base }]}>
       <View style={styles.topSection}>
-        <Animated.View entering={FadeInDown.delay(200).springify().damping(12)}>
+        <Animated.View entering={FadeInDown.delay(200).springify().damping(28).stiffness(200)}>
           <ManjeCharacter mood="wave" size={180} animated />
         </Animated.View>
         
@@ -37,7 +37,7 @@ export default function WelcomeScreen() {
         </Animated.View>
       </View>
 
-      <Animated.View entering={SlideInDown.delay(400).springify().damping(14)}>
+      <Animated.View entering={SlideInDown.delay(400).springify().damping(30).stiffness(150)}>
         <BlurView
           intensity={20}
           tint={isDark ? 'dark' : 'light'}

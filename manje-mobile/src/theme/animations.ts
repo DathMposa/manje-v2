@@ -1,6 +1,6 @@
 /**
  * Manje Design System - Animation & Micro-Interaction Tokens
- * Version: 2.0 Hybrid Premium Edition
+ * Version: 2.1 Refined Motion Edition
  */
 
 export const duration = {
@@ -15,45 +15,45 @@ export const duration = {
 export const springPresets = {
   buttonPress: {
     stiffness: 400,
-    damping: 40,
-    mass: 1,
-    overshootClamping: false,
+    damping: 45, // Increased from 40 for a tighter feel
+    mass: 0.8,
+    overshootClamping: true, // No bounce on button press
   },
   cardRelease: {
     stiffness: 300,
-    damping: 30,
+    damping: 40, // Increased from 30
     mass: 1,
-    overshootClamping: false,
+    overshootClamping: true,
   },
   bouncy: {
     stiffness: 200,
-    damping: 20,
+    damping: 35, // Increased from 20 to tone down the "cheap" bounce
     mass: 1,
     overshootClamping: false,
   },
   default: {
     stiffness: 250,
-    damping: 28,
+    damping: 35, // Increased from 28
     mass: 1,
-    overshootClamping: false,
+    overshootClamping: true,
   },
   snappy: {
     stiffness: 500,
-    damping: 50,
+    damping: 60, // Increased from 50
     mass: 1,
-    overshootClamping: false,
+    overshootClamping: true,
   },
   gentle: {
     stiffness: 100,
-    damping: 20,
+    damping: 30, // Increased from 20
     mass: 1,
-    overshootClamping: false,
+    overshootClamping: true,
   },
   modal: {
     stiffness: 350,
-    damping: 35,
+    damping: 45, // Increased from 35
     mass: 1,
-    overshootClamping: false,
+    overshootClamping: true,
   },
 } as const;
 

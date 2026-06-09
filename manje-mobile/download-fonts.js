@@ -11,49 +11,37 @@ if (!fs.existsSync(fontsDir)) {
 
 const fontsToDownload = [
   {
-    name: 'Syne-Bold.ttf',
-    url: 'https://github.com/google/fonts/raw/main/ofl/syne/static/Syne-Bold.ttf'
+    name: 'Comfortaa-Bold.ttf',
+    url: 'https://raw.githubusercontent.com/googlefonts/comfortaa/main/fonts/TTF/Comfortaa-Bold.ttf'
   },
   {
-    name: 'Syne-ExtraBold.ttf',
-    url: 'https://github.com/google/fonts/raw/main/ofl/syne/static/Syne-ExtraBold.ttf'
+    name: 'Comfortaa-Medium.ttf',
+    url: 'https://raw.githubusercontent.com/googlefonts/comfortaa/main/fonts/TTF/Comfortaa-Medium.ttf'
   },
   {
-    name: 'WorkSans-Regular.ttf',
-    url: 'https://github.com/google/fonts/raw/main/ofl/worksans/static/WorkSans-Regular.ttf'
+    name: 'Inter-Regular.ttf',
+    url: 'https://raw.githubusercontent.com/google/fonts/main/ofl/inter/static/Inter-Regular.ttf'
   },
   {
-    name: 'WorkSans-Medium.ttf',
-    url: 'https://github.com/google/fonts/raw/main/ofl/worksans/static/WorkSans-Medium.ttf'
+    name: 'Inter-Medium.ttf',
+    url: 'https://raw.githubusercontent.com/google/fonts/main/ofl/inter/static/Inter-Medium.ttf'
   },
   {
-    name: 'WorkSans-SemiBold.ttf',
-    url: 'https://github.com/google/fonts/raw/main/ofl/worksans/static/WorkSans-SemiBold.ttf'
+    name: 'Inter-SemiBold.ttf',
+    url: 'https://raw.githubusercontent.com/google/fonts/main/ofl/inter/static/Inter-SemiBold.ttf'
   },
   {
-    name: 'WorkSans-Bold.ttf',
-    url: 'https://github.com/google/fonts/raw/main/ofl/worksans/static/WorkSans-Bold.ttf'
+    name: 'Inter-Bold.ttf',
+    url: 'https://raw.githubusercontent.com/google/fonts/main/ofl/inter/static/Inter-Bold.ttf'
   }
 ];
 
 function downloadFont(font) {
   const destPath = path.join(fontsDir, font.name);
-  console.log(`Downloading ${font.name}...`);
+  console.log(`Downloading ${font.name} from ${font.url}...`);
   
   const request = https.get(font.url, (response) => {
-    if (response.statusCode === 302 || response.statusCode === 301) {
-      // Handle redirect
-      https.get(response.headers.location, (res) => {
-        const file = fs.createWriteStream(destPath);
-        res.pipe(file);
-        file.on('finish', () => {
-          file.close();
-          console.log(`Successfully downloaded ${font.name}`);
-        });
-      }).on('error', (err) => {
-        console.error(`Error downloading redirected ${font.name}: ${err.message}`);
-      });
-    } else if (response.statusCode === 200) {
+    if (response.statusCode === 200) {
       const file = fs.createWriteStream(destPath);
       response.pipe(file);
       file.on('finish', () => {

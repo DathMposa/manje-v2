@@ -54,7 +54,7 @@ manje-mobile/
 │       ├── shadows.ts     # Shadow system
 │       └── animations.ts  # Animation configs
 └── assets/
-    └── fonts/             # Custom fonts (Syne, Work Sans)
+    └── fonts/             # Custom fonts (Comfortaa, Inter)
 ```
 
 ## Getting Started
@@ -105,7 +105,7 @@ The app uses a **Hybrid Premium** design system that combines:
 All design values are defined in `src/theme/`:
 
 - **Colors:** Light/dark mode semantic tokens
-- **Typography:** Syne (display) + Work Sans (body)
+- **Typography:** Comfortaa (display) + Inter (body/UI)
 - **Spacing:** 4px base unit system
 - **Gradients:** Hero, accent, and button gradients
 - **Shadows:** Layered shadow system with color tints
@@ -128,7 +128,7 @@ All design values are defined in `src/theme/`:
 
 ## Adding Custom Fonts
 
-1. Download Syne and Work Sans from Google Fonts
+1. Download Comfortaa and Inter from Google Fonts
 2. Place `.ttf` files in `assets/fonts/`
 3. Uncomment the font requires in `src/theme/typography.ts`
 4. Rebuild the app

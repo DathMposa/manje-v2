@@ -21,8 +21,8 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
-import { useFonts, Syne_400Regular, Syne_600SemiBold, Syne_700Bold, Syne_800ExtraBold } from '@expo-google-fonts/syne';
-import { WorkSans_400Regular, WorkSans_500Medium, WorkSans_600SemiBold, WorkSans_700Bold } from '@expo-google-fonts/work-sans';
+import { useFonts, Comfortaa_500Medium, Comfortaa_700Bold } from '@expo-google-fonts/comfortaa';
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from '../src/hooks/useTheme';
 import { ToastProvider } from '../src/hooks/useToast';
@@ -192,14 +192,12 @@ function RootLayoutNav() {
 
 function RootLayout() {
   const [fontsLoaded] = useFonts({
-    Syne_400Regular,
-    Syne_600SemiBold,
-    Syne_700Bold,
-    Syne_800ExtraBold,
-    WorkSans_400Regular,
-    WorkSans_500Medium,
-    WorkSans_600SemiBold,
-    WorkSans_700Bold,
+    Comfortaa_500Medium,
+    Comfortaa_700Bold,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
   });
   
   useEffect(() => {

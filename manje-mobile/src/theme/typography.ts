@@ -1,166 +1,175 @@
 /**
  * Manje Design System - Typography Tokens
- * Version: 2.0 Hybrid Premium Edition
+ * Refactored: Dual-font system (Comfortaa & Inter)
  */
-import { Platform, TextStyle } from 'react-native';
+import { TextStyle } from 'react-native';
 
 export const fonts = {
-  syne: {
-    regular: 'Syne_400Regular',
-    semiBold: 'Syne_600SemiBold',
-    bold: 'Syne_700Bold',
-    extraBold: 'Syne_800ExtraBold',
+  comfortaa: {
+    medium: 'Comfortaa_500Medium',
+    bold: 'Comfortaa_700Bold',
   },
-  workSans: {
-    regular: 'WorkSans_400Regular',
-    medium: 'WorkSans_500Medium',
-    semiBold: 'WorkSans_600SemiBold',
-    bold: 'WorkSans_700Bold',
+  inter: {
+    regular: 'Inter_400Regular',
+    medium: 'Inter_500Medium',
+    semiBold: 'Inter_600SemiBold',
+    bold: 'Inter_700Bold',
   },
 };
 
 export const typeScale = {
+  // Display - Branding & Hero
   'display.lg': {
-    fontFamily: fonts.syne.extraBold,
-    fontSize: 36,
-    lineHeight: 36 * 1.1,
+    fontFamily: fonts.comfortaa.bold,
+    fontSize: 64,
+    lineHeight: 64 * 1.1,
   },
   'display.md': {
-    fontFamily: fonts.syne.bold,
-    fontSize: 30,
-    lineHeight: 30 * 1.15,
+    fontFamily: fonts.comfortaa.bold,
+    fontSize: 48,
+    lineHeight: 48 * 1.15,
   },
   'display.sm': {
-    fontFamily: fonts.syne.bold,
-    fontSize: 24,
-    lineHeight: 24 * 1.2,
+    fontFamily: fonts.comfortaa.bold,
+    fontSize: 32,
+    lineHeight: 32 * 1.2,
   },
+
+  // Headlines
   'headline.lg': {
-    fontFamily: fonts.workSans.semiBold,
+    fontFamily: fonts.comfortaa.medium,
+    fontSize: 24,
+    lineHeight: 24 * 1.3,
+  },
+  'headline.md': {
+    fontFamily: fonts.inter.semiBold,
     fontSize: 20,
     lineHeight: 20 * 1.3,
   },
-  'headline.md': {
-    fontFamily: fonts.workSans.semiBold,
-    fontSize: 18,
-    lineHeight: 18 * 1.3,
-  },
   'headline.sm': {
-    fontFamily: fonts.workSans.semiBold,
+    fontFamily: fonts.inter.semiBold,
     fontSize: 16,
     lineHeight: 16 * 1.4,
   },
+
+  // Body
   'body.lg': {
-    fontFamily: fonts.workSans.regular,
-    fontSize: 18,
-    lineHeight: 18 * 1.5,
-  },
-  'body.md': {
-    fontFamily: fonts.workSans.regular,
+    fontFamily: fonts.inter.regular,
     fontSize: 16,
     lineHeight: 16 * 1.5,
   },
-  'body.sm': {
-    fontFamily: fonts.workSans.regular,
+  'body.md': {
+    fontFamily: fonts.inter.regular,
     fontSize: 14,
     lineHeight: 14 * 1.5,
   },
+  'body.sm': {
+    fontFamily: fonts.inter.regular,
+    fontSize: 12,
+    lineHeight: 12 * 1.5,
+  },
+
+  // Labels
   'label.lg': {
-    fontFamily: fonts.workSans.medium,
+    fontFamily: fonts.inter.medium,
     fontSize: 16,
     lineHeight: 16 * 1.4,
   },
   'label.md': {
-    fontFamily: fonts.workSans.medium,
+    fontFamily: fonts.inter.medium,
     fontSize: 14,
     lineHeight: 14 * 1.3,
   },
   'label.sm': {
-    fontFamily: fonts.workSans.medium,
+    fontFamily: fonts.inter.medium,
     fontSize: 12,
     lineHeight: 12 * 1.3,
   },
+
+  // Financial Data
   'financial.hero': {
-    fontFamily: fonts.syne.extraBold,
-    fontSize: 52,
-    lineHeight: 52 * 1.0,
+    fontFamily: fonts.inter.bold,
+    fontSize: 64,
+    lineHeight: 64 * 1.0,
     fontVariant: ['tabular-nums'],
   },
   'financial.lg': {
-    fontFamily: fonts.syne.bold,
+    fontFamily: fonts.inter.bold,
     fontSize: 48,
     lineHeight: 48 * 1.0,
     fontVariant: ['tabular-nums'],
   },
   'financial.md': {
-    fontFamily: fonts.syne.bold,
-    fontSize: 30,
-    lineHeight: 30 * 1.1,
+    fontFamily: fonts.inter.bold,
+    fontSize: 32,
+    lineHeight: 32 * 1.1,
     fontVariant: ['tabular-nums'],
   },
   'financial.sm': {
-    fontFamily: fonts.workSans.semiBold,
-    fontSize: 20,
-    lineHeight: 20 * 1.2,
-    fontVariant: ['tabular-nums'],
-  },
-  displayLarge: {
-    fontFamily: fonts.syne.extraBold,
-    fontSize: 36,
-    lineHeight: 36 * 1.1,
-  },
-  displayMedium: {
-    fontFamily: fonts.syne.bold,
-    fontSize: 30,
-    lineHeight: 30 * 1.15,
-  },
-  displaySmall: {
-    fontFamily: fonts.syne.bold,
+    fontFamily: fonts.inter.semiBold,
     fontSize: 24,
     lineHeight: 24 * 1.2,
+    fontVariant: ['tabular-nums'],
+  },
+
+  // Compatibility Mappings (CamelCase)
+  displayLarge: {
+    fontFamily: fonts.comfortaa.bold,
+    fontSize: 64,
+    lineHeight: 64 * 1.1,
+  },
+  displayMedium: {
+    fontFamily: fonts.comfortaa.bold,
+    fontSize: 48,
+    lineHeight: 48 * 1.15,
+  },
+  displaySmall: {
+    fontFamily: fonts.comfortaa.bold,
+    fontSize: 32,
+    lineHeight: 32 * 1.2,
   },
   headlineLarge: {
-    fontFamily: fonts.workSans.semiBold,
+    fontFamily: fonts.comfortaa.medium,
+    fontSize: 24,
+    lineHeight: 24 * 1.3,
+  },
+  headlineMedium: {
+    fontFamily: fonts.inter.semiBold,
     fontSize: 20,
     lineHeight: 20 * 1.3,
   },
-  headlineMedium: {
-    fontFamily: fonts.workSans.semiBold,
-    fontSize: 18,
-    lineHeight: 18 * 1.3,
-  },
   headlineSmall: {
-    fontFamily: fonts.workSans.semiBold,
+    fontFamily: fonts.inter.semiBold,
     fontSize: 16,
     lineHeight: 16 * 1.4,
   },
   bodyLarge: {
-    fontFamily: fonts.workSans.regular,
-    fontSize: 18,
-    lineHeight: 18 * 1.5,
-  },
-  bodyMedium: {
-    fontFamily: fonts.workSans.regular,
+    fontFamily: fonts.inter.regular,
     fontSize: 16,
     lineHeight: 16 * 1.5,
   },
-  bodySmall: {
-    fontFamily: fonts.workSans.regular,
+  bodyMedium: {
+    fontFamily: fonts.inter.regular,
     fontSize: 14,
     lineHeight: 14 * 1.5,
   },
+  bodySmall: {
+    fontFamily: fonts.inter.regular,
+    fontSize: 12,
+    lineHeight: 12 * 1.5,
+  },
   labelLarge: {
-    fontFamily: fonts.workSans.medium,
+    fontFamily: fonts.inter.medium,
     fontSize: 16,
     lineHeight: 16 * 1.4,
   },
   labelMedium: {
-    fontFamily: fonts.workSans.medium,
+    fontFamily: fonts.inter.medium,
     fontSize: 14,
     lineHeight: 14 * 1.3,
   },
   labelSmall: {
-    fontFamily: fonts.workSans.medium,
+    fontFamily: fonts.inter.medium,
     fontSize: 12,
     lineHeight: 12 * 1.3,
   },
