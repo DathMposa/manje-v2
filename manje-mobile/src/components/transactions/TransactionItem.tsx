@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
-import { RectButton } from 'react-native-gesture-handler';
+import { View, StyleSheet, Animated } from 'react-native';
+import { Swipeable, RectButton } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import { categoryColors } from '../../theme/colors';
-import { formatMWK, typeScale } from '../../theme/typography';
+import { formatMWK } from '../../theme/typography';
 import { radius, spacing } from '../../theme/spacing';
+import { ManjeText } from '../common/ManjeText';
 
 export interface Transaction {
   id: string;
@@ -56,9 +56,9 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
             onPress={() => onEdit?.(transaction)}
           >
             <Ionicons name="pencil" size={24} color={colors.text.inverse} />
-            <Text style={[typeScale['label.sm'], { color: colors.text.inverse, marginTop: 4 }]}>
+            <ManjeText variant="label.sm" style={{ color: colors.text.inverse, marginTop: 4 }}>
               Edit
-            </Text>
+            </ManjeText>
           </RectButton>
         </Animated.View>
         <Animated.View style={{ transform: [{ scale: scaleDelete }] }}>
@@ -67,9 +67,9 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
             onPress={() => onDelete?.(transaction)}
           >
             <Ionicons name="trash" size={24} color={colors.text.inverse} />
-            <Text style={[typeScale['label.sm'], { color: colors.text.inverse, marginTop: 4 }]}>
+            <ManjeText variant="label.sm" style={{ color: colors.text.inverse, marginTop: 4 }}>
               Delete
-            </Text>
+            </ManjeText>
           </RectButton>
         </Animated.View>
       </View>
@@ -97,19 +97,19 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
 
           {/* Text Block */}
           <View style={styles.textContainer}>
-            <Text style={[typeScale['headline.sm'], { color: colors.text.primary }]} numberOfLines={1}>
+            <ManjeText variant="headline.sm" style={{ color: colors.text.primary }} numberOfLines={1}>
               {transaction.merchant}
-            </Text>
-            <Text style={[typeScale['body.sm'], { color: colors.text.secondary }]}>
+            </ManjeText>
+            <ManjeText variant="body.sm" style={{ color: colors.text.secondary }}>
               {transaction.category.charAt(0).toUpperCase() + transaction.category.slice(1)} • {transaction.date}
-            </Text>
+            </ManjeText>
           </View>
 
           {/* Amount */}
           <View style={styles.amountContainer}>
-            <Text style={[typeScale['financial.sm'], { color: amountColor }]}>
+            <ManjeText variant="financial.sm" style={{ color: amountColor }}>
               {formatMWK(transaction.amount)}
-            </Text>
+            </ManjeText>
           </View>
         </View>
       </View>

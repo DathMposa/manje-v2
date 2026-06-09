@@ -15,9 +15,17 @@ export const fonts = {
     semiBold: 'Inter_600SemiBold',
     bold: 'Inter_700Bold',
   },
+  brand: {
+    bold: 'Comfortaa_700Bold',
+  },
 };
 
 export const typeScale = {
+  // Brand
+  'brand': {
+    fontFamily: fonts.brand.bold,
+    fontWeight: 'bold',
+  },
   // Display - Branding & Hero
   'display.lg': {
     fontFamily: fonts.comfortaa.bold,

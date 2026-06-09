@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Pressable,
   Modal,
@@ -13,10 +12,10 @@ import {
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeIn, FadeInUp } from 'react-native-reanimated';
 import { useTheme } from '../../hooks/useTheme';
-import { typeScale } from '../../theme/typography';
 import { spacing, radius } from '../../theme/spacing';
 import { ClayCard } from './ClayCard';
 import { Button } from './Button';
+import { ManjeText } from './ManjeText';
 
 interface ConfirmModalProps {
   visible: boolean;
@@ -84,22 +83,20 @@ export function ConfirmModal({
                   </View>
 
                   {/* Title */}
-                  <Text style={[
-                    styles.title, 
-                    typeScale.headlineSmall, 
-                    { color: colors.text.primary }
-                  ]}>
+                  <ManjeText
+                    variant="headline.sm"
+                    style={[styles.title, { color: colors.text.primary }]}
+                  >
                     {title}
-                  </Text>
+                  </ManjeText>
 
                   {/* Message */}
-                  <Text style={[
-                    styles.message, 
-                    typeScale.bodyMedium, 
-                    { color: colors.text.secondary }
-                  ]}>
+                  <ManjeText
+                    variant="body.md"
+                    style={[styles.message, { color: colors.text.secondary }]}
+                  >
                     {message}
-                  </Text>
+                  </ManjeText>
 
                   {/* Buttons */}
                   <View style={styles.buttonContainer}>

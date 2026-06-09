@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../hooks/useTheme';
 import { categoryColors } from '../../theme/colors';
 import { radius, spacing } from '../../theme/spacing';
-import { typeScale } from '../../theme/typography';
+import { ManjeText } from './ManjeText';
 
 export type CategoryType = keyof typeof categoryColors;
 
@@ -34,9 +34,9 @@ export const CategoryBadge: React.FC<CategoryBadgeProps> = ({ category, label, i
           style={styles.icon}
         />
       )}
-      <Text style={[typeScale['label.sm'], { color: textColor }]}>
+      <ManjeText variant="label.sm" style={{ color: textColor }}>
         {label || category.charAt(0).toUpperCase() + category.slice(1)}
-      </Text>
+      </ManjeText>
     </View>
   );
 };

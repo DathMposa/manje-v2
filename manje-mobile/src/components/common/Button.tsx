@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import { View, StyleSheet, Pressable, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../hooks/useTheme';
 import { radius, layout } from '../../theme/spacing';
-import { typeScale } from '../../theme/typography';
+import { TypographyVariant } from '../../theme/typography';
 import { springPresets } from '../../theme/animations';
 import { gradients } from '../../theme/gradients';
+import { ManjeText } from './ManjeText';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -88,19 +89,21 @@ export const Button: React.FC<ButtonProps> = ({
     }
   };
 
-  const getTextStyle = (): TextStyle => {
-    const fontStyle = size === 'sm' ? typeScale['label.md'] : size === 'md' ? typeScale['headline.sm'] : typeScale['headline.md'];
-    
+  const getTextVariant = (): TypographyVariant => {
+    return size === 'sm' ? 'label.md' : size === 'md' ? 'headline.sm' : 'headline.md';
+  };
+
+  const getTextColor = () => {
     switch (variant) {
       case 'primary':
-        return { ...fontStyle, color: colors.text.inverse };
+        return colors.text.inverse;
       case 'secondary':
       case 'outline':
-        return { ...fontStyle, color: colors.primary.default };
+        return colors.primary.default;
       case 'ghost':
-        return { ...fontStyle, color: colors.text.secondary };
+        return colors.text.secondary;
       default:
-        return fontStyle;
+        return colors.text.primary;
     }
   };
 
@@ -111,7 +114,12 @@ export const Button: React.FC<ButtonProps> = ({
     return (
       <>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
-        <Text style={[getTextStyle(), textStyle]}>{title}</Text>
+        <ManjeText 
+          variant={getTextVariant()} 
+          style={[{ color: getTextColor() }, textStyle]}
+        >
+          {title}
+        </ManjeText>
       </>
     );
   };

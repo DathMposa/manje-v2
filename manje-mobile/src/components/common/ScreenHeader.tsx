@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, ViewStyle } from 'react-native';
+import { View, StyleSheet, Pressable, ViewStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons'; // Or Ionicons if preferred, wait, the guide specifically mentions Ionicons, but Feather is mostly compatible. The guide says: `Ionicons chevron-back (24px)`
 import { Ionicons } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import * as Haptics from 'expo-haptics';
 import { useTheme } from '../../hooks/useTheme';
 import { layout, spacing } from '../../theme/spacing';
 import { typeScale } from '../../theme/typography';
+import { ManjeText } from './ManjeText';
 
 export interface ScreenHeaderProps {
   title?: string;
@@ -57,15 +58,13 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
       {/* Absolute Title */}
       {!!title && (
         <View style={styles.titleContainer} pointerEvents="none">
-          <Text
-            style={[
-              typeScale['headline.lg'],
-              { color: transparent ? colors.text.inverse : colors.text.primary, textAlign: 'center' },
-            ]}
+          <ManjeText
+            variant="headline.lg"
+            style={[{ color: transparent ? colors.text.inverse : colors.text.primary, textAlign: 'center' }]}
             numberOfLines={1}
           >
             {title}
-          </Text>
+          </ManjeText>
         </View>
       )}
 

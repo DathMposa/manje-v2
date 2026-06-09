@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   Modal,
   FlatList,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { ManjeText } from './ManjeText';
 
 export interface CountryCode {
   code: string;
@@ -99,10 +99,10 @@ export function CountryCodePicker({
         onPress={() => setModalVisible(true)}
         activeOpacity={0.7}
       >
-        <Text style={styles.flag}>{selectedCountry.flag}</Text>
-        <Text style={[styles.dialCode, { color: colors.text.primary }]}>
+        <ManjeText variant="body.md" style={styles.flag}>{selectedCountry.flag}</ManjeText>
+        <ManjeText variant="label.md" style={[{ color: colors.text.primary, fontWeight: '500' }]}>
           {selectedCountry.dialCode}
-        </Text>
+        </ManjeText>
         <Feather name="chevron-down" size={16} color={colors.text.secondary} />
       </TouchableOpacity>
 
@@ -118,9 +118,9 @@ export function CountryCodePicker({
             style={[styles.modalContent, { backgroundColor: colors.bg.base }]}
           >
             <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.text.primary }]}>
+              <ManjeText variant="headline.sm" style={[{ color: colors.text.primary }]}>
                 Select Country
-              </Text>
+              </ManjeText>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Feather name="x" size={24} color={colors.text.primary} />
               </TouchableOpacity>
@@ -161,14 +161,14 @@ export function CountryCodePicker({
                   ]}
                   onPress={() => handleSelect(item)}
                 >
-                  <Text style={styles.countryFlag}>{item.flag}</Text>
+                  <ManjeText variant="body.lg" style={styles.countryFlag}>{item.flag}</ManjeText>
                   <View style={styles.countryInfo}>
-                    <Text style={[styles.countryName, { color: colors.text.primary }]}>
+                    <ManjeText variant="body.md" style={[{ color: colors.text.primary, fontWeight: '500' }]}>
                       {item.name}
-                    </Text>
-                    <Text style={[styles.countryDialCode, { color: colors.text.secondary }]}>
+                    </ManjeText>
+                    <ManjeText variant="body.sm" style={[{ color: colors.text.secondary, marginTop: 2 }]}>
                       {item.dialCode}
-                    </Text>
+                    </ManjeText>
                   </View>
                   {selectedCountry.code === item.code && (
                     <Feather name="check" size={20} color={colors.primary.default} />
@@ -197,12 +197,6 @@ const styles = StyleSheet.create({
     minWidth: 90,
   },
   flag: {
-    fontSize: 20,
-    marginRight: 4,
-  },
-  dialCode: {
-    fontSize: 14,
-    fontWeight: '500',
     marginRight: 4,
   },
   modalOverlay: {
@@ -225,10 +219,6 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(0,0,0,0.1)',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -256,19 +246,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.03)',
   },
   countryFlag: {
-    fontSize: 24,
     marginRight: 12,
     width: 30,
   },
   countryInfo: {
     flex: 1,
-  },
-  countryName: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  countryDialCode: {
-    fontSize: 14,
-    marginTop: 2,
   },
 });
