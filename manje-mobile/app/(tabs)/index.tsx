@@ -11,6 +11,7 @@ import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '../../src/hooks/useTheme';
 import { ClayCard } from '../../src/components/common';
+import { ManjeCharacter } from '../../src/components/character';
 import { useAuthStore, useBudgetStore, useGoalStore, useTransactionStore } from '../../src/stores';
 import { typeScale } from '../../src/theme/typography';
 import { spacing, layout, radius } from '../../src/theme/spacing';
@@ -112,7 +113,7 @@ export default function DashboardScreen() {
         <Text style={[styles.greeting, typeScale['headline.md'], { color: colors.text.secondary }]}>
           Hello,
         </Text>
-        <Text style={[styles.nameText, typeScale['display.sm'], { color: colors.text.primary, marginTop: 2 }]}>
+        <Text style={[styles.nameText, typeScale['headline.lg'], { color: colors.text.primary, marginTop: 2 }]}>
           {user?.displayName || 'there'}!
         </Text>
       </View>
@@ -183,11 +184,9 @@ export default function DashboardScreen() {
       <Animated.View entering={isInitialLoad ? FadeInDown.delay(250).duration(400) : undefined} style={styles.section}>
         <ClayCard variant="subtle" style={{ backgroundColor: colors.primary.subtle }}>
           <View style={styles.insightContent}>
-            <View style={[styles.insightIconContainer, { backgroundColor: `${colors.primary.default}20` }]}>
-              <Feather name="trending-up" size={20} color={colors.primary.default} />
-            </View>
+            <ManjeCharacter mood="happy" size={44} variant="badge" animated={false} />
             <View style={styles.insightTextContainer}>
-              <Text style={[typeScale['body.sm'], { color: colors.text.primary, lineHeight: 20 }]}>
+              <Text style={[typeScale['body.sm'], { color: colors.text.primary }]}>
                 {insightText}
               </Text>
             </View>
@@ -393,7 +392,7 @@ export default function DashboardScreen() {
 
     return (
       <Animated.View entering={isInitialLoad ? FadeInDown.delay(400).duration(400) : undefined} style={[styles.section, { alignItems: 'center', marginTop: spacing[8] }]}>
-        <View style={[styles.emptyStateCircle, { backgroundColor: colors.bg.card }]} />
+        <ManjeCharacter utility="empty-state" size={180} animated showIdleFloat />
         <Text style={[typeScale['headline.md'], { color: colors.text.primary, marginTop: spacing[4], textAlign: 'center' }]}>
           No activity yet
         </Text>
@@ -481,7 +480,6 @@ const styles = StyleSheet.create({
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing[3] },
   sectionTitle: { marginBottom: spacing[3] },
   insightContent: { flexDirection: 'row', alignItems: 'center' },
-  insightIconContainer: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   insightTextContainer: { flex: 1, marginLeft: spacing[3] },
   overviewContainer: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing[4] },
   overviewCard: { flex: 1, padding: spacing[4] },
@@ -499,5 +497,4 @@ const styles = StyleSheet.create({
   listIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginRight: spacing[4] },
   listInfo: { flex: 1 },
   listDivider: { height: 1, marginLeft: 72, marginRight: spacing[4] },
-  emptyStateCircle: { width: 120, height: 120, borderRadius: 60, opacity: 0.5 },
 });

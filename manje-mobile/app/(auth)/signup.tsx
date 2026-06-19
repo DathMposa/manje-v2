@@ -93,7 +93,7 @@ export default function SignUpScreen() {
             <Text style={[typeScale.headlineMedium, { color: colors.text.primary, marginTop: spacing[6], textAlign: 'center' }]}>
               Almost there!
             </Text>
-            <Text style={[typeScale.bodyMedium, { color: colors.text.secondary, marginTop: spacing[3], textAlign: 'center', lineHeight: 24 }]}>
+            <Text style={[typeScale.bodyMedium, { color: colors.text.secondary, marginTop: spacing[3], textAlign: 'center' }]}>
               We sent a confirmation link to{' '}
               <Text style={{ color: colors.primary.default, fontWeight: '600' }}>{confirmationEmail}</Text>
               {'. Open it to activate your account, then sign in.'}

@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Search, ShoppingBag, Coffee, Car, Zap, FileText, ArrowDownRight, Briefcase, Edit3, RotateCcw, TrendingUp } from 'lucide-react-native';
+import { Search, ShoppingBag, Coffee, Car, Zap, ArrowDownRight, Briefcase, Edit3, RotateCcw, TrendingUp } from 'lucide-react-native';
 import { useTheme } from '../../../src/hooks';
 import { ScreenHeader } from '../../../src/components/common/ScreenHeader';
 import { Input } from '../../../src/components/common/Input';
+import { ManjeCharacter } from '../../../src/components/character';
 import { useTransactionStore } from '../../../src/stores';
 
 const iconMap = {
@@ -131,9 +132,7 @@ export default function TransactionsListScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={[styles.emptyContainer, { padding: spacing['2xl'] }]}>
-            <View style={[styles.emptyIconContainer, { backgroundColor: colors.background.card }]}>
-              <FileText size={32} color={colors.text.muted} />
-            </View>
+            <ManjeCharacter utility="empty-state" size={170} animated showIdleFloat />
             <Text style={[typography.headline.medium, { color: colors.text.primary, marginTop: spacing.xl, marginBottom: spacing.xs }]}>
               No transactions found
             </Text>

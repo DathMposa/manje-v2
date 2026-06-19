@@ -1,0 +1,105 @@
+<svg viewBox="0 0 1600 1250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five Manje logo samples with fixed full M monograms">
+  <defs>
+    <linearGradient id="green" x1="0" y1="0" x2="154" y2="154" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1A6B4A"/>
+      <stop offset="1" stop-color="#0D3B2E"/>
+    </linearGradient>
+    <style>
+      .h1 { font: 800 44px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .body { font: 500 20px Inter, Arial, sans-serif; fill: #426356; }
+      .label { font: 800 34px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .title { font: 750 25px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .word { font: 850 72px Inter, Arial, sans-serif; fill: #0D3B2E; letter-spacing: -2px; }
+      .tag { font: 700 14px Inter, Arial, sans-serif; fill: #1A6B4A; letter-spacing: 2px; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1250" fill="#F8FAF9"/>
+  <text x="80" y="92" class="h1">Manje Logo Samples</text>
+  <text x="82" y="128" class="body">Five premium directions based on top finance-app logo patterns: simple, ownable, and icon-ready.</text>
+
+  <g id="m-premium">
+    <rect width="184" height="154" rx="38" fill="url(#green)"/>
+    <path d="M30 114V47c0-15 10-26 24-26 10 0 18 6 23 16l22 45 22-45c5-10 13-16 23-16 14 0 24 11 24 26v67c0 14-9 24-22 24s-22-10-22-24V80l-12 26c-4 8-9 12-15 12s-11-4-15-12L70 80v34c0 14-9 24-22 24s-22-10-22-24z" fill="#F8FAF9"/>
+    <path d="M64 101c23 13 47 7 66-27" fill="none" stroke="#F5C518" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="132" cy="70" r="6" fill="#F5C518"/>
+  </g>
+
+  <g id="m-simple">
+    <rect width="136" height="118" rx="28" fill="#0D3B2E"/>
+    <path d="M23 87V36c0-11 8-19 19-19 8 0 14 5 18 12l16 32 16-32c4-7 10-12 18-12 11 0 19 8 19 19v51c0 10-7 18-17 18s-17-8-17-18V61l-9 18c-3 6-7 9-11 9s-8-3-11-9l-9-18v26c0 10-7 18-17 18s-17-8-17-18z" fill="#F8FAF9"/>
+    <rect x="78" y="72" width="24" height="7" rx="3.5" fill="#F5C518"/>
+  </g>
+
+  <g id="m-path">
+    <rect width="184" height="154" rx="38" fill="#0D3B2E"/>
+    <path d="M30 114V47c0-15 10-26 24-26 10 0 18 6 23 16l22 45 22-45c5-10 13-16 23-16 14 0 24 11 24 26v67c0 14-9 24-22 24s-22-10-22-24V80l-12 26c-4 8-9 12-15 12s-11-4-15-12L70 80v34c0 14-9 24-22 24s-22-10-22-24z" fill="#F8FAF9"/>
+    <path d="M48 103c28 21 58 18 86-22" fill="none" stroke="#0D3B2E" stroke-width="17" stroke-linecap="round"/>
+    <path d="M52 102c26 19 54 16 79-20" fill="none" stroke="#F5C518" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <g id="m-spark">
+    <rect width="184" height="154" rx="38" fill="url(#green)"/>
+    <path d="M30 114V47c0-15 10-26 24-26 10 0 18 6 23 16l22 45 22-45c5-10 13-16 23-16 14 0 24 11 24 26v67c0 14-9 24-22 24s-22-10-22-24V80l-12 26c-4 8-9 12-15 12s-11-4-15-12L70 80v34c0 14-9 24-22 24s-22-10-22-24z" fill="#F8FAF9"/>
+    <path d="M116 40l7 15 15 7-15 7-7 15-7-15-15-7 15-7z" fill="#F5C518"/>
+    <circle cx="101" cy="105" r="5.5" fill="#F5C518"/>
+  </g>
+
+  <g id="shield">
+    <path d="M77 0l68 24v57c0 50-29 89-68 111C38 170 9 131 9 81V24z" fill="#0D3B2E"/>
+    <path d="M33 124V55c0-14 10-24 23-24 9 0 17 6 22 15l21 42 21-42c5-9 13-15 22-15 13 0 23 10 23 24v69c0 13-9 22-21 22s-21-9-21-22V87l-11 23c-4 8-9 12-15 12s-11-4-15-12L71 87v37c0 13-9 22-21 22s-21-9-21-22z" fill="#F8FAF9"/>
+    <path d="M84 120l22 21 39-50" fill="none" stroke="#F5C518" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(80 180)">
+    <rect width="680" height="300" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="56" class="label">1</text>
+    <text x="86" y="54" class="title">Premium M Monogram</text>
+    <text x="86" y="84" class="body">Best overall: restrained, ownable, and app-icon friendly.</text>
+    <use href="#m-premium" x="78" y="112"/>
+    <text x="296" y="186" class="word">Manje</text>
+    <text x="300" y="224" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(840 180)">
+    <rect width="680" height="300" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="56" class="label">2</text>
+    <text x="86" y="54" class="title">Manje Wordmark + M Icon</text>
+    <text x="86" y="84" class="body">Brand-first logo with a separate simple app mark.</text>
+    <use href="#m-simple" x="76" y="122"/>
+    <text x="242" y="198" class="word">Manje</text>
+    <text x="246" y="236" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(80 540)">
+    <rect width="680" height="300" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="56" class="label">3</text>
+    <text x="86" y="54" class="title">M As Money Path</text>
+    <text x="86" y="84" class="body">A quiet growth path, not a literal arrow or chart.</text>
+    <use href="#m-path" x="78" y="112"/>
+    <text x="296" y="186" class="word">Manje</text>
+    <text x="300" y="224" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(840 540)">
+    <rect width="680" height="300" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="56" class="label">4</text>
+    <text x="86" y="54" class="title">M + Coaching Spark</text>
+    <text x="86" y="84" class="body">Adds AI guidance and confidence without becoming playful.</text>
+    <use href="#m-spark" x="76" y="112"/>
+    <text x="296" y="186" class="word">Manje</text>
+    <text x="300" y="224" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(80 900)">
+    <rect width="1440" height="270" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="56" class="label">5</text>
+    <text x="86" y="54" class="title">Shielded M</text>
+    <text x="86" y="84" class="body">Trust and protection for bills, budgets, savings, and account security.</text>
+    <use href="#shield" x="88" y="112"/>
+    <text x="316" y="178" class="word">Manje</text>
+    <text x="320" y="216" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+    <text x="900" y="150" class="body">Most conservative and trust-forward.</text>
+    <text x="900" y="182" class="body">Best for a secure money-companion feel.</text>
+  </g>
+</svg>

@@ -55,7 +55,7 @@ export default function BudgetDetailScreen() {
       <View style={styles.ringContainer}>
         <View style={[styles.outerRing, { borderColor: colors.border.light }]}>
           <View style={[styles.innerCircle, { backgroundColor: colors.bg.base }]}>
-            <Text style={[typography.scale['display.sm'], { color: colors.text.primary }]}>
+            <Text style={[typography.financial.large, { color: colors.text.primary }]}>
               {overallPercentage.toFixed(0)}%
             </Text>
             <Text style={[typography.scale['label.md'], { color: colors.text.secondary }]}>

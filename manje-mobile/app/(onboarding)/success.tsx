@@ -88,7 +88,7 @@ export default function SuccessScreen() {
         entering={FadeIn.delay(200).duration(600)}
         style={styles.characterArea}
       >
-        <ManjeCharacter mood="celebrate" size="xl" animated />
+        <ManjeCharacter mood="celebrate" size="xl" variant="full" animated />
       </Animated.View>
       
       {/* Content Area */}
@@ -96,7 +96,7 @@ export default function SuccessScreen() {
         entering={FadeInUp.delay(400).duration(600)}
         style={styles.contentArea}
       >
-        <Text style={[styles.title, typeScale.displayMedium, { color: colors.text.primary }]}>
+        <Text style={[styles.title, typeScale.headlineLarge, { color: colors.text.primary }]}>
           You're all set!
         </Text>
         

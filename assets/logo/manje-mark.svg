@@ -1,0 +1,44 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Manje mark">
+  <defs>
+    <linearGradient id="markGreen" x1="128" y1="128" x2="896" y2="896" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1A6B4A"/>
+      <stop offset="1" stop-color="#0D3B2E"/>
+    </linearGradient>
+    <linearGradient id="goldAccent" x1="336" y1="688" x2="758" y2="302" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#B07D08"/>
+      <stop offset="0.45" stop-color="#F5C518"/>
+      <stop offset="1" stop-color="#FFE566"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="1024" rx="224" fill="#F8FAF9"/>
+
+  <path
+    d="M338 176c0-50 40-90 90-90h168c50 0 90 40 90 90v30h34c75 0 136 61 136 136v420c0 75-61 136-136 136H304c-75 0-136-61-136-136V342c0-75 61-136 136-136h34v-30z"
+    fill="url(#markGreen)"
+  />
+  <rect x="392" y="140" width="240" height="118" rx="46" fill="#F8FAF9" opacity="0.94"/>
+  <rect x="436" y="176" width="152" height="24" rx="12" fill="#B07D08" opacity="0.9"/>
+
+  <path
+    d="M278 720V404c0-47 32-82 78-82 31 0 58 17 73 46l83 160 83-160c15-29 42-46 73-46 46 0 78 35 78 82v316c0 42-30 72-71 72s-71-30-71-72V523l-52 102c-11 22-27 32-48 32s-37-10-48-32l-52-102v197c0 42-30 72-71 72s-71-30-71-72z"
+    fill="#F8FAF9"
+  />
+
+  <path
+    d="M344 636l128-118 92 82 176-228"
+    fill="none"
+    stroke="url(#goldAccent)"
+    stroke-width="54"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M704 376h96v96"
+    fill="none"
+    stroke="url(#goldAccent)"
+    stroke-width="54"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

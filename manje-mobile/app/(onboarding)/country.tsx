@@ -122,7 +122,7 @@ export default function CountryScreen() {
           entering={FadeInDown.delay(100).duration(400)}
           style={styles.header}
         >
-          <ManjeCharacter mood="happy" size="sm" />
+          <ManjeCharacter mood="happy" size="sm" variant="badge" />
           <Text style={[styles.subtitle, typeScale.bodyMedium, { color: colors.text.secondary }]}>
             This helps me show you relevant features and currency
           </Text>

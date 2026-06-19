@@ -98,7 +98,7 @@ export default function CreateGoalScreen() {
               </View>
             </View>
 
-            <Text style={[typography.display.medium, { color: colors.primary.base, marginTop: spacing.md }]}>
+            <Text style={[typography.financial.large, { color: colors.primary.base, marginTop: spacing.md }]}>
               MK {getRequiredMonthly().toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </Text>
             <Text style={[typography.body.medium, { color: colors.text.secondary, marginTop: spacing.xs }]}>

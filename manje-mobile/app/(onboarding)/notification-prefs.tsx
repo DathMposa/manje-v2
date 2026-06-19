@@ -49,7 +49,7 @@ export default function NotificationPrefsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Animated.View entering={FadeInDown.delay(100).duration(600)} style={styles.header}>
-          <Text style={[typography.display.medium, { color: colors.text.primary, marginBottom: spacing.md, textAlign: 'center' }]}>
+          <Text style={[typography.headline.large, { color: colors.text.primary, marginBottom: spacing.md, textAlign: 'center' }]}>
             How should we notify you?
           </Text>
           <Text style={[typography.body.large, { color: colors.text.secondary, textAlign: 'center', marginBottom: spacing['2xl'] }]}>

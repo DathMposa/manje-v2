@@ -1,0 +1,40 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Manje wordmark with seated writing mascot as j">
+  <defs>
+    <style>
+      .h1 { font: 800 42px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .body { font: 500 20px Inter, Arial, sans-serif; fill: #426356; }
+      .word { font: 850 154px Inter, Arial, sans-serif; fill: #0D3B2E; letter-spacing: -5px; }
+      .tag { font: 700 16px Inter, Arial, sans-serif; fill: #1A6B4A; letter-spacing: 2px; }
+      .label { font: 750 23px Inter, Arial, sans-serif; fill: #0D3B2E; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#F8FAF9"/>
+  <text x="80" y="92" class="h1">Manje Wordmark With Seated Writing Mascot as j</text>
+  <text x="82" y="128" class="body">The mascot sits on a chair, writing, and faces toward the Man side of the wordmark.</text>
+
+  <g transform="translate(80 190)">
+    <rect width="1440" height="410" rx="36" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="56" y="62" class="label">Primary concept</text>
+    <text x="56" y="94" class="body">Use for splash, onboarding, and larger brand moments where the mascot can stay legible.</text>
+    <text x="250" y="290" class="word">Man</text>
+    <image href="manje-mascot-seated-writing-cutout.png" x="560" y="102" width="235" height="290" preserveAspectRatio="xMidYMid meet"/>
+    <text x="802" y="290" class="word">e</text>
+    <text x="258" y="360" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(80 660)">
+    <rect width="690" height="160" rx="30" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="50" class="label">Compact lockup</text>
+    <text x="230" y="112" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="850" fill="#0D3B2E" letter-spacing="-2">Man</text>
+    <image href="manje-mascot-seated-writing-cutout.png" x="372" y="44" width="58" height="72" preserveAspectRatio="xMidYMid meet"/>
+    <text x="446" y="112" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="850" fill="#0D3B2E">e</text>
+  </g>
+
+  <g transform="translate(830 660)">
+    <rect width="690" height="160" rx="30" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="50" class="label">Usage note</text>
+    <text x="36" y="86" class="body">This is expressive and mascot-led.</text>
+    <text x="36" y="120" class="body">Use a simpler mark for tiny app icons.</text>
+  </g>
+</svg>

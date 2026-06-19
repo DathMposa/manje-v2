@@ -53,7 +53,7 @@ export default function DeleteAccountScreen() {
 
         {step === 1 ? (
           <View>
-            <Text style={[typography.display.small, { color: colors.text.primary, textAlign: 'center', marginBottom: spacing.lg }]}>
+            <Text style={[typography.headline.large, { color: colors.text.primary, textAlign: 'center', marginBottom: spacing.lg }]}>
               Are you sure?
             </Text>
             
@@ -92,7 +92,7 @@ export default function DeleteAccountScreen() {
           </View>
         ) : (
           <View>
-            <Text style={[typography.display.small, { color: colors.text.primary, textAlign: 'center', marginBottom: spacing.lg }]}>
+            <Text style={[typography.headline.large, { color: colors.text.primary, textAlign: 'center', marginBottom: spacing.lg }]}>
               Final Confirmation
             </Text>
             

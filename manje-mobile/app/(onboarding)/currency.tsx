@@ -149,7 +149,7 @@ export default function CurrencyScreen() {
           entering={FadeInDown.delay(100).duration(400)}
           style={styles.header}
         >
-          <ManjeCharacter mood="happy" size="sm" />
+          <ManjeCharacter mood="happy" size="sm" variant="badge" />
           <Text style={[styles.subtitle, typeScale.bodyMedium, { color: colors.text.secondary }]}>
             All your transactions will be tracked in this currency
           </Text>

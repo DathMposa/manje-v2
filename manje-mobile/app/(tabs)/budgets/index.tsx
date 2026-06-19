@@ -6,6 +6,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../../../src/hooks';
 import { Button } from '../../../src/components/common/Button';
+import { ManjeCharacter } from '../../../src/components/character';
 import { useBudgetStore } from '../../../src/stores/budgetStore';
 import { layout, spacing, radius } from '../../../src/theme/spacing';
 
@@ -20,7 +21,7 @@ export default function BudgetsListScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
-      <Feather name="pie-chart" size={48} color={colors.text.secondary} />
+      <ManjeCharacter utility="budget-planner" size={180} animated showIdleFloat />
       <Text style={[styles.emptyText, typography.scale['headline.sm'], { color: colors.text.primary }]}>
         No Budgets Yet
       </Text>
@@ -41,7 +42,7 @@ export default function BudgetsListScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bg.base }]} edges={['top']}>
       {/* Header matching Activity/Profile */}
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, typography.scale['display.sm'], { color: colors.text.primary }]}>
+        <Text style={[styles.headerTitle, typography.scale['headline.lg'], { color: colors.text.primary }]}>
           Budgets
         </Text>
         <Pressable 

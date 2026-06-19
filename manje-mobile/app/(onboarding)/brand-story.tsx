@@ -22,13 +22,13 @@ export default function BrandStoryScreen() {
           entering={FadeInDown.delay(100).duration(600)} 
           style={styles.characterContainer}
         >
-          <ManjeCharacter mood="wave" size="xl" animated showIdleFloat />
+          <ManjeCharacter mood="wave" size="xl" variant="full" animated showIdleFloat />
         </Animated.View>
 
         <View style={styles.textContainer}>
           <Animated.Text 
             entering={FadeInDown.delay(300).duration(600)} 
-            style={[typography.display.medium, { color: colors.text.primary, marginBottom: spacing.lg, textAlign: 'center' }]}
+            style={[typography.headline.large, { color: colors.text.primary, marginBottom: spacing.lg, textAlign: 'center' }]}
           >
             Ever wondered where your money goes each month?
           </Animated.Text>

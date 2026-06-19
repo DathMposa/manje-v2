@@ -57,9 +57,9 @@ export default function MarkBillPaidScreen() {
 
         <View style={styles.amountContainer}>
           <View style={[styles.amountInputWrapper, { borderBottomColor: colors.border.medium }]}>
-            <Text style={[typography.display.medium, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
+            <Text style={[typography.financial.large, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
             <TextInput
-              style={[styles.amountInput, typography.display.medium, { color: colors.text.primary }]}
+              style={[styles.amountInput, typography.financial.large, { color: colors.text.primary }]}
               value={amount}
               onChangeText={(text) => setAmount(text.replace(/[^0-9]/g, ''))}
               keyboardType="numeric"

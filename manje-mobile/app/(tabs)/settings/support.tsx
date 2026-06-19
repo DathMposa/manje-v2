@@ -101,7 +101,7 @@ export default function SupportScreen() {
 
                   {isExpanded && (
                     <View style={styles.faqAnswer}>
-                      <Text style={[typography.body.medium, { color: colors.text.secondary, lineHeight: 24 }]}>{faq.answer}</Text>
+                      <Text style={[typography.body.medium, { color: colors.text.secondary }]}>{faq.answer}</Text>
                     </View>
                   )}
                 </View>

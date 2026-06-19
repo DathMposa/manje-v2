@@ -69,7 +69,7 @@ export default function ForgotPasswordScreen() {
           <ManjeCharacter mood="happy" size="lg" animated showIdleFloat />
           
           <Text style={[
-            typography.display.medium,
+            typography.headline.large,
             { color: colors.text.primary, textAlign: 'center', marginTop: spacing.xl, marginBottom: spacing.sm }
           ]}>
             Check your email
@@ -115,7 +115,7 @@ export default function ForgotPasswordScreen() {
           <ManjeCharacter mood="concern" size="md" animated />
           
           <Text style={[
-            typography.display.medium,
+            typography.headline.large,
             { color: colors.text.primary, marginTop: spacing.xl, marginBottom: spacing.sm }
           ]}>
             Forgot Password?

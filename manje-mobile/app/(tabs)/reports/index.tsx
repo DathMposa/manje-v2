@@ -49,7 +49,7 @@ export default function WeeklyReportScreen() {
 
         <ClayCard variant="hero" style={styles.summaryCard}>
           <Text style={[typography.body.large, { color: 'rgba(255,255,255,0.8)', marginBottom: 8 }]}>Total Spent</Text>
-          <Text style={[typography.display.medium, { color: colors.text.inverse, marginBottom: 16 }]}>
+          <Text style={[typography.financial.large, { color: colors.text.inverse, marginBottom: 16 }]}>
             MK {report.totalSpent.toLocaleString()}
           </Text>
 
@@ -67,7 +67,7 @@ export default function WeeklyReportScreen() {
             {report.anomalies.map((anomaly, index) => (
               <View key={`${anomaly.message}-${index}`} style={[styles.anomalyCard, { backgroundColor: colors.status.warning.bg }]}>
                 <AlertCircle size={20} color={colors.status.warning.base} style={{ marginRight: 12, marginTop: 2 }} />
-                <Text style={[typography.body.medium, { color: colors.text.primary, flex: 1, lineHeight: 22 }]}>{anomaly.message}</Text>
+                <Text style={[typography.body.medium, { color: colors.text.primary, flex: 1 }]}>{anomaly.message}</Text>
               </View>
             ))}
           </View>

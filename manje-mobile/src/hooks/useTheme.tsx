@@ -101,6 +101,11 @@ const createThemeValue = (
       medium: typeScale['headline.md'],
       small: typeScale['headline.sm'],
     },
+    title: {
+      large: typeScale['title.lg'],
+      medium: typeScale['title.md'],
+      small: typeScale['title.sm'],
+    },
     body: {
       large: typeScale['body.lg'],
       medium: typeScale['body.md'],
@@ -111,6 +116,7 @@ const createThemeValue = (
       medium: typeScale['label.md'],
       small: typeScale['label.sm'],
     },
+    caption: typeScale.caption,
     financial: {
       hero: typeScale['financial.hero'],
       large: typeScale['financial.lg'],

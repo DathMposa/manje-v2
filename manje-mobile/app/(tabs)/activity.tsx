@@ -196,7 +196,7 @@ export default function ActivityScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bg.base }]} edges={['top']}>
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, typeScale['display.sm'], { color: colors.text.primary }]}>
+        <Text style={[styles.headerTitle, typeScale['headline.lg'], { color: colors.text.primary }]}>
           Activity
         </Text>
         <Pressable

@@ -275,7 +275,7 @@ export default function QuickAddScreen() {
               <Animated.View entering={FadeInUp.delay(100).duration(300)}>
                 <ClayCard variant="subtle" style={{ backgroundColor: colors.primary.subtle }}>
                   <View style={styles.aiSuggestion}>
-                    <ManjeCharacter mood="thinking" size="sm" />
+                    <ManjeCharacter mood="thinking" size="sm" variant="badge" />
                     <View style={styles.aiSuggestionText}>
                       <Text style={[typeScale['label.md'], { color: colors.primary.default }]}>Quick tip</Text>
                       <Text

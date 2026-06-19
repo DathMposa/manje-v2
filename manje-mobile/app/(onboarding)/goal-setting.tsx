@@ -69,7 +69,7 @@ export default function GoalSettingScreen() {
         >
           <Animated.View entering={FadeInDown.delay(100).duration(600)} style={styles.header}>
             <ManjeCharacter mood="encourage" size="md" animated showIdleFloat />
-            <Text style={[typography.display.medium, { color: colors.text.primary, marginTop: spacing.lg, marginBottom: spacing.xs, textAlign: 'center' }]}>
+            <Text style={[typography.headline.large, { color: colors.text.primary, marginTop: spacing.lg, marginBottom: spacing.xs, textAlign: 'center' }]}>
               Let's set a goal
             </Text>
             <Text style={[typography.body.large, { color: colors.text.secondary, textAlign: 'center', marginBottom: spacing['2xl'] }]}>
@@ -111,9 +111,9 @@ export default function GoalSettingScreen() {
           {selectedType && (
             <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.amountSection}>
               <View style={[styles.amountInputWrapper, { borderBottomColor: colors.border.medium }]}>
-                <Text style={[typography.display.medium, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
+                <Text style={[typography.financial.large, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
                 <TextInput
-                  style={[styles.amountInput, typography.display.medium, { color: colors.text.primary }]}
+                  style={[styles.amountInput, typography.financial.large, { color: colors.text.primary }]}
                   value={targetAmount}
                   onChangeText={(text) => setTargetAmount(text.replace(/[^0-9]/g, ''))}
                   keyboardType="numeric"

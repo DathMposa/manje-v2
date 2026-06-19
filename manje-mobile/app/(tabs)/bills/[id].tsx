@@ -77,7 +77,7 @@ export default function BillDetailScreen() {
             <Icon size={32} color={color} />
           </View>
 
-          <Text style={[typography.display.medium, { color: colors.text.primary, marginTop: spacing.lg, marginBottom: spacing.xs }]}>
+          <Text style={[typography.financial.large, { color: colors.text.primary, marginTop: spacing.lg, marginBottom: spacing.xs }]}>
             MK {bill.amount.toLocaleString()}
           </Text>
           <Text style={[typography.body.large, { color: colors.text.secondary }]}>{bill.name}</Text>

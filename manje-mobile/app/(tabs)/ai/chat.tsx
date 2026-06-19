@@ -97,7 +97,7 @@ export default function ActiveChatScreen() {
           >
             {msg.sender === 'ai' && (
               <View style={styles.aiAvatar}>
-                <ManjeCharacter mood="happy" size="sm" />
+                <ManjeCharacter mood="happy" size="sm" variant="badge" />
               </View>
             )}
             
@@ -122,7 +122,7 @@ export default function ActiveChatScreen() {
         {isTyping && (
           <View style={[styles.messageWrapper, styles.messageWrapperAI]}>
             <View style={styles.aiAvatar}>
-              <ManjeCharacter mood="thinking" size="sm" animated />
+              <ManjeCharacter mood="thinking" size="sm" variant="badge" animated />
             </View>
             <View style={[styles.messageBubble, styles.messageAI, { backgroundColor: colors.background.card, borderColor: colors.border.light }]}>
               <Text style={[typography.body.large, { color: colors.text.muted }]}>Typing...</Text>

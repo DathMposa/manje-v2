@@ -79,7 +79,7 @@ export default function TransactionDetailScreen() {
 
           <Text
             style={[
-              typography.display.medium,
+              typography.financial.large,
               { color: amountColor, marginTop: spacing.lg, marginBottom: spacing.xs },
             ]}
           >

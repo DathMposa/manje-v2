@@ -71,7 +71,7 @@ export default function ResetPasswordScreen() {
           <ManjeCharacter mood="celebrate" size="lg" animated showIdleFloat />
           
           <Text style={[
-            typography.display.medium,
+            typography.headline.large,
             { color: colors.text.primary, textAlign: 'center', marginTop: spacing.xl, marginBottom: spacing.sm }
           ]}>
             Password Reset
@@ -116,7 +116,7 @@ export default function ResetPasswordScreen() {
           <ManjeCharacter mood="happy" size="md" animated />
           
           <Text style={[
-            typography.display.medium,
+            typography.headline.large,
             { color: colors.text.primary, marginTop: spacing.xl, marginBottom: spacing.sm }
           ]}>
             Create New Password

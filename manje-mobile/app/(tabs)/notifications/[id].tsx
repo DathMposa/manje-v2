@@ -80,7 +80,7 @@ export default function NotificationDetailScreen() {
               {getIcon(notification.type, getIconColor(notification.type))}
             </View>
 
-            <Text style={[typography.display.small, { color: colors.text.primary, marginTop: spacing.xl, textAlign: 'center' }]}>
+            <Text style={[typography.headline.large, { color: colors.text.primary, marginTop: spacing.xl, textAlign: 'center' }]}>
               {notification.title}
             </Text>
 
@@ -90,7 +90,7 @@ export default function NotificationDetailScreen() {
 
             <View style={[styles.divider, { backgroundColor: colors.border.light }]} />
 
-            <Text style={[typography.body.large, { color: colors.text.secondary, lineHeight: 28 }]}>{notification.message}</Text>
+            <Text style={[typography.body.large, { color: colors.text.secondary }]}>{notification.message}</Text>
           </View>
         </ClayCard>
 

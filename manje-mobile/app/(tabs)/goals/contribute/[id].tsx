@@ -51,9 +51,9 @@ export default function AddContributionScreen() {
 
         <View style={styles.amountContainer}>
           <View style={[styles.amountInputWrapper, { borderBottomColor: colors.border.medium }]}>
-            <Text style={[typography.display.medium, { color: colors.status.success.text, marginRight: spacing.xs }]}>MK</Text>
+            <Text style={[typography.financial.large, { color: colors.status.success.text, marginRight: spacing.xs }]}>MK</Text>
             <TextInput
-              style={[styles.amountInput, typography.display.medium, { color: colors.status.success.text }]}
+              style={[styles.amountInput, typography.financial.large, { color: colors.status.success.text }]}
               value={amount}
               onChangeText={(text) => setAmount(text.replace(/[^0-9]/g, ''))}
               keyboardType="numeric"

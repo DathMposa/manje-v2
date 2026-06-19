@@ -44,7 +44,7 @@ export default function ContentDetailScreen() {
             </View>
           </View>
 
-          <Text style={[typography.display.medium, { color: colors.text.primary, marginTop: spacing.md, marginBottom: spacing.xs }]}>{article.title}</Text>
+          <Text style={[typography.headline.large, { color: colors.text.primary, marginTop: spacing.md, marginBottom: spacing.xs }]}>{article.title}</Text>
 
           <Text style={[typography.label.medium, { color: colors.text.muted, marginBottom: spacing.xl }]}>
             Published on {new Date(article.createdAt).toLocaleDateString()}
@@ -52,7 +52,7 @@ export default function ContentDetailScreen() {
 
           <View style={[styles.divider, { backgroundColor: colors.border.light }]} />
 
-          <Text style={[typography.body.large, { color: colors.text.secondary, lineHeight: 28, marginTop: spacing.lg }]}>{article.body}</Text>
+          <Text style={[typography.body.large, { color: colors.text.secondary, marginTop: spacing.lg }]}>{article.body}</Text>
         </View>
       </ScrollView>
     </View>

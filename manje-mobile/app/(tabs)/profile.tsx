@@ -102,7 +102,7 @@ export default function ProfileScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.headerTitle, typeScale.displaySmall, { color: colors.text.primary }]}>
+          <Text style={[styles.headerTitle, typeScale.headlineLarge, { color: colors.text.primary }]}>
             Profile
           </Text>
         </View>
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
           <ClayCard variant="clay" style={styles.profileCard}>
             <View style={styles.profileContent}>
               <View style={[styles.avatar, { backgroundColor: colors.primary.subtle }]}>
-                <ManjeCharacter mood="happy" size="sm" />
+                <ManjeCharacter mood="happy" size="sm" variant="badge" />
               </View>
               <View style={styles.profileInfo}>
                 <Text style={[styles.profileName, typeScale.headlineLarge, { color: colors.text.primary }]}>

@@ -62,8 +62,8 @@ export default function AIChatHomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.heroSection}>
-          <ManjeCharacter mood="wave" size="xl" animated showIdleFloat />
-          <Text style={[typography.display.medium, { color: colors.text.primary, marginTop: spacing.xl, textAlign: 'center' }]}>
+          <ManjeCharacter mood="wave" size="xl" variant="half" animated showIdleFloat />
+          <Text style={[typography.headline.large, { color: colors.text.primary, marginTop: spacing.xl, textAlign: 'center' }]}>
             Hello, Thandiwe!
           </Text>
           <Text style={[typography.body.large, { color: colors.text.secondary, textAlign: 'center', marginTop: spacing.sm }]}>

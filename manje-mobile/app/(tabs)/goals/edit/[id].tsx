@@ -63,9 +63,9 @@ export default function EditGoalScreen() {
             Target Amount
           </Text>
           <View style={[styles.amountInputWrapper, { borderBottomColor: colors.border.medium }]}>
-            <Text style={[typography.display.medium, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
+            <Text style={[typography.financial.large, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
             <TextInput
-              style={[styles.amountInput, typography.display.medium, { color: colors.text.primary }]}
+              style={[styles.amountInput, typography.financial.large, { color: colors.text.primary }]}
               value={form.targetAmount}
               onChangeText={(text) => setForm({ ...form, targetAmount: text.replace(/[^0-9]/g, '') })}
               keyboardType="numeric"

@@ -1,0 +1,69 @@
+<svg viewBox="0 0 1200 820" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Manje refined clipboard growth logo concept">
+  <defs>
+    <linearGradient id="boardGreen" x1="230" y1="110" x2="710" y2="780" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1A6B4A"/>
+      <stop offset="1" stop-color="#0D3B2E"/>
+    </linearGradient>
+    <linearGradient id="goldArrow" x1="330" y1="610" x2="700" y2="310" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#B07D08"/>
+      <stop offset="0.52" stop-color="#F5C518"/>
+      <stop offset="1" stop-color="#FFE566"/>
+    </linearGradient>
+    <style>
+      .title { font: 800 44px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .body { font: 500 22px Inter, Arial, sans-serif; fill: #426356; }
+      .label { font: 700 18px Inter, Arial, sans-serif; fill: #426356; }
+      .word { font: 850 74px Inter, Arial, sans-serif; fill: #0D3B2E; letter-spacing: -2px; }
+      .tag { font: 700 15px Inter, Arial, sans-serif; fill: #1A6B4A; letter-spacing: 2px; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="820" fill="#F8FAF9"/>
+  <text x="70" y="86" class="title">Clipboard Growth Mark</text>
+  <text x="72" y="126" class="body">Refined: a true clipboard shape with bars and arrow aligned to one growth system.</text>
+
+  <g transform="translate(100 190)">
+    <rect width="520" height="520" rx="44" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <g transform="translate(104 38) scale(0.43)">
+      <rect x="192" y="150" width="640" height="820" rx="132" fill="url(#boardGreen)"/>
+      <rect x="352" y="78" width="320" height="164" rx="72" fill="url(#boardGreen)"/>
+      <rect x="406" y="120" width="212" height="84" rx="34" fill="#F8FAF9" opacity="0.97"/>
+      <rect x="450" y="154" width="124" height="18" rx="9" fill="#B07D08"/>
+
+      <rect x="306" y="674" width="94" height="118" rx="34" fill="#F8FAF9"/>
+      <rect x="430" y="600" width="94" height="192" rx="34" fill="#F8FAF9"/>
+      <rect x="554" y="512" width="94" height="280" rx="34" fill="#F8FAF9"/>
+      <rect x="678" y="406" width="94" height="386" rx="34" fill="#F8FAF9"/>
+
+      <path d="M353 674L477 600L601 512L725 406" fill="none" stroke="url(#goldArrow)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M682 408h72v72" fill="none" stroke="url(#goldArrow)" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <g transform="translate(720 222)">
+    <text x="0" y="0" class="word">Manje</text>
+    <text x="4" y="42" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+    <text x="0" y="112" class="body">What changed:</text>
+    <text x="0" y="156" class="body">- tall board shape, no briefcase sides</text>
+    <text x="0" y="198" class="body">- bars share one baseline</text>
+    <text x="0" y="240" class="body">- arrow touches each bar top</text>
+
+    <g transform="translate(0 300)">
+      <rect width="124" height="124" rx="28" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+      <g transform="translate(17 9) scale(0.088)">
+        <rect x="192" y="150" width="640" height="820" rx="132" fill="#0D3B2E"/>
+        <rect x="352" y="78" width="320" height="164" rx="72" fill="#0D3B2E"/>
+        <rect x="406" y="120" width="212" height="84" rx="34" fill="#F8FAF9"/>
+        <rect x="450" y="154" width="124" height="18" rx="9" fill="#B07D08"/>
+        <rect x="306" y="674" width="94" height="118" rx="34" fill="#F8FAF9"/>
+        <rect x="430" y="600" width="94" height="192" rx="34" fill="#F8FAF9"/>
+        <rect x="554" y="512" width="94" height="280" rx="34" fill="#F8FAF9"/>
+        <rect x="678" y="406" width="94" height="386" rx="34" fill="#F8FAF9"/>
+        <path d="M353 674L477 600L601 512L725 406" fill="none" stroke="#F5C518" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M682 408h72v72" fill="none" stroke="#F5C518" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text x="148" y="52" class="label">Small app icon check</text>
+      <text x="148" y="82" class="body">Readable at small size.</text>
+    </g>
+  </g>
+</svg>

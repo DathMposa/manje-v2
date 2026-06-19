@@ -40,7 +40,7 @@ export default function PermissionsScreen() {
         </Animated.View>
 
         <Animated.View entering={FadeInDown.delay(300).duration(600)} style={styles.textContainer}>
-          <Text style={[typography.display.medium, { color: colors.text.primary, marginBottom: spacing.md, textAlign: 'center' }]}>
+          <Text style={[typography.headline.large, { color: colors.text.primary, marginBottom: spacing.md, textAlign: 'center' }]}>
             Stay on Track
           </Text>
           <Text style={[typography.body.large, { color: colors.text.secondary, textAlign: 'center', marginBottom: spacing['2xl'] }]}>

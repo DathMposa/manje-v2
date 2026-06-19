@@ -58,13 +58,14 @@ export default function BiometricLockScreen() {
         <ManjeCharacter
           mood={isLockedOut || hasFailed ? 'concern' : 'wave'}
           size="lg"
+          variant="half"
           animated
           showIdleFloat
         />
 
         <Text
           style={[
-            typography.display.medium,
+            typography.headline.large,
             { color: colors.text.primary, textAlign: 'center', marginTop: spacing.xl, marginBottom: spacing.sm },
           ]}
         >

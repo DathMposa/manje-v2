@@ -5,6 +5,7 @@ import { Plus, Clock, Zap, Home, Shield, Check, FileText } from 'lucide-react-na
 import { useTheme } from '../../../src/hooks';
 import { ScreenHeader } from '../../../src/components/common/ScreenHeader';
 import { ClayCard } from '../../../src/components/common/ClayCard';
+import { ManjeCharacter } from '../../../src/components/character';
 import { formatBillDueDateLabel, useBillStore } from '../../../src/stores';
 
 const getBillIcon = (name: string) => {
@@ -94,11 +95,12 @@ export default function BillsListScreen() {
       <ScrollView contentContainerStyle={{ padding: spacing.xl, paddingBottom: spacing['4xl'] }} showsVerticalScrollIndicator={false}>
         <View style={styles.summaryCard}>
           <Text style={[typography.label.medium, { color: colors.text.secondary, marginBottom: 4 }]}>Due this month</Text>
-          <Text style={[typography.display.medium, { color: colors.text.primary }]}>MK {dueThisMonth.toLocaleString()}</Text>
+          <Text style={[typography.financial.large, { color: colors.text.primary }]}>MK {dueThisMonth.toLocaleString()}</Text>
         </View>
 
         {filteredBills.length === 0 ? (
           <ClayCard variant="subtle" style={styles.emptyCard}>
+            <ManjeCharacter utility="bill-reminder" size={160} animated showIdleFloat />
             <Text style={[typography.headline.small, { color: colors.text.primary, marginBottom: 8 }]}>
               No live bills yet
             </Text>
@@ -186,6 +188,7 @@ const styles = StyleSheet.create({
   },
   emptyCard: {
     padding: 20,
+    alignItems: 'center',
   },
   billsList: {
     gap: 16,

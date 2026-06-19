@@ -57,7 +57,7 @@ export default function GoalDetailScreen() {
 
         <ClayCard variant="subtle" style={styles.progressCard}>
           <View style={styles.progressHeader}>
-            <Text style={[typography.display.medium, { color: colors.text.primary }]}>
+            <Text style={[typography.financial.large, { color: colors.text.primary }]}>
               MK {goal.currentAmount.toLocaleString()}
             </Text>
             <Text style={[typography.headline.small, { color: colors.text.muted }]}>

@@ -5,6 +5,7 @@ import { GraduationCap, BookOpen, Clock } from 'lucide-react-native';
 import { useTheme } from '../../../src/hooks';
 import { ScreenHeader } from '../../../src/components/common/ScreenHeader';
 import { ClayCard } from '../../../src/components/common/ClayCard';
+import { ManjeCharacter } from '../../../src/components/character';
 import { useContentStore } from '../../../src/stores';
 
 export default function EducationHubScreen() {
@@ -50,7 +51,7 @@ export default function EducationHubScreen() {
       <ScrollView contentContainerStyle={{ padding: spacing.xl, paddingBottom: spacing['4xl'] }} showsVerticalScrollIndicator={false}>
         {!featuredArticle ? (
           <ClayCard variant="subtle" style={styles.emptyCard}>
-            <GraduationCap size={40} color={colors.primary.base} />
+            <ManjeCharacter utility="education-host" size={170} animated showIdleFloat />
             <Text style={[typography.headline.small, { color: colors.text.primary, marginTop: spacing.md }]}>No live articles yet</Text>
             <Text style={[typography.body.medium, { color: colors.text.secondary, textAlign: 'center', marginTop: spacing.sm }]}>
               Publish articles to the `educationArticles` collection and they’ll appear here.

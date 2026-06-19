@@ -1,0 +1,40 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Manje wordmark with standing mascot as j concept">
+  <defs>
+    <style>
+      .h1 { font: 800 44px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .body { font: 500 20px Inter, Arial, sans-serif; fill: #426356; }
+      .word { font: 850 150px Inter, Arial, sans-serif; fill: #0D3B2E; letter-spacing: -5px; }
+      .tag { font: 700 16px Inter, Arial, sans-serif; fill: #1A6B4A; letter-spacing: 2px; }
+      .label { font: 750 23px Inter, Arial, sans-serif; fill: #0D3B2E; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#F8FAF9"/>
+  <text x="80" y="92" class="h1">Manje Wordmark With Mascot as j</text>
+  <text x="82" y="128" class="body">Text-led, Revolut-inspired wordmark. The standing mascot replaces the j position with the background removed.</text>
+
+  <g transform="translate(80 190)">
+    <rect width="1440" height="390" rx="36" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="56" y="62" class="label">Primary concept</text>
+    <text x="56" y="94" class="body">Use this for splash, onboarding, hero, and larger brand moments.</text>
+    <text x="250" y="244" class="word">Man</text>
+    <image href="manje-mascot-standing-j-cutout.png" x="590" y="58" width="210" height="270" preserveAspectRatio="xMidYMid meet"/>
+    <text x="792" y="244" class="word">e</text>
+    <text x="258" y="310" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(80 640)">
+    <rect width="690" height="170" rx="30" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="52" class="label">Compact lockup</text>
+    <text x="230" y="116" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="850" fill="#0D3B2E" letter-spacing="-2">Man</text>
+    <image href="manje-mascot-standing-j-cutout.png" x="374" y="38" width="76" height="98" preserveAspectRatio="xMidYMid meet"/>
+    <text x="448" y="116" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="850" fill="#0D3B2E">e</text>
+  </g>
+
+  <g transform="translate(830 640)">
+    <rect width="690" height="170" rx="30" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="52" class="label">Usage note</text>
+    <text x="36" y="88" class="body">This is intentionally mascot-forward.</text>
+    <text x="36" y="122" class="body">For tiny app icons, use a separate simplified mark.</text>
+  </g>
+</svg>

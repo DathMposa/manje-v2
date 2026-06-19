@@ -75,11 +75,11 @@ export default function EditTransactionScreen() {
             Amount
           </Text>
           <View style={[styles.amountInputWrapper, { borderBottomColor: colors.border.medium }]}>
-            <Text style={[typography.display.medium, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
+            <Text style={[typography.financial.large, { color: colors.text.primary, marginRight: spacing.xs }]}>MK</Text>
             <TextInput
               style={[
                 styles.amountInput,
-                typography.display.medium,
+                typography.financial.large,
                 { color: form.type === 'income' ? colors.status.success.text : colors.text.primary },
               ]}
               value={form.amount}

@@ -28,7 +28,7 @@ export default function HealthScoreScreen() {
         <View style={styles.scoreHeader}>
           <View style={styles.scoreCircleWrapper}>
             <View style={[styles.scoreCircle, { borderColor: colors.status.success.base }]}>
-              <Text style={[typography.display.large, { color: colors.text.primary }]}>{health.score}</Text>
+              <Text style={[typography.financial.hero, { color: colors.text.primary }]}>{health.score}</Text>
             </View>
           </View>
           <Text style={[typography.headline.medium, { color: colors.text.primary, marginTop: spacing.lg }]}>
@@ -73,7 +73,7 @@ export default function HealthScoreScreen() {
 
         <ClayCard variant="subtle" style={styles.tipsCard}>
           <View style={styles.tipsHeader}>
-            <ManjeCharacter mood="encourage" size="sm" />
+            <ManjeCharacter mood="encourage" size="sm" variant="badge" />
             <Text style={[typography.headline.small, { color: colors.text.primary, marginLeft: 12 }]}>Manje's Advice</Text>
           </View>
 

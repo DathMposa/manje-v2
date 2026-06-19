@@ -1,0 +1,58 @@
+<svg viewBox="0 0 1600 1100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Manje Revolut-style wordmark with mascot j dot concepts">
+  <defs>
+    <style>
+      .h1 { font: 800 44px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .body { font: 500 20px Inter, Arial, sans-serif; fill: #426356; }
+      .label { font: 800 34px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .title { font: 750 25px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .word { font: 850 116px Inter, Arial, sans-serif; fill: #0D3B2E; letter-spacing: -4px; }
+      .tag { font: 700 15px Inter, Arial, sans-serif; fill: #1A6B4A; letter-spacing: 2px; }
+    </style>
+    <clipPath id="mascotCircle"><circle cx="0" cy="0" r="42"/></clipPath>
+  </defs>
+
+  <rect width="1600" height="1100" fill="#F8FAF9"/>
+  <text x="80" y="92" class="h1">Manje Wordmark + Mascot J Concepts</text>
+  <text x="82" y="128" class="body">Revolut-inspired wordmark simplicity: Manje is the logo; the mascot becomes the memorable j detail.</text>
+
+  <g transform="translate(80 185)">
+    <rect width="1440" height="250" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="58" class="label">A</text>
+    <text x="86" y="56" class="title">Mascot as j dot</text>
+    <text x="86" y="88" class="body">Most premium: clean text wordmark with a controlled mascot badge replacing only the j dot.</text>
+    <text x="370" y="170" class="word">Manje</text>
+    <g transform="translate(732 76)">
+      <circle cx="0" cy="0" r="49" fill="#F8FAF9" stroke="#DDE7E2" stroke-width="3"/>
+      <image href="../../../manje-mobile/assets/character/happy/happy-badge.png" x="-42" y="-42" width="84" height="84" clip-path="url(#mascotCircle)" preserveAspectRatio="xMidYMid slice"/>
+    </g>
+    <text x="378" y="214" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(80 485)">
+    <rect width="1440" height="250" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="58" class="label">B</text>
+    <text x="86" y="56" class="title">Mascot j dot + gold j stem</text>
+    <text x="86" y="88" class="body">Keeps the wordmark text-led, but makes the j more intentional with a subtle gold stem accent.</text>
+    <text x="370" y="170" class="word">Man</text>
+    <text x="650" y="170" class="word" fill="#B07D08">j</text>
+    <text x="696" y="170" class="word">e</text>
+    <g transform="translate(684 76)">
+      <circle cx="0" cy="0" r="49" fill="#F8FAF9" stroke="#DDE7E2" stroke-width="3"/>
+      <image href="../../../manje-mobile/assets/character/happy/happy-badge.png" x="-42" y="-42" width="84" height="84" clip-path="url(#mascotCircle)" preserveAspectRatio="xMidYMid slice"/>
+    </g>
+    <text x="378" y="214" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+
+  <g transform="translate(80 785)">
+    <rect width="1440" height="250" rx="32" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="58" class="label">C</text>
+    <text x="86" y="56" class="title">Mascot companion j</text>
+    <text x="86" y="88" class="body">For larger brand moments: mascot sits beside the j while the wordmark remains fully readable.</text>
+    <text x="370" y="170" class="word">Manje</text>
+    <g transform="translate(804 129)">
+      <circle cx="0" cy="0" r="50" fill="#F8FAF9" stroke="#DDE7E2" stroke-width="3"/>
+      <image href="../../../manje-mobile/assets/character/happy/happy-badge.png" x="-43" y="-43" width="86" height="86" clip-path="url(#mascotCircle)" preserveAspectRatio="xMidYMid slice"/>
+    </g>
+    <text x="378" y="214" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+  </g>
+</svg>

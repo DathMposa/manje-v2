@@ -116,7 +116,7 @@ export default function AIBudgetCreationScreen() {
           >
             {msg.sender === 'ai' && (
               <View style={styles.aiAvatar}>
-                <ManjeCharacter mood={msg.action ? "celebrate" : "happy"} size="sm" />
+                <ManjeCharacter mood={msg.action ? "celebrate" : "happy"} size="sm" variant="badge" />
               </View>
             )}
             
@@ -153,7 +153,7 @@ export default function AIBudgetCreationScreen() {
         {isTyping && (
           <View style={[styles.messageWrapper, styles.messageWrapperAI]}>
             <View style={styles.aiAvatar}>
-              <ManjeCharacter mood="thinking" size="sm" animated />
+              <ManjeCharacter mood="thinking" size="sm" variant="badge" animated />
             </View>
             <View style={[styles.messageBubble, styles.messageAI, { backgroundColor: colors.background.card, borderColor: colors.border.light }]}>
               <Text style={[typography.body.large, { color: colors.text.muted }]}>Thinking...</Text>

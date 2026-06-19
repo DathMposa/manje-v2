@@ -1,0 +1,111 @@
+<svg viewBox="0 0 1600 1200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Manje premium logo concept preview sheet">
+  <defs>
+    <style>
+      .label { font: 800 34px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .title { font: 750 27px Inter, Arial, sans-serif; fill: #0D3B2E; }
+      .note { font: 500 19px Inter, Arial, sans-serif; fill: #426356; }
+      .word { font: 800 76px Inter, Arial, sans-serif; fill: #0D3B2E; letter-spacing: -2px; }
+      .tag { font: 700 15px Inter, Arial, sans-serif; fill: #1A6B4A; letter-spacing: 2px; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1200" fill="#F8FAF9"/>
+  <text x="80" y="92" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="850" fill="#0D3B2E">Manje Premium Logo Concepts</text>
+  <text x="82" y="128" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="500" fill="#426356">Cleaner growth cues, no oversized chart arrow. Built as flat vector marks for icon review.</text>
+
+  <g transform="translate(80 180)">
+    <rect width="680" height="420" rx="34" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="58" class="label">A</text>
+    <text x="86" y="56" class="title">Clipboard M + Gold Check Tick</text>
+    <text x="86" y="86" class="note">Planning board + progress, compact enough for an app icon.</text>
+
+    <g transform="translate(52 122) scale(0.28)">
+      <path d="M338 176c0-50 40-90 90-90h168c50 0 90 40 90 90v30h34c75 0 136 61 136 136v420c0 75-61 136-136 136H304c-75 0-136-61-136-136V342c0-75 61-136 136-136h34v-30z" fill="#0D3B2E"/>
+      <rect x="392" y="140" width="240" height="118" rx="46" fill="#F8FAF9"/>
+      <rect x="436" y="176" width="152" height="24" rx="12" fill="#B07D08"/>
+      <path d="M278 720V404c0-47 32-82 78-82 31 0 58 17 73 46l83 160 83-160c15-29 42-46 73-46 46 0 78 35 78 82v316c0 42-30 72-71 72s-71-30-71-72V523l-52 102c-11 22-27 32-48 32s-37-10-48-32l-52-102v197c0 42-30 72-71 72s-71-30-71-72z" fill="#F8FAF9"/>
+      <path d="M414 610l75 75 145-170" fill="none" stroke="#F5C518" stroke-width="58" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <g transform="translate(492 168)">
+      <rect width="106" height="106" rx="24" fill="#F8FAF9" stroke="#DDE7E2" stroke-width="2"/>
+      <g transform="translate(11 10) scale(0.082)">
+        <path d="M338 176c0-50 40-90 90-90h168c50 0 90 40 90 90v30h34c75 0 136 61 136 136v420c0 75-61 136-136 136H304c-75 0-136-61-136-136V342c0-75 61-136 136-136h34v-30z" fill="#0D3B2E"/>
+        <rect x="392" y="140" width="240" height="118" rx="46" fill="#F8FAF9"/>
+        <rect x="436" y="176" width="152" height="24" rx="12" fill="#B07D08"/>
+        <path d="M278 720V404c0-47 32-82 78-82 31 0 58 17 73 46l83 160 83-160c15-29 42-46 73-46 46 0 78 35 78 82v316c0 42-30 72-71 72s-71-30-71-72V523l-52 102c-11 22-27 32-48 32s-37-10-48-32l-52-102v197c0 42-30 72-71 72s-71-30-71-72z" fill="#F8FAF9"/>
+        <path d="M414 610l75 75 145-170" fill="none" stroke="#F5C518" stroke-width="58" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+    <text x="492" y="302" class="note">Small icon check</text>
+  </g>
+
+  <g transform="translate(840 180)">
+    <rect width="680" height="420" rx="34" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="58" class="label">B</text>
+    <text x="86" y="56" class="title">Rounded M + Hidden Growth Path</text>
+    <text x="86" y="86" class="note">Most premium: a custom monogram with a subtle gold lift.</text>
+
+    <g transform="translate(70 130)">
+      <rect width="250" height="250" rx="62" fill="#0D3B2E"/>
+      <path d="M55 190V75c0-24 16-42 39-42 16 0 29 9 37 24l44 84 44-84c8-15 21-24 37-24 23 0 39 18 39 42v115c0 22-15 37-36 37s-36-15-36-37v-65l-28 54c-6 12-14 18-25 18s-19-6-25-18l-28-54v65c0 22-15 37-36 37s-36-15-36-37z" fill="#F8FAF9"/>
+      <path d="M104 148c30 24 56 25 82 2 16-14 30-36 44-66" fill="none" stroke="#F5C518" stroke-width="16" stroke-linecap="round"/>
+      <circle cx="232" cy="80" r="10" fill="#F5C518"/>
+    </g>
+
+    <g transform="translate(494 170)">
+      <rect width="106" height="106" rx="24" fill="#0D3B2E"/>
+      <path d="M23 80V32c0-10 7-18 17-18 7 0 12 4 15 10l19 36 19-36c3-6 8-10 15-10 10 0 17 8 17 18v48c0 9-6 16-15 16s-15-7-15-16V53L83 76c-3 5-6 8-11 8s-8-3-11-8L49 53v27c0 9-6 16-15 16s-15-7-15-16z" fill="#F8FAF9"/>
+      <path d="M44 62c13 10 24 11 35 1 7-6 13-15 19-28" fill="none" stroke="#F5C518" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="99" cy="33" r="4" fill="#F5C518"/>
+    </g>
+    <text x="486" y="304" class="note">Small icon check</text>
+  </g>
+
+  <g transform="translate(80 660)">
+    <rect width="680" height="420" rx="34" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="58" class="label">C</text>
+    <text x="86" y="56" class="title">Ledger/Card M Mark</text>
+    <text x="86" y="86" class="note">Quiet finance credibility, with growth as a restrained accent.</text>
+
+    <g transform="translate(70 130)">
+      <rect width="270" height="220" rx="48" fill="#0D3B2E"/>
+      <rect x="34" y="38" width="202" height="28" rx="14" fill="#1A6B4A"/>
+      <path d="M50 176V95c0-20 13-34 32-34 13 0 24 7 30 20l31 60 31-60c6-13 17-20 30-20 19 0 32 14 32 34v81c0 18-12 30-29 30s-29-12-29-30v-41l-17 32c-5 10-11 15-20 15s-15-5-20-15l-17-32v41c0 18-12 30-29 30s-29-12-29-30z" fill="#F8FAF9"/>
+      <path d="M194 174h46v-46" fill="none" stroke="#F5C518" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="218" cy="151" r="9" fill="#F5C518"/>
+    </g>
+
+    <g transform="translate(494 170)">
+      <rect width="112" height="92" rx="20" fill="#0D3B2E"/>
+      <rect x="14" y="16" width="84" height="10" rx="5" fill="#1A6B4A"/>
+      <path d="M21 73V39c0-8 6-14 14-14 5 0 10 3 13 8l13 25 13-25c3-5 8-8 13-8 8 0 14 6 14 14v34c0 7-5 12-12 12s-12-5-12-12V56l-7 13c-2 4-5 6-8 6s-6-2-8-6l-7-13v17c0 7-5 12-12 12s-12-5-12-12z" fill="#F8FAF9"/>
+      <path d="M81 72h19V53" fill="none" stroke="#F5C518" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="486" y="304" class="note">Small icon check</text>
+  </g>
+
+  <g transform="translate(840 660)">
+    <rect width="680" height="420" rx="34" fill="#FFFFFF" stroke="#DDE7E2" stroke-width="2"/>
+    <text x="36" y="58" class="label">D</text>
+    <text x="86" y="56" class="title">Wordmark + Gold J Motion</text>
+    <text x="86" y="86" class="note">Brand memorability first, with a paired simplified app mark.</text>
+
+    <g transform="translate(70 138)">
+      <rect width="128" height="128" rx="30" fill="#0D3B2E"/>
+      <path d="M29 96V39c0-12 8-21 20-21 8 0 15 4 19 12l22 42 22-42c4-8 11-12 19-12 12 0 20 9 20 21v57c0 11-8 19-18 19s-18-8-18-19V63l-14 27c-3 6-7 9-12 9s-9-3-12-9L63 63v33c0 11-8 19-18 19s-18-8-18-19z" fill="#F8FAF9"/>
+      <path d="M78 92l18 18 36-42" fill="none" stroke="#F5C518" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <text x="230" y="222" class="word">Manje</text>
+    <path d="M485 233c24 18 51 14 68-10" fill="none" stroke="#F5C518" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="560" cy="188" r="9" fill="#F5C518"/>
+    <text x="238" y="270" class="tag">TRACK IT. BUDGET IT. GROW IT.</text>
+
+    <g transform="translate(512 294)">
+      <rect width="86" height="86" rx="20" fill="#0D3B2E"/>
+      <path d="M19 64V27c0-8 5-14 13-14 5 0 10 3 12 8l15 28 15-28c2-5 7-8 12-8 8 0 13 6 13 14v37c0 7-5 12-12 12s-12-5-12-12V43l-9 17c-2 4-5 6-8 6s-6-2-8-6l-9-17v21c0 7-5 12-12 12s-12-5-12-12z" fill="#F8FAF9"/>
+      <path d="M52 61l12 12 23-27" fill="none" stroke="#F5C518" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>

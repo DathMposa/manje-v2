@@ -23,7 +23,7 @@ export default function WelcomeScreen() {
     <View style={[styles.container, { backgroundColor: colors.bg.base }]}>
       <View style={styles.topSection}>
         <Animated.View entering={FadeInDown.delay(200).springify().damping(28).stiffness(200)}>
-          <ManjeCharacter mood="wave" size={180} animated />
+          <ManjeCharacter mood="wave" size={180} variant="full" animated />
         </Animated.View>
         
         <Animated.View entering={FadeInUp.delay(600).duration(400)} style={styles.titleContainer}>

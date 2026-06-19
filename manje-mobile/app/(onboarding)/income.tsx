@@ -203,7 +203,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     textAlign: 'center',
-    lineHeight: 22,
   },
   rangesContainer: {
     gap: spacing[3],
