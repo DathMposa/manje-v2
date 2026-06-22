@@ -1,0 +1,6 @@
+# EAS archive exclusions for the mobile app
+manje-mobile/node_modules/
+manje-mobile/.expo/
+manje-mobile/dist/
+manje-mobile/android/
+manje-mobile/ios/

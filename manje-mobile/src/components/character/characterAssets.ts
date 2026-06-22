@@ -23,6 +23,7 @@ export const MANJE_UTILITY_POSES = [
   'education-host',
   'bill-reminder',
   'secure-account',
+  'pen-cheek-tip',
 ] as const;
 
 export type ManjeMood = (typeof MANJE_MOODS)[number];
@@ -88,4 +89,5 @@ export const characterUtilityAssets: Record<ManjeUtilityPose, ImageSourcePropTyp
   'education-host': require('../../../assets/character/utility/education-host.png'),
   'bill-reminder': require('../../../assets/character/utility/bill-reminder.png'),
   'secure-account': require('../../../assets/character/utility/secure-account.png'),
+  'pen-cheek-tip': require('../../../assets/character/utility/pen-cheek-tip.png'),
 };

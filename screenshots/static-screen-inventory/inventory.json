@@ -1,0 +1,373 @@
+[
+  {
+    "flow": "Auth",
+    "folder": "01-auth",
+    "file": "01-welcome.png",
+    "screen": "Welcome",
+    "route": "/(auth)/welcome"
+  },
+  {
+    "flow": "Auth",
+    "folder": "01-auth",
+    "file": "02-sign-in.png",
+    "screen": "Sign In",
+    "route": "/(auth)/signin"
+  },
+  {
+    "flow": "Auth",
+    "folder": "01-auth",
+    "file": "03-sign-up.png",
+    "screen": "Sign Up",
+    "route": "/(auth)/signup"
+  },
+  {
+    "flow": "Auth",
+    "folder": "01-auth",
+    "file": "04-forgot-password.png",
+    "screen": "Forgot Password",
+    "route": "/(auth)/forgot-password"
+  },
+  {
+    "flow": "Auth",
+    "folder": "01-auth",
+    "file": "05-reset-password.png",
+    "screen": "Reset Password",
+    "route": "/(auth)/reset-password"
+  },
+  {
+    "flow": "Auth",
+    "folder": "01-auth",
+    "file": "06-biometric-lock.png",
+    "screen": "Biometric Lock",
+    "route": "/(auth)/biometric-lock"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "01-brand-story.png",
+    "screen": "Brand Story",
+    "route": "/(onboarding)/brand-story"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "02-country.png",
+    "screen": "Country Selection",
+    "route": "/(onboarding)/country"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "03-currency.png",
+    "screen": "Currency Selection",
+    "route": "/(onboarding)/currency"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "04-income.png",
+    "screen": "Income Setup",
+    "route": "/(onboarding)/income"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "05-goal-setting.png",
+    "screen": "Goal Setting",
+    "route": "/(onboarding)/goal-setting"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "06-notification-prefs.png",
+    "screen": "Notification Preferences",
+    "route": "/(onboarding)/notification-prefs"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "07-permissions.png",
+    "screen": "Permissions",
+    "route": "/(onboarding)/permissions"
+  },
+  {
+    "flow": "Onboarding",
+    "folder": "02-onboarding",
+    "file": "08-success.png",
+    "screen": "Success",
+    "route": "/(onboarding)/success"
+  },
+  {
+    "flow": "Home & Main",
+    "folder": "03-home-main",
+    "file": "01-dashboard.png",
+    "screen": "Home Dashboard",
+    "route": "/(tabs)"
+  },
+  {
+    "flow": "Home & Main",
+    "folder": "03-home-main",
+    "file": "02-activity.png",
+    "screen": "Activity",
+    "route": "/(tabs)/activity"
+  },
+  {
+    "flow": "Home & Main",
+    "folder": "03-home-main",
+    "file": "03-quick-add.png",
+    "screen": "Quick Add",
+    "route": "/(tabs)/quick-add"
+  },
+  {
+    "flow": "Home & Main",
+    "folder": "03-home-main",
+    "file": "04-profile.png",
+    "screen": "Profile",
+    "route": "/(tabs)/profile"
+  },
+  {
+    "flow": "Transactions",
+    "folder": "04-transactions",
+    "file": "01-transactions-list.png",
+    "screen": "Transactions List",
+    "route": "/(tabs)/transactions"
+  },
+  {
+    "flow": "Transactions",
+    "folder": "04-transactions",
+    "file": "02-transaction-detail.png",
+    "screen": "Transaction Detail",
+    "route": "/(tabs)/transactions/[id]"
+  },
+  {
+    "flow": "Transactions",
+    "folder": "04-transactions",
+    "file": "03-edit-transaction.png",
+    "screen": "Edit Transaction",
+    "route": "/(tabs)/transactions/edit/[id]"
+  },
+  {
+    "flow": "Budgets",
+    "folder": "05-budgets",
+    "file": "01-budgets-list.png",
+    "screen": "Budgets List",
+    "route": "/(tabs)/budgets"
+  },
+  {
+    "flow": "Budgets",
+    "folder": "05-budgets",
+    "file": "02-create-manual-budget.png",
+    "screen": "Create Manual Budget",
+    "route": "/(tabs)/budgets/create/manual"
+  },
+  {
+    "flow": "Budgets",
+    "folder": "05-budgets",
+    "file": "03-budget-detail.png",
+    "screen": "Budget Detail",
+    "route": "/(tabs)/budgets/[id]"
+  },
+  {
+    "flow": "Budgets",
+    "folder": "05-budgets",
+    "file": "04-edit-budget.png",
+    "screen": "Edit Budget",
+    "route": "/(tabs)/budgets/edit/[id]"
+  },
+  {
+    "flow": "Goals",
+    "folder": "06-goals",
+    "file": "01-goals-list.png",
+    "screen": "Goals List",
+    "route": "/(tabs)/goals"
+  },
+  {
+    "flow": "Goals",
+    "folder": "06-goals",
+    "file": "02-create-goal.png",
+    "screen": "Create Goal",
+    "route": "/(tabs)/goals/create"
+  },
+  {
+    "flow": "Goals",
+    "folder": "06-goals",
+    "file": "03-goal-detail.png",
+    "screen": "Goal Detail",
+    "route": "/(tabs)/goals/[id]"
+  },
+  {
+    "flow": "Goals",
+    "folder": "06-goals",
+    "file": "04-edit-goal.png",
+    "screen": "Edit Goal",
+    "route": "/(tabs)/goals/edit/[id]"
+  },
+  {
+    "flow": "Goals",
+    "folder": "06-goals",
+    "file": "05-add-contribution.png",
+    "screen": "Add Contribution",
+    "route": "/(tabs)/goals/contribute/[id]"
+  },
+  {
+    "flow": "Bills",
+    "folder": "07-bills",
+    "file": "01-bills-list.png",
+    "screen": "Bills List",
+    "route": "/(tabs)/bills"
+  },
+  {
+    "flow": "Bills",
+    "folder": "07-bills",
+    "file": "02-create-bill.png",
+    "screen": "Create Bill",
+    "route": "/(tabs)/bills/create"
+  },
+  {
+    "flow": "Bills",
+    "folder": "07-bills",
+    "file": "03-bill-detail.png",
+    "screen": "Bill Detail",
+    "route": "/(tabs)/bills/[id]"
+  },
+  {
+    "flow": "Bills",
+    "folder": "07-bills",
+    "file": "04-edit-bill.png",
+    "screen": "Edit Bill",
+    "route": "/(tabs)/bills/edit/[id]"
+  },
+  {
+    "flow": "Bills",
+    "folder": "07-bills",
+    "file": "05-pay-bill.png",
+    "screen": "Pay Bill",
+    "route": "/(tabs)/bills/pay/[id]"
+  },
+  {
+    "flow": "AI",
+    "folder": "08-ai",
+    "file": "01-ai-hub.png",
+    "screen": "AI Hub",
+    "route": "/(tabs)/ai"
+  },
+  {
+    "flow": "AI",
+    "folder": "08-ai",
+    "file": "02-ai-chat.png",
+    "screen": "AI Chat",
+    "route": "/(tabs)/ai/chat"
+  },
+  {
+    "flow": "AI",
+    "folder": "08-ai",
+    "file": "03-ai-budget.png",
+    "screen": "AI Budget Assistant",
+    "route": "/(tabs)/ai/budget"
+  },
+  {
+    "flow": "AI",
+    "folder": "08-ai",
+    "file": "04-ai-history.png",
+    "screen": "AI History",
+    "route": "/(tabs)/ai/history"
+  },
+  {
+    "flow": "Reports",
+    "folder": "09-reports",
+    "file": "01-reports-overview.png",
+    "screen": "Reports Overview",
+    "route": "/(tabs)/reports"
+  },
+  {
+    "flow": "Reports",
+    "folder": "09-reports",
+    "file": "02-spending-trends.png",
+    "screen": "Spending Trends",
+    "route": "/(tabs)/reports/trends"
+  },
+  {
+    "flow": "Reports",
+    "folder": "09-reports",
+    "file": "03-financial-health.png",
+    "screen": "Financial Health",
+    "route": "/(tabs)/reports/health"
+  },
+  {
+    "flow": "Notifications",
+    "folder": "10-notifications",
+    "file": "01-notifications-list.png",
+    "screen": "Notifications List",
+    "route": "/(tabs)/notifications"
+  },
+  {
+    "flow": "Notifications",
+    "folder": "10-notifications",
+    "file": "02-notification-detail.png",
+    "screen": "Notification Detail",
+    "route": "/(tabs)/notifications/[id]"
+  },
+  {
+    "flow": "Education",
+    "folder": "11-education",
+    "file": "01-education-list.png",
+    "screen": "Education List",
+    "route": "/(tabs)/education"
+  },
+  {
+    "flow": "Education",
+    "folder": "11-education",
+    "file": "02-education-detail.png",
+    "screen": "Education Detail",
+    "route": "/(tabs)/education/[id]"
+  },
+  {
+    "flow": "Settings",
+    "folder": "12-settings",
+    "file": "01-settings-home.png",
+    "screen": "Settings Home",
+    "route": "/(tabs)/settings"
+  },
+  {
+    "flow": "Settings",
+    "folder": "12-settings",
+    "file": "02-currency-settings.png",
+    "screen": "Currency Settings",
+    "route": "/(tabs)/settings/currency"
+  },
+  {
+    "flow": "Settings",
+    "folder": "12-settings",
+    "file": "03-notification-settings.png",
+    "screen": "Notification Settings",
+    "route": "/(tabs)/settings/notifications"
+  },
+  {
+    "flow": "Settings",
+    "folder": "12-settings",
+    "file": "04-privacy.png",
+    "screen": "Privacy",
+    "route": "/(tabs)/settings/privacy"
+  },
+  {
+    "flow": "Settings",
+    "folder": "12-settings",
+    "file": "05-security.png",
+    "screen": "Security",
+    "route": "/(tabs)/settings/security"
+  },
+  {
+    "flow": "Settings",
+    "folder": "12-settings",
+    "file": "06-support.png",
+    "screen": "Support",
+    "route": "/(tabs)/settings/support"
+  },
+  {
+    "flow": "Settings",
+    "folder": "12-settings",
+    "file": "07-delete-account.png",
+    "screen": "Delete Account",
+    "route": "/(tabs)/settings/delete-account"
+  }
+]
