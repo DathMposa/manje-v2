@@ -189,7 +189,7 @@ export const ManjeCharacter: React.FC<ManjeCharacterProps> = ({
       style={[
         styles.container,
         { width: sizeValue, height: sizeValue },
-        isBadge && { borderRadius: sizeValue / 2 },
+        isBadge && { borderRadius: sizeValue / 2, overflow: 'hidden' },
         containerAnimatedStyle,
         style,
       ]}
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
+    overflow: 'visible',
   },
   image: {
     flexShrink: 0,

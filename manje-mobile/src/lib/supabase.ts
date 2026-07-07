@@ -48,7 +48,25 @@ const SecureStorageAdapter = {
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL?.trim() ?? '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY?.trim() ?? '';
 
+let cachedReachability:
+  | { ok: true; checkedAt: number }
+  | { ok: false; checkedAt: number; message: string }
+  | null = null;
+const REACHABILITY_TTL_MS = 60_000;
+
 export const isSupabaseConfigured = () => Boolean(supabaseUrl && supabaseAnonKey);
+
+const getSupabaseHost = () => {
+  if (!supabaseUrl) {
+    return '';
+  }
+
+  try {
+    return new URL(supabaseUrl).host;
+  } catch {
+    return '';
+  }
+};
 
 export const getSupabaseConfigurationError = () => {
   const missing: string[] = [];
@@ -61,11 +79,21 @@ export const getSupabaseConfigurationError = () => {
     missing.push('EXPO_PUBLIC_SUPABASE_ANON_KEY');
   }
 
-  if (missing.length === 0) {
-    return null;
+  if (missing.length > 0) {
+    return `Supabase is not configured yet. Add ${missing.join(', ')} to your app environment first.`;
   }
 
-  return `Supabase is not configured yet. Add ${missing.join(', ')} to your app environment first.`;
+  try {
+    const parsedUrl = new URL(supabaseUrl);
+
+    if (parsedUrl.protocol !== 'https:') {
+      return 'Supabase URL must start with https://.';
+    }
+  } catch {
+    return 'EXPO_PUBLIC_SUPABASE_URL is not a valid URL.';
+  }
+
+  return null;
 };
 
 export const getGoogleWebClientId = () => process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID?.trim() ?? '';
@@ -76,6 +104,46 @@ export const getGoogleConfigurationError = () => {
   }
 
   return null;
+};
+
+export const getSupabaseReachabilityError = async () => {
+  const configError = getSupabaseConfigurationError();
+  if (configError) {
+    return configError;
+  }
+
+  if (cachedReachability && Date.now() - cachedReachability.checkedAt < REACHABILITY_TTL_MS) {
+    return cachedReachability.ok ? null : cachedReachability.message;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    const response = await fetch(`${supabaseUrl}/auth/v1/health`, {
+      method: 'GET',
+      signal: controller.signal,
+      headers: {
+        apikey: supabaseAnonKey,
+      },
+    });
+
+    if (!response.ok) {
+      const message = `Supabase backend responded with ${response.status}. Check the project status and auth endpoint configuration.`;
+      cachedReachability = { ok: false, checkedAt: Date.now(), message };
+      return message;
+    }
+
+    cachedReachability = { ok: true, checkedAt: Date.now() };
+    return null;
+  } catch {
+    const host = getSupabaseHost() || supabaseUrl;
+    const message = `Supabase backend is unreachable at ${host}. Update EXPO_PUBLIC_SUPABASE_URL to the correct project URL and restart Expo.`;
+    cachedReachability = { ok: false, checkedAt: Date.now(), message };
+    return message;
+  } finally {
+    clearTimeout(timeout);
+  }
 };
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {

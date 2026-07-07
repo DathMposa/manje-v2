@@ -10,6 +10,7 @@ export const nowIso = () => new Date().toISOString();
 export interface UserProfileDoc {
   displayName: string | null;
   email: string;
+  phone?: string | null;
   photoURL?: string | null;
   isOnboarded: boolean;
   createdAt: string;
@@ -215,6 +216,7 @@ type ProfileRow = {
   id: string;
   display_name: string | null;
   email: string;
+  phone: string | null;
   photo_url: string | null;
   is_onboarded: boolean;
   created_at: string;

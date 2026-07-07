@@ -1,42 +1,73 @@
 /**
  * Push notification helpers.
- * Handles permission requests, push token registration, and
- * scheduling local notifications.
+ * Lazy-load expo-notifications so Expo Go can start without
+ * evaluating Android remote-push code at module import time.
  */
 
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 
-// Show notifications as banners even when the app is foregrounded
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+type NotificationsModule = typeof import('expo-notifications');
 
-// ---------------------------------------------------------------------------
-// Permission + token
-// ---------------------------------------------------------------------------
+let notificationsModulePromise: Promise<NotificationsModule | null> | null = null;
+let notificationHandlerConfigured = false;
+
+const isExpoGo = () => Constants.executionEnvironment === ExecutionEnvironment.StoreClient && !!Constants.expoGoConfig;
+
+const loadNotificationsModule = async (): Promise<NotificationsModule | null> => {
+  if (isExpoGo()) {
+    return null;
+  }
+
+  if (!notificationsModulePromise) {
+    notificationsModulePromise = import('expo-notifications');
+  }
+
+  const Notifications = await notificationsModulePromise;
+  if (!Notifications) {
+    return null;
+  }
+
+  if (!notificationHandlerConfigured) {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+    notificationHandlerConfigured = true;
+  }
+
+  return Notifications;
+};
 
 export const registerForPushNotifications = async (): Promise<string | null> => {
-  // Push tokens only work in standalone apps (not Expo Go dev client over tunnel)
+  // Android remote push registration is not supported in Expo Go.
+  if (isExpoGo()) {
+    return null;
+  }
+
+  const Notifications = await loadNotificationsModule();
+  if (!Notifications) {
+    return null;
+  }
+
   const isPhysicalDevice = Constants.isDevice;
   if (!isPhysicalDevice) {
     return null;
   }
 
   const existing = await Notifications.getPermissionsAsync();
-  // expo-notifications uses PermissionStatus enum — check if permission is granted
-  let isGranted = (existing as unknown as { status?: string; granted?: boolean }).granted ??
+  let isGranted =
+    (existing as unknown as { status?: string; granted?: boolean }).granted ??
     (existing as unknown as { status?: string }).status === 'granted';
 
   if (!isGranted) {
     const result = await Notifications.requestPermissionsAsync();
-    isGranted = (result as unknown as { status?: string; granted?: boolean }).granted ??
+    isGranted =
+      (result as unknown as { status?: string; granted?: boolean }).granted ??
       (result as unknown as { status?: string }).status === 'granted';
   }
 
@@ -55,22 +86,22 @@ export const registerForPushNotifications = async (): Promise<string | null> => 
   }
 };
 
-// ---------------------------------------------------------------------------
-// Local notifications (bills, budget alerts, goal milestones)
-// ---------------------------------------------------------------------------
-
 export const scheduleBillReminder = async (
   billName: string,
   dueDateIso: string,
   billId: string
 ): Promise<void> => {
+  const Notifications = await loadNotificationsModule();
+  if (!Notifications) {
+    return;
+  }
+
   const dueDate = new Date(dueDateIso);
-  // Remind 1 day before due date at 9am
   const triggerDate = new Date(dueDate);
   triggerDate.setDate(triggerDate.getDate() - 1);
   triggerDate.setHours(9, 0, 0, 0);
 
-  if (triggerDate <= new Date()) return; // Skip if already past
+  if (triggerDate <= new Date()) return;
 
   await Notifications.scheduleNotificationAsync({
     identifier: `bill-${billId}`,
@@ -87,6 +118,11 @@ export const scheduleBillReminder = async (
 };
 
 export const cancelBillReminder = async (billId: string): Promise<void> => {
+  const Notifications = await loadNotificationsModule();
+  if (!Notifications) {
+    return;
+  }
+
   await Notifications.cancelScheduledNotificationAsync(`bill-${billId}`);
 };
 
@@ -95,8 +131,13 @@ export const scheduleLocalNotification = async (
   body: string,
   data?: Record<string, string>
 ): Promise<void> => {
+  const Notifications = await loadNotificationsModule();
+  if (!Notifications) {
+    return;
+  }
+
   await Notifications.scheduleNotificationAsync({
     content: { title, body, data: data ?? {} },
-    trigger: null, // fire immediately
+    trigger: null,
   });
 };

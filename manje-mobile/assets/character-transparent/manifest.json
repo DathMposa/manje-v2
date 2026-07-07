@@ -1,0 +1,295 @@
+{
+  "sourceRoot": "assets/character",
+  "transparentRoot": "assets/character-transparent",
+  "count": 32,
+  "assets": [
+    {
+      "path": "assets/character-transparent/celebrate/celebrate-badge.png",
+      "webp": "assets/character-transparent/celebrate/celebrate-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/celebrate/celebrate-full.png",
+      "webp": "assets/character-transparent/celebrate/celebrate-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/celebrate/celebrate-half.png",
+      "webp": "assets/character-transparent/celebrate/celebrate-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/concern/concern-badge.png",
+      "webp": "assets/character-transparent/concern/concern-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/concern/concern-full.png",
+      "webp": "assets/character-transparent/concern/concern-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/concern/concern-half.png",
+      "webp": "assets/character-transparent/concern/concern-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/encourage/encourage-badge.png",
+      "webp": "assets/character-transparent/encourage/encourage-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/encourage/encourage-full.png",
+      "webp": "assets/character-transparent/encourage/encourage-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/encourage/encourage-half.png",
+      "webp": "assets/character-transparent/encourage/encourage-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/happy/happy-badge.png",
+      "webp": "assets/character-transparent/happy/happy-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/happy/happy-full.png",
+      "webp": "assets/character-transparent/happy/happy-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/happy/happy-half.png",
+      "webp": "assets/character-transparent/happy/happy-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/sleep/sleep-badge.png",
+      "webp": "assets/character-transparent/sleep/sleep-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/sleep/sleep-full.png",
+      "webp": "assets/character-transparent/sleep/sleep-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/sleep/sleep-half.png",
+      "webp": "assets/character-transparent/sleep/sleep-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/surprise/surprise-badge.png",
+      "webp": "assets/character-transparent/surprise/surprise-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/surprise/surprise-full.png",
+      "webp": "assets/character-transparent/surprise/surprise-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/surprise/surprise-half.png",
+      "webp": "assets/character-transparent/surprise/surprise-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/thinking/thinking-badge.png",
+      "webp": "assets/character-transparent/thinking/thinking-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/thinking/thinking-full.png",
+      "webp": "assets/character-transparent/thinking/thinking-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/thinking/thinking-half.png",
+      "webp": "assets/character-transparent/thinking/thinking-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/bill-reminder.png",
+      "webp": "assets/character-transparent/utility/bill-reminder.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/budget-planner.png",
+      "webp": "assets/character-transparent/utility/budget-planner.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/dashboard-guide.png",
+      "webp": "assets/character-transparent/utility/dashboard-guide.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/education-host.png",
+      "webp": "assets/character-transparent/utility/education-host.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/empty-state.png",
+      "webp": "assets/character-transparent/utility/empty-state.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/pen-cheek-tip.png",
+      "webp": "assets/character-transparent/utility/pen-cheek-tip.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/quick-tip.png",
+      "webp": "assets/character-transparent/utility/quick-tip.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/utility/secure-account.png",
+      "webp": "assets/character-transparent/utility/secure-account.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/wave/wave-badge.png",
+      "webp": "assets/character-transparent/wave/wave-badge.webp",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/wave/wave-full.png",
+      "webp": "assets/character-transparent/wave/wave-full.webp",
+      "size": [
+        768,
+        768
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/character-transparent/wave/wave-half.png",
+      "webp": "assets/character-transparent/wave/wave-half.webp",
+      "size": [
+        640,
+        640
+      ],
+      "mode": "RGBA"
+    }
+  ]
+}

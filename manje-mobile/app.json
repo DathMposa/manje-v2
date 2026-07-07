@@ -33,7 +33,10 @@
               "scheme": "manje"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -66,17 +69,17 @@
         }
       ]
     ],
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "f0e8eaaa-3708-4c32-992b-0997d5361434"
-      }
-    },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/f0e8eaaa-3708-4c32-992b-0997d5361434"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0acfb176-ca5a-40f8-b739-d9a8ab0f9438"
+      }
     }
   }
 }

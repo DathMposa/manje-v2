@@ -7,7 +7,7 @@ import { Button } from '../../../src/components/common/Button';
 import { Input } from '../../../src/components/common/Input';
 import { ScreenHeader } from '../../../src/components/common/ScreenHeader';
 import { ManjeCharacter } from '../../../src/components/character/ManjeCharacter';
-import { supabase } from '../../../src/lib/supabase';
+import { getAuthErrorMessage, requestPasswordReset } from '../../../src/lib/auth';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -38,18 +38,10 @@ export default function ForgotPasswordScreen() {
     setIsLoading(true);
     
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: 'manje://reset-password',
-      });
-
-      if (resetError) {
-        setError(resetError.message);
-        return;
-      }
-
+      await requestPasswordReset(email.trim());
       setIsSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setError(getAuthErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +71,7 @@ export default function ForgotPasswordScreen() {
             typography.body.large,
             { color: colors.text.secondary, textAlign: 'center', marginBottom: spacing['3xl'] }
           ]}>
-            We've sent password reset instructions to {email}
+            If an account exists for {email}, password reset instructions are on the way.
           </Text>
           
           <Button

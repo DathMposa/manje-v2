@@ -1,6 +1,8 @@
 import { Platform } from 'react-native';
+import * as Linking from 'expo-linking';
 import {
   getGoogleConfigurationError,
+  getSupabaseReachabilityError,
   getGoogleWebClientId,
   getSupabaseConfigurationError,
   supabase,
@@ -9,6 +11,7 @@ import {
 export interface AppUser {
   id: string;
   email: string;
+  phone?: string | null;
   displayName: string | null;
   photoURL?: string | null;
 }
@@ -43,6 +46,10 @@ export interface OtpSentResult {
   phone: string;
 }
 
+export interface PasswordResetEmailSentResult {
+  emailSent: true;
+}
+
 type Unsubscribe = () => void;
 
 const GOOGLE_SIGN_IN_NATIVE_MODULE_ERROR =
@@ -57,9 +64,15 @@ const loadGoogleSignInModule = async (): Promise<any> => {
   }
 };
 
-const toAppUser = (session: { id: string; email?: string | null; user_metadata?: Record<string, unknown> }): AppUser => ({
+const toAppUser = (session: {
+  id: string;
+  email?: string | null;
+  phone?: string | null;
+  user_metadata?: Record<string, unknown>;
+}): AppUser => ({
   id: session.id,
   email: session.email ?? '',
+  phone: session.phone ?? null,
   displayName:
     (session.user_metadata?.['full_name'] as string | undefined) ??
     (session.user_metadata?.['name'] as string | undefined) ??
@@ -67,11 +80,17 @@ const toAppUser = (session: { id: string; email?: string | null; user_metadata?:
   photoURL: (session.user_metadata?.['avatar_url'] as string | undefined) ?? null,
 });
 
-const assertConfigured = () => {
+const assertConfigured = async () => {
   const error = getSupabaseConfigurationError();
 
   if (error) {
     throw new Error(error);
+  }
+
+  const reachabilityError = await getSupabaseReachabilityError();
+
+  if (reachabilityError) {
+    throw new Error(reachabilityError);
   }
 };
 
@@ -109,7 +128,7 @@ export const observeAuthState = (callback: (user: AppUser | null) => void): Unsu
 };
 
 export const signInWithEmail = async (email: string, password: string): Promise<AuthSuccessResult> => {
-  assertConfigured();
+  await assertConfigured();
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -123,12 +142,35 @@ export const signInWithEmail = async (email: string, password: string): Promise<
   };
 };
 
+const getPasswordResetRedirectUrl = () => {
+  if (Platform.OS === 'web') {
+    return undefined;
+  }
+
+  return Linking.createURL('/reset-password');
+};
+
+export const requestPasswordReset = async (email: string): Promise<PasswordResetEmailSentResult> => {
+  await assertConfigured();
+
+  const redirectTo = getPasswordResetRedirectUrl();
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return { emailSent: true };
+};
+
 export const signUpWithEmail = async (
   name: string,
   email: string,
   password: string
 ): Promise<AuthSuccessResult | EmailConfirmationPendingResult> => {
-  assertConfigured();
+  await assertConfigured();
 
   const trimmedName = name.trim();
 
@@ -159,7 +201,7 @@ export const signUpWithEmail = async (
 };
 
 export const sendPhoneOtp = async (rawPhone: string): Promise<OtpSentResult> => {
-  assertConfigured();
+  await assertConfigured();
 
   const phone = toE164(rawPhone);
   console.log('Attempting to send OTP to:', phone);
@@ -187,7 +229,7 @@ export const sendPhoneOtp = async (rawPhone: string): Promise<OtpSentResult> => 
 };
 
 export const verifyPhoneOtp = async (phone: string, token: string): Promise<AuthSuccessResult> => {
-  assertConfigured();
+  await assertConfigured();
 
   const { data, error } = await supabase.auth.verifyOtp({
     phone,
@@ -207,6 +249,7 @@ export const verifyPhoneOtp = async (phone: string, token: string): Promise<Auth
 
 export const signInWithGoogle = async (): Promise<AuthSuccessResult | GoogleAuthCancelledResult> => {
   configureGoogleSignIn();
+  await assertConfigured();
 
   let GoogleSigninModule;
   let isCancelledResponse: (response: unknown) => boolean;
@@ -279,7 +322,7 @@ export const signOut = async () => {
 };
 
 export const updateCurrentUserDisplayName = async (displayName: string): Promise<AppUser> => {
-  assertConfigured();
+  await assertConfigured();
 
   const { data, error } = await supabase.auth.updateUser({
     data: { full_name: displayName.trim() || null },
@@ -342,6 +385,14 @@ export const getAuthErrorMessage = (error: unknown) => {
 
     if (message.includes('network') || message.includes('fetch')) {
       return 'Network error. Check your connection and try again.';
+    }
+
+    if (message.includes('redirect') || message.includes('redirect_to')) {
+      return 'Password reset redirect is not allowed by Supabase. Add your app deep link URL to the Auth Redirect URLs list and try again.';
+    }
+
+    if (message.includes('supabase backend is unreachable')) {
+      return (error as { message: string }).message;
     }
   }
 
